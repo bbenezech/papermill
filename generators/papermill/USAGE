@@ -1,0 +1,3 @@
+script/generate papermill MyTableName
+  
+This will create the migration table.

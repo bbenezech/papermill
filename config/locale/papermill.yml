@@ -1,0 +1,30 @@
+en:
+  papermill: 
+    not-processed: "Error/ressource not processed"
+    updated: "{{ressource}} updated"
+    not-deleted: "{{ressource}} could not be deleted"
+    not-created: "Ressource could not be created"
+    not-found: "Asset #{{ressource}} not found"
+    edit-title: "" # You can use {{ressource}}
+    thumbnail-edit-title: ""
+    upload-button-wording: "Upload..."
+    delete: "Remove {{ressource}}"
+    delete-confirmation: "Delete '{{resource}}'?"
+    SWFUPLOAD_PENDING: "Pending..."
+    SWFUPLOAD_LOADING: "Loading..."
+    SWFUPLOAD_ERROR: "Something happened while loading" # + " <file_name> (<swfupload error message> [<error code>])"
+fr:
+  papermill:
+    not-processed: "Erreur/ressource non trouvée"
+    updated: "{{ressource}} mise à jour"
+    not-deleted: "{{ressource}} n'a pas pu être supprimée"
+    not-created: "La ressource n'a pas pu être créée"
+    not-found: "Asset #{{ressource}} non trouvé"
+    edit-title: ""
+    thumbnail-edit-title: ""
+    upload-button-wording: "Charger.."
+    delete: "Supprimer {{ressource}}"
+    delete-confirmation: "Êtes-vous sûr de vouloir supprimer '{{resource}}' ?"
+    SWFUPLOAD_PENDING: "En attente..."
+    SWFUPLOAD_LOADING: "Chargement..."
+    SWFUPLOAD_ERROR: "Une erreur est survenue pendant le chargement de"
