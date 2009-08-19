@@ -141,6 +141,7 @@ END
 
 file "app/models/article.rb", <<-END
   class Article < ActiveRecord::Base
+    validates_presence_of :title
     papermill
   end
 END

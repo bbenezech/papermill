@@ -58,7 +58,7 @@ class ActionView::Helpers::FormBuilder
       @timestamped = true
     end
     html << %{<div style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
-    conditions = {:assetable_type => assetable_type, :assetable_id => assetable_id}
+    conditions = {:assetable_type => assetable.class.sti_name, :assetable_id => assetable_id}
     conditions.merge!({:assetable_key => key.to_s}) if key
     html << @template.content_tag(:ul, :id => id, :class => "papermill #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
       @template.render :partial => "papermill/asset", :collection => assetable.class.papermill_associations[method][:class].find(:all, :conditions => conditions, :order => "position"), :locals => { :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]) }
