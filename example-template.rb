@@ -85,7 +85,8 @@ file "app/views/articles/new.html.erb", <<-END
   </p>
 <% end %>
 
-<%= link_to 'Back', articles_path %>END
+<%= link_to 'Back', articles_path %>
+END
 
 
 file "app/views/articles/show.html.erb", <<-END
