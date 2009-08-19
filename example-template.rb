@@ -94,23 +94,23 @@ file "app/views/articles/show.html.erb", <<-END
   <%=h @article.title %>
 </p>
 <p>
-  <% @article.assets(:images).each do |image| %>
+  <% @article.papermill_assets(:key => :images).each do |image| %>
     <%= link_to(image_tag(image.url("100x100#")), image.url) %>
   <% end %>
 </p>
 <p>
-  <% image = @article.asset(:image) %>
+  <% image = @article.papermill_assets(:key => :image).first %>
   <%= link_to(image_tag(image.url("100x100#")), image.url) if image %>
 </p>
 <p>
   <ul>
-    <% @article.assets(:assets).each do |asset| %>
+    <% @article.papermill_assets(:key => :assets).each do |asset| %>
       <li><%= link_to asset.name, asset.url %></li>
     <% end %>
   </ul>
 </p>
 <p>
-  <% asset = @article.asset(:asset) %>
+  <% asset = @article.papermill_assets(:key => :asset).first %>
   <%= link_to(asset.name, asset.url) if asset %>
 </p>
 
