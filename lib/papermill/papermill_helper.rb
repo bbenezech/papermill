@@ -6,8 +6,8 @@ module PapermillHelper
     if options[:with_jquery] || options[:with_jqueryui]
       html << %{<script src="http://www.google.com/jsapi"></script>}
       html << %{<script type="text/javascript">\n//<![CDATA[}
-      html << %{ google.load("jquery", "1");} if options[:with_jquery]
-      html << %{ google.load("jqueryui", "1");} if options[:with_jquery] || options[:with_jqueryui]
+      html << %{google.load("jquery", "1");} if options[:with_jquery]
+      html << %{google.load("jqueryui", "1");} if options[:with_jquery] || options[:with_jqueryui]
       html << %{</script>}
     end
     html << %{<script src="http://swfupload.googlecode.com/svn/swfupload/tags/swfupload_v2.2.0_core/swfupload.js"></script>}

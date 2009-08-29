@@ -65,7 +65,7 @@ module Papermill
   }.deep_merge( Papermill.const_defined?("OPTIONS") ? Papermill::OPTIONS : {} )
   
   # do not try to override this, unless you know exactly what you are doing
-  PAPERCLIP_INTERPOLATION_STRING = ":assetable_type/:assetable_id/:assetable_key/:id/:style/:escaped_basename.:extension"
+  PAPERCLIP_INTERPOLATION_STRING = ":assetable_type/:assetable_id/:id/:style/:escaped_basename.:extension"
   
   def self.included(base)
     base.extend(ClassMethods)

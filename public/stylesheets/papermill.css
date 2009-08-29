@@ -15,7 +15,7 @@
 .papermill-thumb-container .status { margin-bottom: 10px; }
 
 .papermill-asset-container {  border:1px solid #EEE; padding:3px; }
-.papermill-asset-container li { display:block; height: 20px; }
+.papermill-asset-container li { display:block; height: 22px; }
 .papermill-asset-container .swfupload .name {margin-left:21px;}
 .papermill-asset-container .name {float:left;}
 .papermill-asset-container .status { margin-left:5px; float:left;}
@@ -25,7 +25,7 @@
 .papermill-asset-container.papermill-multiple-items { padding-left:10px; border-left:5px solid #EEE; min-height:40px; }
 .papermill-asset-container.papermill-multiple-items li { cursor:row-resize; }
 .papermill-thumb-container.papermill-multiple-items li { cursor:move; }
-.papermill-asset-container.papermill-unique-item { padding-left:5px; min-height:20px; }
+.papermill-asset-container.papermill-unique-item { padding-left:5px; min-height:22px; }
 
 /* Need some backgrounds? */
 /* .papermill li { background: transparent url(/images/papermill/background.png) repeat top left; } */

@@ -51,7 +51,7 @@ class ActionView::Helpers::FormBuilder
         end
       end
     end
-    create_url = @template.url_for(:controller => "papermill", :action => "create", :escape => false, :association => method.to_s, :assetable_key => key, :assetable_id => assetable_id, :assetable_type => assetable_type, :gallery => (options[:gallery] != false), :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]))
+    create_url = @template.url_for(:controller => "/papermill", :action => "create", :escape => false, :association => method.to_s, :assetable_key => key, :assetable_id => assetable_id, :assetable_type => assetable_type, :gallery => (options[:gallery] != false), :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]))
     html = []
     if assetable.new_record? && !@timestamped
       html << self.hidden_field(:timestamp, :value => assetable.timestamp)
@@ -65,7 +65,7 @@ class ActionView::Helpers::FormBuilder
     }
     @template.content_for :inline_js do
       %{
-        #{%{$("##{id}").sortable({update:function(){jQuery.ajax({async:true, data:jQuery(this).sortable('serialize'), dataType:'script', type:'post', url:'#{@template.controller.send("sort_papermill_path")}'})}})} if options[:gallery]}
+        #{%{$("##{id}").sortable({update:function(){jQuery.ajax({async:true, data:jQuery(this).sortable('serialize'), dataType:'script', type:'post', url:'#{@template.controller.send("sort_papermill_url")}'})}})} if options[:gallery]}
         new SWFUpload({
           upload_id: "#{id}",
           upload_url: "#{@template.escape_javascript create_url}",
