@@ -32,6 +32,8 @@ Finally, in your views:
       <li><%= link_to(image_tag(image.url("100x100>")), image.url) %></li>
     <% end %>
   </ul>
+  
+See the API here http://rdoc.info/projects/BBenezech/papermill
 
 == Word of caution:
 
