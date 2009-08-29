@@ -7,33 +7,33 @@ See papermill_module.rb for a complete list of available options.
 These options can be application wide, for a class, or set at the last moment for the helper. 
 Or just use defaults, I try very hard to set them as logical as possible.
 
-In your model :
+In your model:
 
   papermill :assets
   
-In your layout :
+In your layout:
+
   <%= papermill_stylesheet_tag %>
   <%= papermill_javascript_tag :with_jquery => true %>
 
-In your edit form : 
+In your edit form: 
 
   f.images_upload(:my_image_gallery)
   f.image_upload(:header_image)
   
-Finally, in your views :
+Finally, in your views:
   
   # Some template image : 
   <%= image_tag @article.assets(:header_image).first.url("800x>") %>
   
-  # Some image gallery :
+  # Some image gallery:
   <ul>
     <% @article.assets(:my_image_gallery).each do |image| %>
       <li><%= link_to(image_tag(image.url("100x100>")), image.url) %></li>
     <% end %>
   </ul>
 
-
-== Word of caution :
+== Word of caution:
 
 Beta.
 
@@ -49,11 +49,11 @@ You'll need rails 2.2, since their are calls to I18n.t. But it shouldn't be too 
 
 You can use the custom template generator (save it to your ruby development directory) to get an example application up and running in no time. 
 
-Also see exemple-template.rb to get up-to-date installation steps.
+Also see http://gist.github.com/177714.txt to get up-to-date installation steps.
 
-  rails -m path/to/exemple-template.rb papermill-example
+  rails -m http://gist.github.com/177714.txt papermill-example
 
-=== Translation :
+=== Translation:
 
 Papermill is fully Rails 2.2 I18n-able.
 
