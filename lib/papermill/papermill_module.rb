@@ -15,9 +15,10 @@ module Papermill
       :height => 100,             # Recommended if :gallery[:height] is nil
       # set :width OR :height to nil to use aspect_ratio value. Remember that 4/3 == 1 => Use : 4.0/3
       :aspect_ratio => nil,
-      :max_width  => 1000,         # for dynamic resize. Security against 
+      :max_width  => 1000,
       :max_height => 1000,
-      # You can override ImageMagick transformation strings, defaults to "#{:width}x#{:height}>"
+      # You can override computed ImageMagick transformation strings that defaults to "#{:width}x#{:height}>"
+      # Note that this is required if PAPERMILL_DEFAULTS[:alias_only] is true
       :style => nil,
       # set to false if you don't want inline CSS
       :inline_css => true
@@ -57,16 +58,21 @@ module Papermill
     :images_only => false,                    # set to true to forbid upload of anything else than images
     :file_size_limit_mb => 10,                # file max size
     :button_after_container => false,         # set to true to move the upload button below the container
+    
     # DO NOT CHANGE THESE IN YOUR CLASSES. Only application wide (routes depend on it..)
+    :alias_only => false,        # set to true so that only aliases are authorized in url/path
+    :aliases => {
+      # "example" => "100x100#",
+    },
     # path to the root of your public directory
     :public_root => ":rails_root/public",
     # added to :public_root as the root folder for all papermill items
     :papermill_prefix => "papermill"
   }.deep_merge( Papermill.const_defined?("OPTIONS") ? Papermill::OPTIONS : {} )
   
-  # do not try to override this, unless you know exactly what you are doing
+
   PAPERCLIP_INTERPOLATION_STRING = ":assetable_type/:assetable_id/:id/:style/:escaped_basename.:extension"
-  
+    
   def self.included(base)
     base.extend(ClassMethods)
   end

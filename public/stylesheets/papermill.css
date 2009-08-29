@@ -1,25 +1,25 @@
 .papermill a:hover { background:none; color:inherit; }
 .papermill a img { border:0px; }
-.papermill li:hover { border-color: blue; }
+.papermill li:hover { border-color:blue; }
 .papermill li a { display:block; }
 .papermill .progress { display:block; border:1px solid #C2E3EF; text-align:left; height:6px; }
-.papermill .progress span { background: #7BB963; height:6px; width:0; display:block; }
+.papermill .progress span { background:#7BB963; height:6px; width:0; display:block; }
 
-.papermill-thumb-container li { border: 0px solid transparent; min-height:25px; min-width:25px; }
+.papermill-thumb-container li { border:0px solid transparent; min-height:25px; min-width:25px; }
 .papermill-thumb-container { position:relative; border:5px solid #EEE; padding:4px; overflow-x:hidden; }
 .papermill-thumb-container li { display:block; float:left; position:relative; }
 .papermill-thumb-container .delete { position:absolute; bottom:5px; right:5px;  }
 .papermill-thumb-container  span { display:block; }
-.papermill-thumb-container .name { font-size: 10px; overflow: hidden; font-weight: bold; }
-.papermill-thumb-container .infos { font-size: 8px; overflow: hidden; }
-.papermill-thumb-container .status { margin-bottom: 10px; }
+.papermill-thumb-container .name { font-size:10px; overflow:hidden; font-weight:bold; }
+.papermill-thumb-container .infos { font-size:8px; overflow:hidden; }
+.papermill-thumb-container .status { margin-bottom:10px; }
 
 .papermill-asset-container {  border:1px solid #EEE; padding:3px; }
-.papermill-asset-container li { display:block; height: 22px; }
-.papermill-asset-container .swfupload .name {margin-left:21px;}
-.papermill-asset-container .name {float:left;}
-.papermill-asset-container .status { margin-left:5px; float:left;}
-.papermill-asset-container .progress { float:left; margin-top:6px; margin-left: 5px; width:100px; }
+.papermill-asset-container li { display:block; height:22px; }
+.papermill-asset-container .swfupload .name { margin-left:21px; }
+.papermill-asset-container .name { float:left; }
+.papermill-asset-container .status { margin-left:5px; float:left; }
+.papermill-asset-container .progress { float:left; margin-top:6px; margin-left:5px; width:100px; }
 .papermill-asset-container .delete { float:left; margin-top:2px; margin-right:5px; }
 
 .papermill-asset-container.papermill-multiple-items { padding-left:10px; border-left:5px solid #EEE; min-height:40px; }
@@ -27,6 +27,7 @@
 .papermill-thumb-container.papermill-multiple-items li { cursor:move; }
 .papermill-asset-container.papermill-unique-item { padding-left:5px; min-height:22px; }
 
-/* Need some backgrounds? */
-/* .papermill li { background: transparent url(/images/papermill/background.png) repeat top left; } */
-/* .papermill-thumb-container { background: transparent url(/images/papermill/container-background.png) repeat top left; } */
+/* Need some backgrounds?
+.papermill li { background:transparent url(/images/papermill/background.png) repeat top left; }
+.papermill-thumb-container { background:transparent url(/images/papermill/container-background.jpg) repeat top left; }
+*/

@@ -64,10 +64,4 @@ class PapermillAsset < ActiveRecord::Base
     system "rm -rf #{self.interpolated_path({}, ':id')}/" if image?
     true
   end
-  
-  # suppression de TOUS les thumbs. Ménage de printemps?
-  def self.clean_up
-    # suppression des dossiers de thumbs
-    system "rm -rf #{Papermill::papermill_interpolated_path({":style" => "*x*", "other" => "*"}, ":style")}/"
-  end
 end

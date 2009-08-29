@@ -4,8 +4,14 @@ class PapermillController < ApplicationController
 
   def show
     begin
+      if Papermill::PAPERMILL_DEFAULTS[:alias_only]
+        style = Papermill::PAPERMILL_DEFAULTS[:aliases][params[:style]]
+      else
+        style = Papermill::PAPERMILL_DEFAULTS[:aliases][params[:style]] || params[:style]
+      end
+      raise unless style
       asset = PapermillAsset.find(params[:id])
-      temp_thumbnail = Paperclip::Thumbnail.make(asset_file = asset.file, params[:style])
+      temp_thumbnail = Paperclip::Thumbnail.make(asset_file = asset.file, style)
       new_parent_folder_path = File.dirname(new_image_path = asset_file.path(params[:style]))
       FileUtils.mkdir_p new_parent_folder_path unless File.exists? new_parent_folder_path
       FileUtils.cp temp_thumbnail.path, new_image_path
