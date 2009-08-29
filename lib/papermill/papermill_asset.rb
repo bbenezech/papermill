@@ -6,6 +6,10 @@ class PapermillAsset < ActiveRecord::Base
   
   named_scope :key, lambda { |key| { :conditions => { :assetable_key => key } } }
   
+  Paperclip::Attachment.interpolations[:assetable_type] = proc do |attachment, style|
+    attachment.instance.assetable_type.underscore.pluralize
+  end
+  
   Paperclip::Attachment.interpolations[:assetable_id] = proc do |attachment, style|
     attachment.instance.assetable_id
   end
