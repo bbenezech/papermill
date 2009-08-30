@@ -16,9 +16,11 @@ Gem::Specification.new do |s|
     "README.rdoc"
   ]
   s.files = [
+    ".gitignore",
      "MIT-LICENSE",
      "README.rdoc",
      "Rakefile",
+     "VERSION",
      "app/controllers/papermill_controller.rb",
      "app/views/papermill/_asset.html.erb",
      "app/views/papermill/_raw_asset.html.erb",
@@ -36,7 +38,11 @@ Gem::Specification.new do |s|
      "lib/papermill/papermill_asset.rb",
      "lib/papermill/papermill_helper.rb",
      "lib/papermill/papermill_module.rb",
+     "papermill.gemspec",
+     "public/.DS_Store",
      "public/flashs/swfupload.swf",
+     "public/images/.DS_Store",
+     "public/images/papermill/.DS_Store",
      "public/images/papermill/background.png",
      "public/images/papermill/container-background.jpg",
      "public/images/papermill/delete.png",
