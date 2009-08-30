@@ -50,6 +50,7 @@ Gem::Specification.new do |s|
      "public/images/papermill/upload.png",
      "public/javascripts/papermill.js",
      "public/stylesheets/papermill.css",
+     "rails/init.rb",
      "tasks/papermill_tasks.rake",
      "test/papermill_test.rb",
      "test/test_helper.rb",
