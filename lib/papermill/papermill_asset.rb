@@ -1,3 +1,6 @@
+require "acts_as_list"
+require "paperclip"
+
 class PapermillAsset < ActiveRecord::Base
   acts_as_list :scope => 'assetable_key=\'#{assetable_key.simple_sql_sanitizer}\' AND assetable_id=#{assetable_id} AND assetable_type=\'#{assetable_type}\''
   
