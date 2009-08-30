@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{papermill}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benoit B\303\251n\303\251zech"]
@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
      "app/views/papermill/_asset.html.erb",
      "app/views/papermill/_raw_asset.html.erb",
      "app/views/papermill/_thumbnail_asset.html.erb",
-     "config/locale/papermill.yml",
+     "config/locales/papermill.yml",
      "config/routes.rb",
      "generators/papermill/USAGE",
      "generators/papermill/papermill_generator.rb",
@@ -33,7 +33,6 @@ Gem::Specification.new do |s|
      "init.rb",
      "install.rb",
      "lib/core_extensions.rb",
-     "lib/papermill.rb",
      "lib/papermill/form_builder.rb",
      "lib/papermill/papermill_asset.rb",
      "lib/papermill/papermill_helper.rb",
