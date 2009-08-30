@@ -21,3 +21,17 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "papermill"
+    gemspec.summary = "Paperclip wrapper"
+    gemspec.description = "Paperclip wrapper"
+    gemspec.email = "benoit.benezech@gmail.com"
+    gemspec.homepage = "http://github.com/BBenezech/papermill"
+    gemspec.authors = ["Benoit Bénézech"]
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
+end
