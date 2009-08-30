@@ -50,7 +50,9 @@ You'll need rails 2.2, since their are calls to I18n.t. But it shouldn't be too 
 === Demo : 
 
 You can use the custom template generator to get an example application up and running in no time. 
-
+  
+  sudo gem install ryanb-acts-as-list
+  sudo gem install paperclip
   rails -m http://gist.github.com/177714.txt papermill-example
 
 === Translation:
