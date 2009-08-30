@@ -19,9 +19,11 @@ Then install the whole thing:
   
   sudo gem install ryanb-acts-as-list -s http://gems.github.com
   sudo gem install paperclip
-  sudo rake gems:install # will install the others gem. You need to install paperclip/acts_as_list first, because of a dependency requirement.
-
-In your model:
+  sudo rake gems:install # will install the others gem. You need to install paperclip & acts_as_list first, because of a dependency mayhem.
+  ./script/generate papermill PapermillMigration # will also copy a couple of static assets
+  rake db:migrate
+  
+In your assetable model:
 
   papermill :assets
   
@@ -29,7 +31,8 @@ In your layout:
 
   <%= papermill_stylesheet_tag %>
   <%= papermill_javascript_tag :with_jquery => true %>
-
+  # you don't need :with_jquery if it is already loaded, obviously.
+  
 In your edit form: 
 
   f.images_upload(:my_image_gallery)
