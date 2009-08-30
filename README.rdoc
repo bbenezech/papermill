@@ -5,7 +5,6 @@ Try the demo to see for yourself.
 
 See papermill_module.rb for a complete list of available options.
 These options can be application wide, for a class, or set at the last moment for the helper. 
-Or just use defaults, I try very hard to set them as logical as possible.
 
 In your model:
 
@@ -32,7 +31,8 @@ Finally, in your views:
       <li><%= link_to(image_tag(image.url("100x100>")), image.url) %></li>
     <% end %>
   </ul>
-  
+
+Also see http://gist.github.com/177714.txt to get up-to-date installation steps.
 See the API here http://rdoc.info/projects/BBenezech/papermill
 
 == Word of caution:
@@ -49,9 +49,7 @@ You'll need rails 2.2, since their are calls to I18n.t. But it shouldn't be too 
 
 === Demo : 
 
-You can use the custom template generator (save it to your ruby development directory) to get an example application up and running in no time. 
-
-Also see http://gist.github.com/177714.txt to get up-to-date installation steps.
+You can use the custom template generator to get an example application up and running in no time. 
 
   rails -m http://gist.github.com/177714.txt papermill-example
 
