@@ -7,12 +7,19 @@ See papermill_module.rb for a complete list of available options.
 These options can be application wide, for a class, or set at the last moment for the helper. 
 
 You'll need something like this in your environment.rb
+  
   config.gem 'rsl-stringex', :lib => 'stringex', :source => 'http://gems.github.com'
   config.gem 'paperclip'
   config.gem 'authlogic'
   config.gem 'mime-types', :lib => 'mime/types'
   config.gem 'ryanb-acts-as-list', :lib => 'acts_as_list', :source => 'http://gems.github.com'
   config.gem 'BBenezech-papermill', :lib => 'papermill', :source => 'http://gems.github.com'
+
+Then install the whole thing:
+  
+  sudo gem install ryanb-acts-as-list -s http://gems.github.com
+  sudo gem install paperclip
+  sudo rake gems:install # will install the others gem. You need to install paperclip/acts_as_list first, because of a dependency requirement.
 
 In your model:
 
