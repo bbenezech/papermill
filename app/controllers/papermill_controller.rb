@@ -4,18 +4,20 @@ class PapermillController < ApplicationController
 
   def show
     begin
-      if Papermill::PAPERMILL_DEFAULTS[:alias_only]
-        style = Papermill::PAPERMILL_DEFAULTS[:aliases][params[:style]]
-      else
-        style = Papermill::PAPERMILL_DEFAULTS[:aliases][params[:style]] || params[:style]
-      end
-      raise unless style
       asset = PapermillAsset.find(params[:id])
-      temp_thumbnail = Paperclip::Thumbnail.make(asset_file = asset.file, style)
-      new_parent_folder_path = File.dirname(new_image_path = asset_file.path(params[:style]))
-      FileUtils.mkdir_p new_parent_folder_path unless File.exists? new_parent_folder_path
-      FileUtils.cp temp_thumbnail.path, new_image_path
-      redirect_to asset.url(params[:style])
+      raise if asset.nil? || params[:style] == "original"
+      style = Papermill::PAPERMILL_DEFAULTS[:aliases][params[:style]] || !Papermill::PAPERMILL_DEFAULTS[:alias_only] && params[:style]
+      raise unless style
+
+      if asset.image?
+        temp_thumbnail = Paperclip::Thumbnail.make(asset_file = asset.file, style)
+        new_parent_folder_path = File.dirname(new_image_path = asset_file.path(params[:style]))
+        FileUtils.mkdir_p new_parent_folder_path unless File.exists? new_parent_folder_path
+        FileUtils.cp temp_thumbnail.path, new_image_path
+        redirect_to asset.url(params[:style])
+      else
+        redirect_to asset.url
+      end
     rescue
       render :text => t("not-processed", :scope => "papermill"), :status => "500"
     end
