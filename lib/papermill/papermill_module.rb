@@ -45,7 +45,7 @@ module Papermill
       :button_image_url => '/images/papermill/upload-blank.png',
       :button_width     => 61,
       :button_height    => 22,
-      # Wording and CSS processed through an Adobe Flash styler. Result is so-so. Feel free to put a CSS button overlayed directly on the SWF button. See swfupload website.
+      # Wording and CSS processed through an Adobe Flash styler. Result is terrible. Feel free to put a CSS button overlayed directly on the SWF button. See swfupload website.
       :button_text => %{<span class="button-text">#{I18n.t("upload-button-wording", :scope => :papermill)}</span>},
     	:button_text_style => %{.button-text { color: red; font-size: 12pt; font-weight: bold; }},
     	:button_disabled => "false",
@@ -56,7 +56,7 @@ module Papermill
       # See swfupload.js for details.
     },
     :images_only => false,                    # set to true to forbid upload of anything else than images
-    :file_size_limit_mb => 10,                # file max size, MegaBytes
+    :file_size_limit_mb => 10,                # file max size
     :button_after_container => false,         # set to true to move the upload button below the container
     
     # DO NOT CHANGE THESE IN YOUR CLASSES. Only application wide (routes depend on it..)
@@ -67,12 +67,12 @@ module Papermill
     # path to the root of your public directory
     :public_root => ":rails_root/public",
     # added to :public_root as the root folder for all papermill items
-    :papermill_prefix => "papermill"
+    :papermill_prefix => "system/papermill"
   }.deep_merge( Papermill.const_defined?("OPTIONS") ? Papermill::OPTIONS : {} )
   
 
-  PAPERCLIP_INTERPOLATION_STRING = ":assetable_type/:assetable_id/:id/:style/:escaped_basename.:extension"
-    
+  PAPERCLIP_INTERPOLATION_STRING = ":id_partition/:style/:escaped_basename.:extension"
+  
   def self.included(base)
     base.extend(ClassMethods)
   end
@@ -114,7 +114,6 @@ module Papermill
       @papermill_associations.merge!({assoc => {:class => asset_class}})
       @papermill_options = Papermill::PAPERMILL_DEFAULTS.deep_merge(options)
       before_destroy :destroy_assets
-      after_destroy :remove_papermill_folder
       after_create :rebase_assets
       # reinventing the wheel because ActiveRecord chokes on :finder_sql with associations
       # TODO Clean the mess
@@ -151,24 +150,15 @@ module Papermill
       @timestamp ||= "-#{(Time.now.to_f * 1000).to_i.to_s[4..-1]}"
     end
   
-    def interpolated_path(with = {}, up_to = nil)
-      Papermill::papermill_interpolated_path({
-        ":assetable_type" => self.class.sti_name.underscore.pluralize,
-        ":assetable_id" => self.id
-      }.merge(with), up_to)
-    end
-      
     private
     
     def destroy_assets
       PapermillAsset.find(:all, :conditions => {:assetable_id => self.id, :assetable_type => self.class.sti_name}).each do |asset|
         asset.destroy
       end
-      true
     end
     
     def rebase_assets
-      return true unless timestamp
       PapermillAsset.find(:all, :conditions => {:assetable_id => self.timestamp, :assetable_type => self.class.sti_name}).each do |asset|
         if asset.created_at < 2.hours.ago
           asset.destroy
@@ -176,13 +166,7 @@ module Papermill
           asset.update_attribute(:assetable_id, self.id)
         end
       end
-      system "mv #{interpolated_path({':assetable_id' => timestamp}, ':assetable_id')}/ #{interpolated_path({}, ':assetable_id')}/"
-      true
     end
-
-    def remove_papermill_folder
-      system "rm -rf #{interpolated_path({}, ':assetable_id')}/"
-      true
-    end
+    
   end
 end

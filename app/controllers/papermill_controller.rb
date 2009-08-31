@@ -4,7 +4,8 @@ class PapermillController < ApplicationController
 
   def show
     begin
-      asset = PapermillAsset.find(params[:id])
+      complete_id = (params[:id0] + params[:id1] + params[:id2]).to_i
+      asset = PapermillAsset.find(complete_id)
       raise if asset.nil? || params[:style] == "original"
       style = Papermill::PAPERMILL_DEFAULTS[:aliases][params[:style]] || !Papermill::PAPERMILL_DEFAULTS[:alias_only] && params[:style]
       raise unless style

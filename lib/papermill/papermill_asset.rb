@@ -9,18 +9,6 @@ class PapermillAsset < ActiveRecord::Base
   
   named_scope :key, lambda { |key| { :conditions => { :assetable_key => key } } }
   
-  Paperclip::Attachment.interpolations[:assetable_type] = proc do |attachment, style|
-    attachment.instance.assetable_type.underscore.pluralize
-  end
-  
-  Paperclip::Attachment.interpolations[:assetable_id] = proc do |attachment, style|
-    attachment.instance.assetable_id
-  end
-  
-  Paperclip::Attachment.interpolations[:assetable_key] = proc do |attachment, style|
-    attachment.instance.assetable_key.to_url
-  end
-  
   Paperclip::Attachment.interpolations[:escaped_basename] = proc do |attachment, style|
     Paperclip::Attachment.interpolations[:basename].call(attachment, style).to_url
   end
@@ -38,6 +26,10 @@ class PapermillAsset < ActiveRecord::Base
     self.file = data
   end
   
+  def id_partition
+    ("%09d" % self.id).scan(/\d{3}/).join("/")
+  end
+  
   def name
     file_file_name
   end
@@ -51,20 +43,20 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def content_type
-    file_content_type.split("/") if file_content_type
+    file_content_type && file_content_type.split("/")
   end
   
   def image?
-    content_type.first == "image" && content_type[1]
+    content_type && content_type.first == "image" && content_type[1]
   end
   
   def interpolated_path(with = {}, up_to = nil)
-    Papermill::papermill_interpolated_path({":id" => self.id, ":assetable_id" => self.assetable_id, ":assetable_type" => self.assetable_type.underscore.pluralize}.merge(with), up_to)
+    Papermill::papermill_interpolated_path({":id_partition" => self.id_partition}.merge(with), up_to)
   end
   
   # before_filter
   def destroy_files
-    system "rm -rf #{self.interpolated_path({}, ':id')}/" if image?
+    system "rm -rf #{Papermill::papermill_interpolated_path({":id_partition" => self.id_partition}, ':id_partition')}/" if image?
     true
   end
 end

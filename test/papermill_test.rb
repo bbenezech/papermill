@@ -2,6 +2,7 @@ require 'test_helper'
 
 class PapermillTest < ActiveSupport::TestCase
   # Replace this with your real tests.
+
   test "the truth" do
     assert true
   end
