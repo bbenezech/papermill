@@ -69,9 +69,9 @@ See papermill_module.rb for the complete list of options.
   
 === In your edit form: 
 
-  f.images_upload(:my_gallery)
-  f.assets_upload(:my_assets)
-  f.asset_upload(:my_other_asset)
+  f.images_upload(:my_gallery)     # use specific papermill :my_gallery declaration
+  f.assets_upload(:my_assets)      # use catch-all
+  f.asset_upload(:my_other_asset)  # use catch-all
   
 === Access them with:
   
