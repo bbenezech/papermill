@@ -59,15 +59,18 @@ class PapermillController < ApplicationController
   end
   
   def create
-    params[:assetable_type] = params[:assetable_type].camelize
-    asset_class = params[:assetable_type].constantize.papermill_associations[params[:association].to_sym][:class]
+    params[:assetable_id] = params[:assetable_id].nie
+    asset_class = params[:asset_class].constantize
+    params[:assetable_type] = params[:assetable_type] && params[:assetable_type].to_s.camelize.nie
     params[:swfupload_file] = params.delete(:Filedata)
-    @old_asset = asset_class.find(:first, :conditions => {:assetable_key => params[:assetable_key].to_s, :assetable_type => params[:assetable_type], :assetable_id => params[:assetable_id]}) unless params[:gallery]
+    unless params[:gallery]
+      @old_asset = asset_class.find(:first, :conditions => {:assetable_key => params[:assetable_key], :assetable_type => params[:assetable_type], :assetable_id => params[:assetable_id]})
+    end
     @asset = asset_class.new(params.reject{|key, value| !(PapermillAsset.columns.map(&:name)+["swfupload_file"]).include?(key.to_s)})
     
     if @asset.save
       @old_asset.destroy if @old_asset
-      render :partial => "papermill/asset", :object => @asset, :locals => {:thumbnail => params[:thumbnail], :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style]}
+      render :partial => "papermill/asset", :object => @asset, :locals => {:gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style]}
     else
       message = t("not-created", :scope => "papermill")
       render :text => message, :status => "500"

@@ -84,53 +84,56 @@ module Papermill
   end
   
   module ClassMethods
-    attr_reader :papermill_options
     attr_reader :papermill_associations
     
-    # Dealing with STIed Asset table in papermill declaration is dead easy, since papermill follows ActiveRecord :has_many global syntax and the Convention over configuration concept :
-    # papermill <association_name>, :class_name => MySTIedPapermillAssetClassName
-    # class MyAsset < PapermillAsset
-    #   ...
-    # end
-    # class MyAssetableClass < ActiveRecord::Base
-    # 1 -> papermill :my_association, :class_name => MyAsset
-    # 2 -> papermill :class_name => MyAsset 
-    # 3 -> papermill :my_assets
-    # 4 -> papermill :my_other_assets
-    # 5 -> papermill
-    # end
-    # assetable = MyAssetableClass.new
-    # 1 -> assetable.my_association         attached MyAsset objects           (no magic here, association and class_name both specified)
-    # 2 -> assetable.my_assets              attached MyAsset objects           (association infered from :class_name as expected)
-    # 3 -> assetable.my_assets              attached MyAsset objects           (class_name guessed from association name)
-    # 4 -> assetable.my_other_assets        attached PapermillAssets objects   (couldn't find MyOtherAsset class or MyOtherAsset is not a PapermillAsset subclass, use default PapermillAsset superclass)
-    # 5 -> assetable.papermill_assets       attached PapermillAssets objects   (defaults)
+    # papermill comes in 2 flavors:
+    #
+    # 1. generic declaration =>
+    #   declare associations with =>  papermill {my_option_hash}
+    #   create assets with        =>  assets_upload(:my_key, {optional_option_hash})
+    #   access assets with        =>  assetable.papermill_assets(:key => :my_key)
+    #
+    # 2. association declaration =>
+    #   declare associations with =>  papermill :my_association, {my_option_hash}
+    #   create assets with        =>  assets_upload(my_association, {optional_option_hash})
+    #   access assets with        =>  assetable.my_association
+    #
+    # In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash
+    def papermill(assoc_name = :papermill_assets, options = {})
+      if assoc_name.is_a? Hash
+        options = assoc_name
+        assoc_name = :papermill_assets
+      end
       
-    def papermill(assoc = nil, options = {})
       @papermill_associations ||= {}
-      asset_class = ((klass = options.delete(:class_name)) && (klass = (klass.to_s.singularize.camelize.constantize rescue nil)) && klass.superclass == PapermillAsset && klass || assoc && (klass = (assoc.to_s.singularize.camelize.constantize rescue nil)) && klass.superclass == PapermillAsset && klass || PapermillAsset)
-      assoc ||= asset_class.to_s.pluralize.underscore.to_sym
+      begin
+        asset_class = (class_name = options.delete(:class_name)).to_s.constantize || PapermillAsset
+      rescue
+        raise Exception.new("Papermill: can't find class #{class_name.to_s}.\n#{class_name.to_s} should be a subclass of PapermillAsset")
+      end
+      assoc_name ||= asset_class.to_s.pluralize.underscore.to_sym
 
-      @papermill_associations.merge!({assoc => {:class => asset_class}})
-      @papermill_options = Papermill::PAPERMILL_DEFAULTS.deep_merge(options)
+      @papermill_associations.merge!({assoc_name => {:class => asset_class, :options => Papermill::PAPERMILL_DEFAULTS.deep_merge(options)}})
       before_destroy :destroy_assets
       after_create :rebase_assets
-      # reinventing the wheel because ActiveRecord chokes on :finder_sql with associations
-      # TODO Clean the mess
-      define_method assoc do |*options|
-        klass = self.class.papermill_associations[assoc.to_sym][:class]
+
+      define_method assoc_name do |*options|
+        klass = self.class.papermill_associations[assoc_name.to_sym][:class]
         options = options.first || {}
         conditions = {
           :assetable_type => self.class.sti_name,
-          :assetable_id => self.id,
+          :assetable_id => self.id
         }.merge(options.delete(:conditions) || {})
-        order = (options.delete(:order) || "position ASC")
-        conditions.merge!({:type => klass.to_s}) unless klass == PapermillAsset
-        conditions.merge!({:assetable_key => options[:key].to_s}) if options[:key]
+        conditions.merge!({:type => klass.to_s}) unless assoc_name == PapermillAsset
+        conditions.merge!({:assetable_key => assoc_name.to_s}) if assoc_name != :papermill_assets
+        conditions.merge!({:assetable_key => options.delete(:key)}) if options.has_key?(:key)
         conditions.merge!({:type => options[:class_name]}) if options[:class_name]
-        asset_class.find(:all, :conditions => conditions, :order => order)
+        hash = {
+          :conditions => conditions, 
+          :order => options.delete(:order) || "position ASC"
+        }.merge(options)
+        asset_class.find(:all, hash)
       end
-
       
       class_eval <<-EOV
         include Papermill::InstanceMethods
@@ -138,7 +141,6 @@ module Papermill
     end
     
     def inherited(subclass)
-      subclass.instance_variable_set("@papermill_options", @papermill_options)
       subclass.instance_variable_set("@papermill_associations", @papermill_associations)
       super
     end
@@ -162,7 +164,7 @@ module Papermill
       PapermillAsset.find(:all, :conditions => {:assetable_id => self.timestamp, :assetable_type => self.class.sti_name}).each do |asset|
         if asset.created_at < 2.hours.ago
           asset.destroy
-        else 
+        else
           asset.update_attribute(:assetable_id, self.id)
         end
       end

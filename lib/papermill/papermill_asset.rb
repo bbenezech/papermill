@@ -1,8 +1,5 @@
-require "acts_as_list"
-require "paperclip"
-
 class PapermillAsset < ActiveRecord::Base
-  acts_as_list :scope => 'assetable_key=\'#{assetable_key.simple_sql_sanitizer}\' AND assetable_id=#{assetable_id} AND assetable_type=\'#{assetable_type}\''
+  acts_as_list :scope => 'assetable_key=\'#{assetable_key.to_s.simple_sql_sanitizer}\' AND assetable_id=#{assetable_id} AND assetable_type=\'#{assetable_type}\''
   
   belongs_to :assetable, :polymorphic => true
   before_destroy :destroy_files
@@ -48,10 +45,6 @@ class PapermillAsset < ActiveRecord::Base
   
   def image?
     content_type && content_type.first == "image" && content_type[1]
-  end
-  
-  def interpolated_path(with = {}, up_to = nil)
-    Papermill::papermill_interpolated_path({":id_partition" => self.id_partition}.merge(with), up_to)
   end
   
   # before_filter
