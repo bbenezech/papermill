@@ -8,17 +8,17 @@ Asset management made easy.. Painfully easy.
   
 == Papermill comes in 2 flavors:
 
-1. generic declaration
+=== Generic catch-all declaration
 
-  papermill {my_option_hash}
-  assets_upload(:my_key, {optional_option_hash})
-  assetable.papermill_assets(:key => :my_key)
+  papermill {my_option_hash}                             # in your papermilled assetable model
+  assets_upload(:my_key, {optional_option_hash})         # form helper call
+  @assetable.papermill_assets(:key => :my_key)           # data access in your view
 
-2. association declaration
+=== Association specific declaration
 
-  papermill :my_association, {my_option_hash}
-  assets_upload(my_association, {optional_option_hash})
-  assetable.my_association
+  papermill :my_association, {my_option_hash}            # in your papermilled assetable model
+  assets_upload(my_association, {optional_option_hash})  # form helper call
+  @assetable.my_association                              # data access in your view
 
 In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash
 
@@ -75,9 +75,9 @@ See papermill_module.rb for the complete list of options.
   
 === Access them with:
   
-  assetable.my_gallery.each{ |image| image.url("100x100") }
-  assetable.papermill_assets(:key => :my_assets).each{ |asset| asset.url }
-  assetable.papermill_assets(:key => :my_other_asset).first.url
+  @assetable.my_gallery.each{ |image| image.url("100x100") }
+  @assetable.papermill_assets(:key => :my_assets).each{ |asset| asset.url }
+  @assetable.papermill_assets(:key => :my_other_asset).first.url
 
 Also see http://gist.github.com/177714.txt for more precises installation steps.
 Have a look at the API here http://rdoc.info/projects/BBenezech/papermill
