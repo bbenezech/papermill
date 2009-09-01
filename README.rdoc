@@ -1,12 +1,32 @@
 = Papermill
 
-Asset management made easy.. Painfully easy. 
-Try the demo to see for yourself.
+Asset management made easy.. Painfully easy.
 
-See papermill_module.rb for a complete list of available options.
-These options can be application wide, for a class, or set at the last moment for the helper. 
+== Try the demo to get the idea: 
+  
+  rails -m http://gist.github.com/177714.txt papermill-example
+  
+== Papermill comes in 2 flavors:
 
-You'll need something like this in your environment.rb
+1. generic declaration
+
+  papermill {my_option_hash}
+  assets_upload(:my_key, {optional_option_hash})
+  assetable.papermill_assets(:key => :my_key)
+
+2. association declaration
+
+  papermill :my_association, {my_option_hash}
+  assets_upload(my_association, {optional_option_hash})
+  assetable.my_association
+
+In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash
+
+See papermill_module.rb for the complete list of options.
+
+== Installation
+
+=== You'll need something like this in your environment.rb:
   
   config.gem 'rsl-stringex', :lib => 'stringex', :source => 'http://gems.github.com'
   config.gem 'paperclip'
@@ -15,66 +35,64 @@ You'll need something like this in your environment.rb
   config.gem 'ryanb-acts-as-list', :lib => 'acts_as_list', :source => 'http://gems.github.com'
   config.gem 'BBenezech-papermill', :lib => 'papermill', :source => 'http://gems.github.com'
 
-Then install the whole thing:
+=== Then you can the whole thing:
   
-  sudo gem install ryanb-acts-as-list -s http://gems.github.com
-  sudo gem install paperclip
-  sudo rake gems:install # will install the others gem. You need to install paperclip & acts_as_list first, because of a dependency mayhem.
-  ./script/generate papermill PapermillMigration # will also copy a couple of static assets
-  rake db:migrate
+  $ sudo gem install ryanb-acts-as-list -s http://gems.github.com
+  $ sudo gem install paperclip
+  $ sudo rake gems:install
+  # will install the others gem.
+  # You need to install paperclip & acts_as_list first, because of a dependency mayhem.
+  # Next version of gem will use gem dependencies
+  $ ./script/generate papermill PapermillMigration
+  # will generate a migration named PapermillMigration and copy a couple of static assets
+  $ rake db:migrate
   
-In your assetable model:
+=== In your assetable model:
+  
+  # You can set a catch-all papermill association : 
+  papermill {:class_name => Asset}
+  
+  # or create an association for the specific :my_gallery key
+  papermill :my_gallery, {
+    :class_name => GalleryAsset,
+    :thumbnail => {
+        :width => 90,
+        :height => 30
+    }
+  }
 
-  papermill :assets
-  
-In your layout:
+=== In your layout:
 
   <%= papermill_stylesheet_tag %>
-  <%= papermill_javascript_tag :with_jquery => true %>
-  # you don't need :with_jquery if it is already loaded, obviously.
+  <%= papermill_javascript_tag :with_jquery => "no_conflict" %>
+  # you won't need :with_jquery if you use it already, obviously.
   
-In your edit form: 
+=== In your edit form: 
 
-  f.images_upload(:my_image_gallery)
-  f.image_upload(:header_image)
+  f.images_upload(:my_gallery)
+  f.assets_upload(:my_assets)
+  f.asset_upload(:my_other_asset)
   
-Finally, in your views:
+=== Access them with:
   
-  # Some template image : 
-  <%= image_tag @article.assets(:header_image).first.url("800x>") %>
-  
-  # Some image gallery:
-  <ul>
-    <% @article.assets(:my_image_gallery).each do |image| %>
-      <li><%= link_to(image_tag(image.url("100x100>")), image.url) %></li>
-    <% end %>
-  </ul>
+  assetable.my_gallery.each{ |image| image.url("100x100") }
+  assetable.papermill_assets(:key => :my_assets).each{ |asset| asset.url }
+  assetable.papermill_assets(:key => :my_other_asset).first.url
 
-Also see http://gist.github.com/177714.txt to get up-to-date installation steps.
-See the API here http://rdoc.info/projects/BBenezech/papermill
+Also see http://gist.github.com/177714.txt for more precises installation steps.
+Have a look at the API here http://rdoc.info/projects/BBenezech/papermill
+
+=== Translations:
+
+Papermill is fully I18n-able.
+Copy config/locales/papermill.yml to your root config/locale folder to modify any wording in a any locale.
+
 
 == Word of caution:
 
-Beta.
-
+Beta. Wait for gem 1.0.0 for the production ready thing.
 This is xNIX only (system("rm ...")).
+Rails 2.3
 
-You'll need rails 2.3, since this is an engine. Anyway, copying the controller/view/routes to your project will make it work on an older version of rails.
-
-You'll need rails 2.2, since their are calls to I18n.t. But it shouldn't be too hard to work-around either. 
-
-== Usage : 
-
-=== Demo : 
-
-You can use the custom template generator to get an example application up and running in no time. 
-  
-  rails -m http://gist.github.com/177714.txt papermill-example
-
-=== Translation:
-
-Papermill is fully Rails 2.2 I18n-able.
-
-Copy config/locale/papermill.yml to your root config/locale folder to modify any wording in a any locale.
 
 Copyright (c) 2009 Benoit Bénézech, released under the MIT license
