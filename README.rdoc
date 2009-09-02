@@ -17,7 +17,7 @@ Asset management made easy.. Painfully easy.
 === Association specific declaration
 
   papermill :my_association, {my_option_hash}            # in your papermilled assetable model
-  assets_upload(my_association, {optional_option_hash})  # form helper call
+  assets_upload(:my_association, {optional_option_hash})  # form helper call
   @assetable.my_association                              # data access in your view
 
 In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash
