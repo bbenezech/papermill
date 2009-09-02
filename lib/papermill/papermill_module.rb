@@ -86,6 +86,19 @@ module Papermill
   module ClassMethods
     attr_reader :papermill_associations
     
+    # papermill comes in 2 flavors:
+    #
+    # 1. generic declaration =>
+    #   declare associations with =>  papermill {my_option_hash}
+    #   create assets with        =>  assets_upload(:my_key, {optional_option_hash})
+    #   access assets with        =>  assetable.papermill_assets(:key => :my_key)
+    #
+    # 2. association declaration =>
+    #   declare associations with =>  papermill :my_association, {my_option_hash}
+    #   create assets with        =>  assets_upload(my_association, {optional_option_hash})
+    #   access assets with        =>  assetable.my_association
+    #
+    # In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash
     def papermill(assoc_name = :papermill_assets, options = {})
       if assoc_name.is_a? Hash
         options = assoc_name
@@ -94,11 +107,11 @@ module Papermill
       
       @papermill_associations ||= {}
       begin
-        asset_class = (class_name = options.delete(:class_name)).to_s.constantize || PapermillAsset
+        class_name = options.delete(:class_name)
+        asset_class = class_name && class_name.to_s.constantize || PapermillAsset
       rescue
         raise Exception.new("Papermill: can't find class #{class_name.to_s}.\n#{class_name.to_s} should be a subclass of PapermillAsset")
       end
-      assoc_name ||= asset_class.to_s.pluralize.underscore.to_sym
 
       @papermill_associations.merge!({assoc_name => {:class => asset_class, :options => Papermill::PAPERMILL_DEFAULTS.deep_merge(options)}})
       before_destroy :destroy_assets
@@ -107,14 +120,19 @@ module Papermill
       define_method assoc_name do |*options|
         klass = self.class.papermill_associations[assoc_name.to_sym][:class]
         options = options.first || {}
+        if (options.is_a?(Symbol) || options.is_a?(String))
+          key = options
+          options = {}
+        else
+          key = nil
+        end
         conditions = {
           :assetable_type => self.class.sti_name,
           :assetable_id => self.id
         }.merge(options.delete(:conditions) || {})
-        conditions.merge!({:type => klass.to_s}) unless assoc_name == PapermillAsset
-        conditions.merge!({:assetable_key => assoc_name.to_s}) if assoc_name != :papermill_assets
-        conditions.merge!({:assetable_key => options.delete(:key)}) if options.has_key?(:key)
-        conditions.merge!({:type => options[:class_name]}) if options[:class_name]
+        key ||= (assoc_name != :papermill_assets) && assoc_name.to_s
+        conditions.merge!({:assetable_key => key.to_s}) if key
+        
         hash = {
           :conditions => conditions, 
           :order => options.delete(:order) || "position ASC"

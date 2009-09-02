@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{papermill}
-  s.version = "0.4.0"
+  s.version = "0.4.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benoit B\303\251n\303\251zech"]
-  s.date = %q{2009-09-01}
+  s.date = %q{2009-09-02}
   s.description = %q{Paperclip wrapper}
   s.email = %q{benoit.benezech@gmail.com}
   s.extra_rdoc_files = [
@@ -59,7 +59,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/BBenezech/papermill}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.4}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{Paperclip wrapper}
   s.test_files = [
     "test/papermill_test.rb",
