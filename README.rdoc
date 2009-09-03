@@ -1,10 +1,16 @@
 = Papermill
 
-Asset management made easy.. Painfully easy.
+Asset management made easy.
 
-== Try the demo to get the idea: 
+== Install the gem!
+
+  $ gem sources -a http://gems.github.com
+  $ sudo gem install BBenezech-papermill
+
+== Try the demo!
   
-  rails -m http://gist.github.com/177714.txt papermill-example
+  $ sudo gem install sqlite3-ruby
+  $ rails -m http://gist.github.com/177714.txt papermill-example
   
 == Papermill comes in 2 flavors:
 
@@ -21,28 +27,22 @@ Asset management made easy.. Painfully easy.
   @assetable.my_association                              # data access in your view
 
 In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash
+You can have a catch-all declaration and as many specific association as you want in your model (as long as they use different keys)
 
 See papermill_module.rb for the complete list of options.
 
 == Installation
 
 === You'll need something like this in your environment.rb:
-  
-  config.gem 'rsl-stringex', :lib => 'stringex', :source => 'http://gems.github.com'
-  config.gem 'paperclip'
-  config.gem 'authlogic'
-  config.gem 'mime-types', :lib => 'mime/types'
-  config.gem 'ryanb-acts-as-list', :lib => 'acts_as_list', :source => 'http://gems.github.com'
-  config.gem 'BBenezech-papermill', :lib => 'papermill', :source => 'http://gems.github.com'
 
-=== Then you can the whole thing:
-  
-  $ sudo gem install ryanb-acts-as-list -s http://gems.github.com
-  $ sudo gem install paperclip
-  $ sudo rake gems:install
-  # will install the others gem.
-  # You need to install paperclip & acts_as_list first, because of a dependency mayhem.
-  # Next version of gem will use gem dependencies
+  config.gem 'rsl-stringex', :lib => 'stringex'
+  config.gem 'paperclip'
+  config.gem 'mime-types', :lib => 'mime/types'
+  config.gem 'ryanb-acts-as-list', :lib => 'acts_as_list'
+  config.gem 'BBenezech-papermill', :lib => 'papermill'
+
+=== Then you can generate a migration and copy a couple of static assets:
+
   $ ./script/generate papermill PapermillMigration
   # will generate a migration named PapermillMigration and copy a couple of static assets
   $ rake db:migrate

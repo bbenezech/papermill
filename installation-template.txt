@@ -1,0 +1,129 @@
+gem 'paperclip'
+gem 'ryanb-acts-as-list', :lib => 'acts_as_list'
+gem 'sqlite3-ruby', :lib => "sqlite3" # for the demo
+gem 'mime-types', :lib => 'mime/types'
+gem "rsl-stringex", :lib => "stringex"
+gem 'BBenezech-papermill', :lib => 'papermill'
+
+generate :papermill, "PapermillMigration"
+generate :scaffold, "article title:string"
+rake "db:migrate"
+
+file "app/models/article.rb", <<-END
+  class Article < ActiveRecord::Base
+    validates_presence_of :title
+    papermill :thumbnail => {:width => 50, :height => 50} # catch-all for non-specified associations
+    papermill :image_gallery, :class_name => ImageAsset, :images_only => true, :thumbnail => {:width => 75, :height => 100}
+    # image_gallery association (set with define_method)
+  end
+END
+
+file "app/models/image_asset.rb", <<-END
+  class ImageAsset < PapermillAsset
+    validates_attachment_content_type :file, :content_type => ['image/jpeg', 'image/pjpeg', 'image/jpg', 'image/png', 'image/gif']
+  end
+END
+
+file "app/views/articles/edit.html.erb", <<-END
+<h1>Editing article</h1>
+<%= render :partial => "form" %>
+<%= link_to 'Show', @article %> |
+<%= link_to 'Back', articles_path %>
+END
+
+file "app/views/articles/new.html.erb", <<-END
+<h1>New article</h1>
+<%= render :partial => "form" %>
+<%= link_to 'Back', articles_path %>
+END
+
+file "app/views/articles/_form.html.erb", <<-END
+<% form_for(@article) do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :image_gallery %><br />
+    <%= f.images_upload(:image_gallery) %>
+  </p>
+  <p>
+    <%= f.label :my_other_image %><br />
+    <%= f.image_upload(:my_other_image) %> 
+  </p>
+  <p>
+    <%= f.label :my_assets %><br />
+    <%= f.assets_upload(:my_assets) %>
+  </p>
+  <p>
+    <%= f.label :my_other_asset %><br />
+    <%= f.asset_upload(:my_other_asset) %>
+  </p>
+  <p>
+    <%= f.submit 'Send' %>
+  </p>
+<% end %>
+END
+
+
+file "app/views/articles/show.html.erb", <<-END
+<p>
+  <b>Title:</b>
+  <%=h @article.title %>
+</p>
+<br /><br />
+<b>@article.image_gallery.each :</b>
+<p>
+  <% @article.image_gallery.each do |image| %>
+    <%= link_to(image_tag(image.url("100x100#")), image.url) %>
+  <% end %>
+</p>
+<br /><br />
+<b>@article.papermill_assets(:key => :my_other_image).first :</b>
+<p>
+  <% image = @article.papermill_assets(:key => :my_other_image).first %>
+  <%= link_to(image_tag(image.url("100x100#")), image.url) if image %>
+</p>
+<br /><br />
+<b>@article.papermill_assets(:key => :my_assets).each :</b>
+<p>
+  <ul>
+    <% @article.papermill_assets(:key => :my_assets).each do |asset| %>
+      <li><%= link_to asset.name, asset.url %></li>
+    <% end %>
+  </ul>
+</p>
+<br /><br />
+<b>@article.papermill_assets(:key => :my_other_asset).first :</b>
+<p>
+  <% asset = @article.papermill_assets(:key => :my_other_asset).first %>
+  <%= link_to(asset.name, asset.url) if asset %>
+</p>
+
+<%= link_to 'Edit', edit_article_path(@article) %> |
+<%= link_to 'Back', articles_path %>
+END
+
+
+file "app/views/layouts/application.html.erb", <<-END
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>Papermill Demo</title>
+    <%= stylesheet_link_tag 'scaffold' %>
+    <%= papermill_stylesheet_tag %>
+  </head>
+  <body>
+  <%= yield %>
+  </body>
+  <%= papermill_javascript_tag :with_jquery => true %>
+</html>
+END
+
+run "rm app/views/layouts/articles.html.erb"
+run "rm public/index.html"
+route "map.root :controller => 'articles'"

@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{papermill}
-  s.version = "0.4.1"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benoit B\303\251n\303\251zech"]
-  s.date = %q{2009-09-02}
-  s.description = %q{Paperclip wrapper}
+  s.date = %q{2009-09-03}
+  s.description = %q{Paperclip Swfupload UploadHelper wrapper}
   s.email = %q{benoit.benezech@gmail.com}
   s.extra_rdoc_files = [
     "README.rdoc"
@@ -59,8 +59,8 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/BBenezech/papermill}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
-  s.summary = %q{Paperclip wrapper}
+  s.rubygems_version = %q{1.3.4}
+  s.summary = %q{Paperclip Swfupload UploadHelper wrapper}
   s.test_files = [
     "test/papermill_test.rb",
      "test/test_helper.rb"
@@ -71,8 +71,20 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<paperclip>, [">= 2.1.2"])
+      s.add_runtime_dependency(%q<mime-types>, [">= 1.16"])
+      s.add_runtime_dependency(%q<rsl-stringex>, [">= 1.0.0"])
+      s.add_runtime_dependency(%q<ryanb-acts-as-list>, [">= 0.1.2"])
     else
+      s.add_dependency(%q<paperclip>, [">= 2.1.2"])
+      s.add_dependency(%q<mime-types>, [">= 1.16"])
+      s.add_dependency(%q<rsl-stringex>, [">= 1.0.0"])
+      s.add_dependency(%q<ryanb-acts-as-list>, [">= 0.1.2"])
     end
   else
+    s.add_dependency(%q<paperclip>, [">= 2.1.2"])
+    s.add_dependency(%q<mime-types>, [">= 1.16"])
+    s.add_dependency(%q<rsl-stringex>, [">= 1.0.0"])
+    s.add_dependency(%q<ryanb-acts-as-list>, [">= 0.1.2"])
   end
 end
