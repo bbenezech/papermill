@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
      "generators/papermill/templates/migrate/papermill_migration.rb.erb",
      "init.rb",
      "install.rb",
+     "installation-template.txt",
      "lib/core_extensions.rb",
      "lib/papermill.rb",
      "lib/papermill/form_builder.rb",
