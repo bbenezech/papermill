@@ -25,32 +25,25 @@ class PapermillController < ApplicationController
   end
 
   def destroy
-    begin
-      @asset = PapermillAsset.find(params[:id])
-      render :update do |page|
-        if @asset.destroy
-          page << "jQuery('#papermill_asset_#{params[:id]}').remove()"
-        else
-          page << "jQuery('#papermill_asset_#{params[:id]}').show()"
-          message = t("not-deleted", :ressource => @asset.name, :scope => "papermill")
-          page << %{ notify("#{message}", error) }
-        end
-      end
-    rescue ActiveRecord::RecordNotFound
-      render :update do |page|
+    @asset = PapermillAsset.find_by_id(params[:id])
+    render :update do |page|
+      if @asset && @asset.destroy
         page << "jQuery('#papermill_asset_#{params[:id]}').remove()"
-        message = t("not-found", :ressource => params[:id].to_s, :scope => "papermill")
-        page << %{ notify("#{message}", "warning") }
+      else
+        page << "jQuery('#papermill_asset_#{params[:id]}').show()"
+        page << %{ notify("#{t((@asset && "not-deleted" || "not-found"), :ressource => @asset.name, :scope => "papermill")}", error) }
       end
     end
   end
   
   def update
-    @asset = PapermillAsset.find params[:id]
-    @asset.update(params)
+    @asset = PapermillAsset.find_by_id(params[:id])
     render :update do |page|
-      message = t("updated", :ressource => @asset.name, :scope => "papermill")
-      page << %{ notify("#{message}", "notice") }
+      if @asset && @asset.update(params)
+        page << %{ notify("#{t("updated", :ressource => @asset.name, :scope => "papermill")}", "notice") }
+      else
+        page << %{ notify("#{@asset && @asset.errors.full_messages.to_sentence || t("not-found", :ressource => params[:id].to_s, :scope => "papermill")}", "warning") }
+      end
     end
   end
   
@@ -72,7 +65,6 @@ class PapermillController < ApplicationController
       @old_asset.destroy if @old_asset
       render :partial => "papermill/asset", :object => @asset, :locals => {:gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style]}
     else
-      message = t("not-created", :scope => "papermill")
       render :text => message, :status => "500"
     end
   end

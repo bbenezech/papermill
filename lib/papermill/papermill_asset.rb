@@ -3,9 +3,7 @@ class PapermillAsset < ActiveRecord::Base
   
   belongs_to :assetable, :polymorphic => true
   before_destroy :destroy_files
-  
-  named_scope :key, lambda { |key| { :conditions => { :assetable_key => key } } }
-  
+
   Paperclip::Attachment.interpolations[:escaped_basename] = proc do |attachment, style|
     Paperclip::Attachment.interpolations[:basename].call(attachment, style).to_url
   end
@@ -14,10 +12,7 @@ class PapermillAsset < ActiveRecord::Base
     :path => "#{Papermill::PAPERMILL_DEFAULTS[:public_root]}/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
     :url => "/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
   validates_attachment_presence :file
-  
-  #validates_attachment_content_type :file, :content_type => ['image/jpeg', 'image/pjpeg', 'image/jpg', 'image/png', 'image/gif']
-  
-  # Fix the mime types. Make sure to require the mime-types gem
+
   def swfupload_file=(data)
     data.content_type = MIME::Types.type_for(data.original_filename).to_s
     self.file = data
@@ -47,9 +42,8 @@ class PapermillAsset < ActiveRecord::Base
     content_type && content_type.first == "image" && content_type[1]
   end
   
-  # before_filter
   def destroy_files
-    system "rm -rf #{Papermill::papermill_interpolated_path({":id_partition" => self.id_partition}, ':id_partition')}/" if image?
+    system "rm -rf #{Papermill::papermill_interpolated_path({":id_partition" => self.id_partition}, ':id_partition')}/"
     true
   end
 end

@@ -1,26 +1,10 @@
-/*
-	Papermill SWFUpload wrapper
-	You'll need jQuery or a **very** little bit of rewriting for native/prototype
-*/
-
 notify = function(message, type) {
-	// wrap with your own javascript alert system (here is the thing for jGrowl)
-	//if(type == "notice") { jQuery.noticeAdd({ text: message, stayTime: 4000, stay: false, type: type }) }
-	//if(type == "warning") {	jQuery.noticeAdd({ text: message, stayTime: 9000, stay: false, type: type }) }
-	//if(type == "error") {	jQuery.noticeAdd({ text: message, stayTime: 20000, stay: false, type: type }) }
-	
-	// or simply
 	alert(type + ": " + message)
 }
-
+// You can override notify later, with your own notification system
 
 var Upload = {
-	// The total number of files queued with SWFUpload
 	files_queued: 0,
-	
-	set_recipient_id: function(dom_id) {
-		this.recipient_id = dom_id
-	},
 	file_dialog_complete: function(num_selected, num_queued)
 	{
 		// SwfUpload doesn't order uploads by name out of the box...
@@ -74,7 +58,12 @@ var Upload = {
 	},
 	upload_success: function(file, data)
 	{
-		jQuery('#' + file.id).replaceWith(jQuery(data));
+		if(jQuery(data).length == 0) {
+			notify(data, "warning");
+			jQuery('#' + file.id).remove();
+		} else {
+			jQuery('#' + file.id).replaceWith(jQuery(data));
+		}
 	},
 	upload_complete: function(file)
 	{

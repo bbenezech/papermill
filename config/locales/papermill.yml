@@ -3,7 +3,6 @@ en:
     not-processed: "Error/ressource not processed"
     updated: "{{ressource}} updated"
     not-deleted: "{{ressource}} could not be deleted"
-    not-created: "Ressource could not be created"
     not-found: "Asset #{{ressource}} not found"
     edit-title: "" # You can use {{ressource}}
     thumbnail-edit-title: ""
@@ -18,7 +17,6 @@ fr:
     not-processed: "Erreur/ressource non trouvée"
     updated: "{{ressource}} mise à jour"
     not-deleted: "{{ressource}} n'a pas pu être supprimée"
-    not-created: "La ressource n'a pas pu être créée"
     not-found: "Asset #{{ressource}} non trouvé"
     edit-title: ""
     thumbnail-edit-title: ""

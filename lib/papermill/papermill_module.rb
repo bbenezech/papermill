@@ -70,7 +70,6 @@ module Papermill
     :papermill_prefix => "system/papermill"
   }.deep_merge( Papermill.const_defined?("OPTIONS") ? Papermill::OPTIONS : {} )
   
-
   PAPERCLIP_INTERPOLATION_STRING = ":id_partition/:style/:escaped_basename.:extension"
   
   def self.included(base)
@@ -174,6 +173,5 @@ module Papermill
         end
       end
     end
-    
   end
 end
