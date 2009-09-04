@@ -1,0 +1,5 @@
+<% if @asset.image? %>
+  <%= image_tag @asset.url %>
+<% else %>
+  <%= @asset.url %>
+<% end %>

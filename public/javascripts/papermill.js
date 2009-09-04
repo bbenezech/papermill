@@ -1,3 +1,8 @@
+popup = function(title1, title) {
+	window.open (title1, title, config='height=700, width=600, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no')
+}
+// override at will
+
 notify = function(message, type) {
 	alert(type + ": " + message)
 }
