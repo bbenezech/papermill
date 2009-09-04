@@ -12,7 +12,7 @@ rake "db:migrate"
 file "app/models/article.rb", <<-END
   class Article < ActiveRecord::Base
     validates_presence_of :title
-    papermill :thumbnail => {:width => 50, :height => 50} # catch-all for non-specified associations
+    papermill :thumbnail => {:width => 100, :height => 75} # catch-all for non-specified associations
     papermill :image_gallery, :class_name => ImageAsset, :images_only => true, :thumbnail => {:width => 75, :height => 100}
     # image_gallery association (set with define_method)
   end
@@ -80,24 +80,24 @@ file "app/views/articles/show.html.erb", <<-END
   <% end %>
 </p>
 <br /><br />
-<b>@article.papermill_assets(:key => :my_other_image).first :</b>
+<b>@article.papermill_assets(:my_other_image).first :</b>
 <p>
-  <% image = @article.papermill_assets(:key => :my_other_image).first %>
+  <% image = @article.papermill_assets(:my_other_image).first %>
   <%= link_to(image_tag(image.url("100x100#")), image.url) if image %>
 </p>
 <br /><br />
-<b>@article.papermill_assets(:key => :my_assets).each :</b>
+<b>@article.papermill_assets(:my_assets).each :</b>
 <p>
   <ul>
-    <% @article.papermill_assets(:key => :my_assets).each do |asset| %>
+    <% @article.papermill_assets(:my_assets).each do |asset| %>
       <li><%= link_to asset.name, asset.url %></li>
     <% end %>
   </ul>
 </p>
 <br /><br />
-<b>@article.papermill_assets(:key => :my_other_asset).first :</b>
+<b>@article.papermill_assets(:my_other_asset).first :</b>
 <p>
-  <% asset = @article.papermill_assets(:key => :my_other_asset).first %>
+  <% asset = @article.papermill_assets(:my_other_asset).first %>
   <%= link_to(asset.name, asset.url) if asset %>
 </p>
 

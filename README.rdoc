@@ -11,6 +11,10 @@ Asset management made easy.
   
   $ sudo gem install sqlite3-ruby
   $ rails -m http://gist.github.com/177714.txt papermill-example
+  $ cd papermill-example
+  $ ./script/server
+  $ GoTo localhost:3000 and try to create an article with assets but without title
+  $ profit
   
 == Papermill comes in 2 flavors:
 
