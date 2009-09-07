@@ -14,24 +14,25 @@ Asset management made easy.
   $ cd papermill-example
   $ ./script/server
   $ GoTo localhost:3000 and try to create an article with assets but without title
-  $ profit
   
 == Papermill comes in 2 flavors:
 
 === Generic catch-all declaration
 
-  papermill {my_option_hash}                             # in your papermilled assetable model
-  assets_upload(:my_key, {optional_option_hash})         # form helper call
-  @assetable.papermill_assets(:key => :my_key)           # data access in your view
+  papermill my_option_hash                              # in your papermilled assetable model
+  assets_upload(:my_key, optional_option_hash)          # form helper call
+  @assetable.papermill_assets(:my_key)                  # data access in your view
 
 === Association specific declaration
 
-  papermill :my_association, {my_option_hash}            # in your papermilled assetable model
-  assets_upload(:my_association, {optional_option_hash})  # form helper call
-  @assetable.my_association                              # data access in your view
+  papermill :my_association, my_option_hash             # in your papermilled assetable model
+  assets_upload(:my_association, optional_option_hash)  # form helper call
+  @assetable.my_association                             # data access in your view
+
 
 In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash
 You can have a catch-all declaration and as many specific association as you want in your model (as long as they use different keys)
+It's up to you. You can use the first one only, the second only or both.
 
 See papermill_module.rb for the complete list of options.
 
@@ -54,16 +55,15 @@ See papermill_module.rb for the complete list of options.
 === In your assetable model:
   
   # You can set a catch-all papermill association : 
-  papermill {:class_name => Asset}
+  papermill :class_name => Asset
   
   # or create an association for the specific :my_gallery key
-  papermill :my_gallery, {
+  papermill :my_gallery,
     :class_name => GalleryAsset,
     :thumbnail => {
         :width => 90,
         :height => 30
     }
-  }
 
 === In your layout:
 
@@ -79,7 +79,7 @@ See papermill_module.rb for the complete list of options.
   
 === Access them with:
   
-  @assetable.my_gallery.each{ |image| image.url("100x100") }
+  @assetable.my_gallery.each{ |image| image_tag image.url("100x100") }
   @assetable.papermill_assets(:my_assets).each{ |asset| asset.url }
   @assetable.papermill_assets(:my_other_asset).first.url
 
