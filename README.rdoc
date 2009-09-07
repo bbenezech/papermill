@@ -38,15 +38,7 @@ See papermill_module.rb for the complete list of options.
 
 == Installation
 
-=== You'll need something like this in your environment.rb:
-
-  config.gem 'rsl-stringex', :lib => 'stringex'
-  config.gem 'paperclip'
-  config.gem 'mime-types', :lib => 'mime/types'
-  config.gem 'ryanb-acts-as-list', :lib => 'acts_as_list'
-  config.gem 'BBenezech-papermill', :lib => 'papermill'
-
-=== Then you can generate a migration and copy a couple of static assets:
+=== Once you've installed the gem, generate a migration and copy a couple of static assets:
 
   $ ./script/generate papermill PapermillMigration
   # will generate a migration named PapermillMigration and copy a couple of static assets

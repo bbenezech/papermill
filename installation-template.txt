@@ -1,9 +1,4 @@
 gem 'paperclip'
-gem 'ryanb-acts-as-list', :lib => 'acts_as_list'
-gem 'sqlite3-ruby', :lib => "sqlite3" # for the demo
-gem 'mime-types', :lib => 'mime/types'
-gem "rsl-stringex", :lib => "stringex"
-gem 'BBenezech-papermill', :lib => 'papermill'
 
 generate :papermill, "PapermillMigration"
 generate :scaffold, "article title:string"
