@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{papermill}
-  s.version = "0.5.2"
+  s.version = "0.5.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benoit B\303\251n\303\251zech"]
-  s.date = %q{2009-09-05}
+  s.date = %q{2009-09-07}
   s.description = %q{Paperclip Swfupload UploadHelper wrapper}
   s.email = %q{benoit.benezech@gmail.com}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "app/views/papermill/_asset.html.erb",
      "app/views/papermill/_raw_asset.html.erb",
      "app/views/papermill/_thumbnail_asset.html.erb",
+     "app/views/papermill/edit.html.erb",
      "config/locales/papermill.yml",
      "config/routes.rb",
      "generators/papermill/USAGE",
@@ -60,7 +61,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/BBenezech/papermill}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.4}
   s.summary = %q{Paperclip Swfupload UploadHelper wrapper}
   s.test_files = [
     "test/papermill_test.rb",
