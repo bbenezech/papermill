@@ -20,13 +20,13 @@ Asset management made easy.
 === Generic catch-all declaration
 
   papermill my_option_hash                              # in your papermilled assetable model
-  assets_upload(:my_key, optional_option_hash)          # form helper call
+  assets_upload(:my_key, my_option_hash)          # form helper call
   @assetable.papermill_assets(:my_key)                  # data access in your view
 
 === Association specific declaration
 
   papermill :my_association, my_option_hash             # in your papermilled assetable model
-  assets_upload(:my_association, optional_option_hash)  # form helper call
+  assets_upload(:my_association, my_option_hash)  # form helper call
   @assetable.my_association                             # data access in your view
 
 
