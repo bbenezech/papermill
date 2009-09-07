@@ -40,8 +40,8 @@ See papermill_module.rb for the complete list of options.
 
 === Once you've installed the gem, generate a migration and copy a couple of static assets:
 
+  # copy static assets and generate a migration
   $ ./script/generate papermill PapermillMigration
-  # will generate a migration named PapermillMigration and copy a couple of static assets
   $ rake db:migrate
   
 === In your assetable model:
