@@ -80,8 +80,8 @@ See papermill_module.rb for the complete list of options.
 === Access them with:
   
   @assetable.my_gallery.each{ |image| image.url("100x100") }
-  @assetable.papermill_assets(:key => :my_assets).each{ |asset| asset.url }
-  @assetable.papermill_assets(:key => :my_other_asset).first.url
+  @assetable.papermill_assets(:my_assets).each{ |asset| asset.url }
+  @assetable.papermill_assets(:my_other_asset).first.url
 
 Also see http://gist.github.com/177714.txt for more precises installation steps.
 Have a look at the API here http://rdoc.info/projects/BBenezech/papermill
