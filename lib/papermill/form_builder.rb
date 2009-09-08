@@ -37,7 +37,7 @@ class ActionView::Helpers::FormBuilder
         size << "width:#{w}px" if w
         size << "height:#{h}px" if h
         size = size.join("; ")
-        @template.content_for :inline_css do
+        @template.content_for :papermill_inline_css do
           inline_css = ["\n"]
           if options[:gallery]
             vp = options[:gallery][:vpadding].to_i
@@ -73,7 +73,7 @@ class ActionView::Helpers::FormBuilder
     html << @template.content_tag(:ul, :id => id, :class => "papermill #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
       @template.render :partial => "papermill/asset", :collection => collection, :locals => { :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]) }
     }
-    @template.content_for :inline_js do
+    @template.content_for :papermill_inline_js do
       %{
         #{%{$("##{id}").sortable({update:function(){jQuery.ajax({async:true, data:jQuery(this).sortable('serialize'), dataType:'script', type:'post', url:'#{@template.controller.send("sort_papermill_url")}'})}})} if options[:gallery]}
         new SWFUpload({

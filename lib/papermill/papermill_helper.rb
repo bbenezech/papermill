@@ -11,7 +11,7 @@ module PapermillHelper
     root_folder = options[:path] || "javascripts"
     if options[:with_jquery] || options[:with_jqueryui]
       html << %{<script src="http://www.google.com/jsapi"></script>}
-      html << %{<script type="text/javascript">\n//<![CDATA[}
+      html << %{<script type="text/javascript">}
       html << %{google.load("jquery", "1");} if options[:with_jquery]
       html << %{google.load("jqueryui", "1");} if options[:with_jquery] || options[:with_jqueryui_only]
       html << %{jQuery.noConflict();} if options[:with_jquery] == "no_conflict"
@@ -24,9 +24,11 @@ module PapermillHelper
     end
     html << %{//]]>\n</script>}
     html << javascript_include_tag("/#{root_folder}/papermill", :cache => "swfupload-papermill")
-    html << '<script type="text/javascript">jQuery(document).ready(function() {'
-    html << @content_for_inline_js
-    html << '});</script>'
+    unless @content_for_papermill_inline_js.blank?
+      html << '<script type="text/javascript">jQuery(document).ready(function() {'
+      html << @content_for_papermill_inline_js
+      html << '});</script>'
+    end
     html.join("\n")
   end
   
@@ -36,9 +38,11 @@ module PapermillHelper
     html = []
     root_folder = options[:path] || "stylesheets"
     html << stylesheet_link_tag("/#{root_folder}/papermill")
-    html << %{<style type="text/css">}
-    html << @content_for_inline_css
-    html << %{</style>}
+    unless @content_for_papermill_inline_css.blank?
+      html << %{<style type="text/css">}
+      html << @content_for_papermill_inline_css
+      html << %{</style>}
+    end
     html.join("\n")
   end
 end
