@@ -4,8 +4,7 @@ Asset management made easy.
 
 == Install the gem!
 
-  $ gem sources -a http://gems.github.com
-  $ sudo gem install BBenezech-papermill
+  $ sudo gem install papermill
 
 == Try the demo!
   
@@ -43,6 +42,26 @@ See papermill_module.rb for the complete list of options.
   # copy static assets and generate a migration
   $ ./script/generate papermill PapermillMigration
   $ rake db:migrate
+
+=== Then in environment.rb:
+
+  config.gem papermill
+  
+=== You can also modify a couple of default options that will be available application-wide :
+  
+  Papermill::OPTIONS = {
+    :thumbnail => {
+      :width => 150,
+      :height => 100
+    },
+    :aliases => {
+      :big => "500x500>"
+      :small => "100x100>"
+    },
+    :public_root => ":rails_root/public",         # already a default
+    :papermill_prefix => "system/papermill"       # already a default
+  }
+  # see lib/papermill/papermill_module.rb for more options.
   
 === In your assetable model:
   

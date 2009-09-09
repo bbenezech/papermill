@@ -1,4 +1,4 @@
-gem 'BBenezech-papermill', :lib => 'papermill'
+gem 'papermill'
 
 generate :papermill, "PapermillMigration"
 generate :scaffold, "article title:string"
