@@ -1,2 +1,4 @@
-# check necessity for escaped_filename
-# check necessity for  Mime::Type
+* check necessity for escaped_filename
+* check necessity for  Mime::Type
+* assets without assetable
+* non-regression tests

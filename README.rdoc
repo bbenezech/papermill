@@ -3,7 +3,8 @@
 Asset management made easy.
 
 == Install the gem!
-
+  
+  $ gem sources -a http://gems.github.com # only once (needed for gem dependencies)
   $ sudo gem install papermill
 
 == Try the demo!
