@@ -1,4 +1,4 @@
-= Papermill
+= Papermill ![Rails](http://rubyonrails.org/images/rails.png)
 
 Asset management made easy.
 
