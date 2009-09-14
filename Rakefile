@@ -33,8 +33,8 @@ begin
     gemspec.authors = ["Benoit Bénézech"]
     gemspec.add_dependency('paperclip', '>= 2.1.2')
     gemspec.add_dependency('mime-types', '>= 1.16')
-    gemspec.add_dependency('rsl-stringex', '>= 1.0.0')
-    gemspec.add_dependency('ryanb-acts-as-list', '>= 0.1.2')
+    gemspec.add_dependency('stringex', '>= 1.0.0')
+    gemspec.add_dependency('acts-as-list', '>= 0.1.2')
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

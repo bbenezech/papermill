@@ -4,13 +4,12 @@ Asset management made easy.
 
 == Install the gem!
   
-  $ gem sources -a http://gems.github.com # only once (needed for gem dependencies)
   $ sudo gem install papermill
 
 == Try the demo!
   
-  $ sudo gem install sqlite3-ruby
-  $ rails -m http://gist.github.com/177714.txt papermill-example
+  $ sudo gem install sqlite3-ruby # unless you did it already
+  $ rails -m http://github.com/bbenezech/papermill/raw/master/installation-template.txt papermill-example
   $ cd papermill-example
   $ ./script/server
   $ GoTo localhost:3000 and try to create an article with assets but without title
