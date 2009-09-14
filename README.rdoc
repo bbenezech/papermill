@@ -12,7 +12,7 @@ Asset management made easy.
   $ rails -m http://github.com/bbenezech/papermill/raw/master/installation-template.txt papermill-example
   $ cd papermill-example
   $ ./script/server
-  $ GoTo localhost:3000 and try to create an article with assets but without title
+  Open localhost:3000 in your browser and try to create an article with assets but without title
   
 == Papermill comes in 2 flavors:
 
