@@ -1,4 +1,4 @@
-= Papermill ![Rails](http://rubyonrails.org/images/rails.png)
+= Papermill 
 
 Asset management made easy.
 
@@ -111,3 +111,6 @@ Rails 2.3
 
 
 Copyright (c) 2009 Benoit Bénézech, released under the MIT license
+
+
+http://rubyonrails.org/images/rails.png
