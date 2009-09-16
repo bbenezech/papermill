@@ -75,7 +75,7 @@ class ActionView::Helpers::FormBuilder
     }
     @template.content_for :papermill_inline_js do
       %{
-        #{%{$("##{id}").sortable({update:function(){jQuery.ajax({async:true, data:jQuery(this).sortable('serialize'), dataType:'script', type:'post', url:'#{@template.controller.send("sort_papermill_url")}'})}})} if options[:gallery]}
+        #{%{(jQuery("##{id}")).sortable({update:function(){jQuery.ajax({async:true, data:jQuery(this).sortable('serialize'), dataType:'script', type:'post', url:'#{@template.controller.send("sort_papermill_path")}'})}})} if options[:gallery]}
         new SWFUpload({
           upload_id: "#{id}",
           upload_url: "#{@template.escape_javascript create_url}",
