@@ -1,25 +1,25 @@
-class ActionView::Helpers::FormBuilder
+module ActionView::Helpers::FormTagHelper
   
-  def assets_upload(key = nil, options = {})
-    papermill_upload_field key, { :thumbnail => false }.update(options)
+  def assets_upload_tag(assetable, key = nil, options = {})
+    papermill_upload_field_tag key, { :thumbnail => false, :assetable => assetable }.update(options)
   end
-  def asset_upload(key = nil, options = {})
-    papermill_upload_field key, { :gallery => false, :thumbnail => false }.update(options)
+  def asset_upload_tag(assetable, key = nil, options = {})
+    papermill_upload_field_tag key, { :gallery => false, :thumbnail => false, :assetable => assetable }.update(options)
   end
-  def images_upload(key = nil, options = {})
-    papermill_upload_field key, options
+  def images_upload_tag(assetable, key = nil, options = {})
+    papermill_upload_field_tag key, { :assetable => assetable }.update(options)
   end
-  def image_upload(key = nil, options = {})
-    papermill_upload_field key, { :gallery => false }.update(options)
+  def image_upload_tag(assetable, key = nil, options = {})
+    papermill_upload_field_tag key, { :gallery => false, :assetable => assetable }.update(options)
   end
-
+  
   private
-  def papermill_upload_field(key, options = {})
+  def papermill_upload_field_tag(key, options)
     if key.is_a? Hash
       options = key
       key = nil
     end
-    assetable = @template.instance_variable_get("@#{@object_name}")
+    assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
     options = if assetable && (association = (assetable.class.papermill_associations[key] || assetable.class.papermill_associations[:papermill_assets]))
       association[:options].deep_merge(options)
     else
@@ -64,7 +64,7 @@ class ActionView::Helpers::FormBuilder
     asset_class = options[:class_name] && options[:class_name].to_s.constantize || association && association[:class] || PapermillAsset
     create_url = @template.url_for(:controller => "/papermill", :action => "create", :escape => false, :asset_class => asset_class.to_s, :assetable_key => key, :assetable_id => assetable_id, :assetable_type => assetable_type, :gallery => (options[:gallery] != false), :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]))
     if assetable && assetable.new_record? && !@timestamped
-      html << self.hidden_field(:timestamp, :value => assetable.timestamp)
+      html << @template.hidden_field(assetable.class.to_s.underscore, :timestamp, :value => assetable.timestamp)
       @timestamped = true
     end
     collection = asset_class.find(:all, :conditions => conditions, :order => "position")
@@ -97,5 +97,23 @@ class ActionView::Helpers::FormBuilder
   	end
   	html.reverse! if options[:button_after_container]
 	  html.join("\n")
+  end
+end
+
+
+class ActionView::Helpers::FormBuilder
+  include ActionView::Helpers::FormTagHelper
+  
+  def assets_upload(key = nil, options = {})
+    papermill_upload_field_tag key, { :thumbnail => false }.update(options)
+  end
+  def asset_upload(key = nil, options = {})
+    papermill_upload_field_tag key, { :gallery => false, :thumbnail => false }.update(options)
+  end
+  def images_upload(key = nil, options = {})
+    papermill_upload_field_tag key, options
+  end
+  def image_upload(key = nil, options = {})
+    papermill_upload_field_tag key, { :gallery => false }.update(options)
   end
 end
