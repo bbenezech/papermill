@@ -31,6 +31,14 @@ class PapermillAsset < ActiveRecord::Base
     file_file_name
   end
   
+  def width
+    image? && Paperclip::Geometry.from_file(file).width
+  end
+  
+  def height
+    image? && Paperclip::Geometry.from_file(file).height
+  end
+  
   def size
     file_file_size
   end

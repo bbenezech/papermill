@@ -1,3 +1,17 @@
+#papermill-box{width:942px; margin-bottom:10px;}
+#papermill-box #left {float:left; width:400px; padding-bottom:10px;}
+#papermill-box #right {float:right; width:500px; margin-left:20px; border-left:2px solid GREY; padding-left:20px; padding-bottom:10px;}
+#papermill-box #read-only {}
+#papermill-box #read-write {margin-top:30px;}
+#papermill-box p {margin:4px;}
+#papermill-box p span{font-weight:bold;}
+#papermill-box #parent-box {display:block; border:1px solid GREY; padding: 5px; margin:5px;}
+#papermill-box h3 {}
+#papermill-box input.text_field {width:400px; margin:10px; margin-top:5px;}
+#papermill-box textarea {width:400px; height:100px; margin:10px; margin-top:5px;}
+#papermill-box label {margin-left:4px;}
+#papermill-box #footer {text-align:center; font-size:12px; padding:5px}
+
 .papermill a:hover { background:none; color:inherit; }
 .papermill a img { border:0px; }
 .papermill li:hover { border-color:blue; }
