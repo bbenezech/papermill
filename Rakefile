@@ -29,7 +29,7 @@ begin
     gemspec.summary = "Paperclip Swfupload UploadHelper wrapper"
     gemspec.description = "Paperclip Swfupload UploadHelper wrapper"
     gemspec.email = "benoit.benezech@gmail.com"
-    gemspec.homepage = "http://github.com/BBenezech/papermill"
+    gemspec.homepage = "http://github.com/bbenezech/papermill"
     gemspec.authors = ["Benoit Bénézech"]
     gemspec.add_dependency('paperclip', '>= 2.1.2')
     gemspec.add_dependency('mime-types', '>= 1.16')
