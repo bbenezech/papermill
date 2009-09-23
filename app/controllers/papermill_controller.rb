@@ -53,7 +53,9 @@ class PapermillController < ApplicationController
   
   def create
     asset_class = params[:asset_class].constantize
-    params[:assetable_type] = params[:assetable_type].camelize if params[:assetable_type]
+    params[:assetable_id]   = params[:assetable_id].try :to_i
+    params[:assetable_type] = params[:assetable_type].try :camelize
+    params[:assetable_key]  = params[:assetable_key].try :to_s
     params[:swfupload_file] = params.delete(:Filedata)
     unless params[:gallery]
       @old_asset = asset_class.find(:first, :conditions => params.reject{|k, v| ![:assetable_key, :assetable_type, :assetable_id].include?(k)})

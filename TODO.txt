@@ -1,2 +1,1 @@
 * non-regression tests
-* check for necessity for requires over gemspec dependencies
