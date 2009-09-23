@@ -20,7 +20,7 @@ Asset management made easy.
 
   papermill my_option_hash                              # in your papermilled assetable model
   assets_upload(:my_key, my_option_hash)          # form helper call
-  @assetable.papermill_assets(:my_key)                  # data access in your view
+  @assetable.assets(:my_key)                  # data access in your view
 
 === Association specific declaration
 
@@ -66,11 +66,11 @@ See papermill_module.rb for the complete list of options.
 === In your assetable model:
   
   # You can set a catch-all papermill association : 
-  papermill :class_name => Asset
+  papermill :class_name => MyAssetClass
   
   # or create an association for the specific :my_gallery key
-  papermill :my_gallery,
-    :class_name => GalleryAsset,
+  papermill :my_gallery_assets,
+    :class_name => MyGalleryAsset,
     :thumbnail => {
         :width => 90,
         :height => 30
@@ -80,7 +80,7 @@ See papermill_module.rb for the complete list of options.
 
   <%= papermill_stylesheet_tag %>
   <%= papermill_javascript_tag :with_jquery => "no_conflict" %>
-  # you won't need :with_jquery if you use it already, obviously.
+  # you won't need :with_jquery if you have already loaded it.
   
 === In your edit form: 
 
@@ -90,9 +90,18 @@ See papermill_module.rb for the complete list of options.
   
 === Access them with:
   
-  @assetable.my_gallery.each{ |image| image_tag image.url("100x100") }
-  @assetable.papermill_assets(:my_assets).each{ |asset| asset.url }
-  @assetable.papermill_assets(:my_other_asset).first.url
+  @assetable.my_gallery_assets.each{ |image| image_tag image.url("100x100") }
+  # equivalent to:
+  @assetable.assets(:my_gallery_assets).each{ |image| image_tag image.url("100x100") }
+  # also equivalent to:
+  @assetable.assets(:conditions => {:assetable_key => 'my_gallery_assets'}).each{ |image| image_tag image.url("100x100") }
+  
+  
+  @assetable.assets(:my_assets).each{ |asset| asset.url }
+  # if your association name is singularizable, you can do smtg like : 
+  @assetable.asset(:my_other_asset).try(:url)
+  # equivalent to:
+  @assetable.assets(:my_other_asset).first.try(:url)
 
 Also see http://github.com/bbenezech/papermill/raw/master/installation-template.txt for more precises installation steps.
 Have a look at the API here http://rdoc.info/projects/BBenezech/papermill

@@ -4,7 +4,7 @@ require 'mime/types'
 require 'acts_as_list'
 
 class PapermillAsset < ActiveRecord::Base
-  acts_as_list :scope => 'assetable_key=\'#{assetable_key.to_s.simple_sql_sanitizer}\' AND assetable_id=#{assetable_id} AND assetable_type=\'#{assetable_type}\''
+  acts_as_list :scope => 'assetable_key'
   
   belongs_to :assetable, :polymorphic => true
   before_destroy :destroy_files

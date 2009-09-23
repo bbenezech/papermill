@@ -1,3 +1,5 @@
+class PapermillException < Exception; end
+
 module HashExtensions
   def deep_merge(hash)
     target = dup

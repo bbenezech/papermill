@@ -1,32 +1,39 @@
 module ActionView::Helpers::FormTagHelper
   
   def assets_upload_tag(assetable, key = nil, options = {})
-    papermill_upload_field_tag key, { :thumbnail => false, :assetable => assetable }.update(options)
+    papermill_upload_tag key, { :thumbnail => false, :assetable => assetable }.update(options)
   end
+  
   def asset_upload_tag(assetable, key = nil, options = {})
-    papermill_upload_field_tag key, { :gallery => false, :thumbnail => false, :assetable => assetable }.update(options)
+    papermill_upload_tag key, { :gallery => false, :thumbnail => false, :assetable => assetable }.update(options)
   end
+  
   def images_upload_tag(assetable, key = nil, options = {})
-    papermill_upload_field_tag key, { :assetable => assetable }.update(options)
+    papermill_upload_tag key, { :assetable => assetable }.update(options)
   end
+  
   def image_upload_tag(assetable, key = nil, options = {})
-    papermill_upload_field_tag key, { :gallery => false, :assetable => assetable }.update(options)
+    papermill_upload_tag key, { :gallery => false, :assetable => assetable }.update(options)
   end
   
   private
-  def papermill_upload_field_tag(key, options)
-    if key.is_a? Hash
-      options = key
-      key = nil
+  def papermill_upload_tag(key, options)
+    # asset_upload_tag(:my_key)
+    if key.nil? && (options[:assetable].is_a?(Symbol) || options[:assetable].is_a?(String))
+      key = options[:assetable]
+      options[:assetable] = nil
     end
+ 
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
     options = if assetable && (association = (assetable.class.papermill_associations[key] || assetable.class.papermill_associations[:papermill_assets]))
       association[:options].deep_merge(options)
+    elsif assetable.nil?
+      Papermill::PAPERMILL_DEFAULTS.deep_merge(options)
     else
-      raise Exception.new("Papermill: can't find #{key.to_s} association for #{assetable.class.to_s}.\n\n##{assetable.class.to_s.underscore}.rb\n#set either a catchall papermill association: \npapermill {your_option_hash}\n#or this specific association: \npapermill :#{key.to_s}, {your_option_hash}")
+      raise PapermillException.new("Can't find '#{key.to_s}' association for '#{assetable.class.to_s}'.\n\n##{assetable.class.to_s.underscore}.rb\nYou can take on of these actions: \n1. set either a catchall papermill association: 'papermill {your_option_hash}'\n2. or a specific association: 'papermill :#{key.to_s}, {your_option_hash}'")
     end
     assetable_id = assetable && (assetable.id || assetable.timestamp) || nil
-    assetable_type = assetable && assetable.class.to_s.underscore || nil
+    assetable_type = assetable && assetable.class.to_s || nil
     id = "papermill_#{assetable_type}_#{assetable_id}_#{key ? key.to_s : 'nil'}"
     if options[:thumbnail]
       w = options[:thumbnail][:width]  || options[:thumbnail][:height] && options[:thumbnail][:aspect_ratio] && (options[:thumbnail][:height] * options[:thumbnail][:aspect_ratio]).to_i || nil
@@ -59,14 +66,28 @@ module ActionView::Helpers::FormTagHelper
     end
     html = []
     
-    conditions = {:assetable_type => assetable.class.sti_name, :assetable_id => assetable_id}
-    conditions.merge!({:assetable_key => key.to_s}) if key
     asset_class = options[:class_name] && options[:class_name].to_s.constantize || association && association[:class] || PapermillAsset
-    create_url = @template.url_for(:controller => "/papermill", :action => "create", :escape => false, :asset_class => asset_class.to_s, :assetable_key => key, :assetable_id => assetable_id, :assetable_type => assetable_type, :gallery => (options[:gallery] != false), :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]))
+    url_options = {
+      :controller => "/papermill", 
+      :action => "create", 
+      :escape => false, 
+      :asset_class => asset_class.to_s,
+      :assetable_key => key, 
+      :gallery => (options[:gallery] != false), 
+      :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style])
+    }
+    url_options.merge!({
+      :assetable_id => assetable_id, 
+      :assetable_type => assetable_type.underscore, 
+    }) if assetable
+    create_url = @template.url_for(url_options)
     if assetable && assetable.new_record? && !@timestamped
       html << @template.hidden_field(assetable.class.to_s.underscore, :timestamp, :value => assetable.timestamp)
       @timestamped = true
     end
+    
+    conditions = {:assetable_type => assetable_type, :assetable_id => assetable_id}
+    conditions.merge!({:assetable_key => key.to_s}) if key
     collection = asset_class.find(:all, :conditions => conditions, :order => "position")
     
     html << %{<div style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
@@ -105,15 +126,15 @@ class ActionView::Helpers::FormBuilder
   include ActionView::Helpers::FormTagHelper
   
   def assets_upload(key = nil, options = {})
-    papermill_upload_field_tag key, { :thumbnail => false }.update(options)
+    papermill_upload_tag key, { :thumbnail => false }.update(options)
   end
   def asset_upload(key = nil, options = {})
-    papermill_upload_field_tag key, { :gallery => false, :thumbnail => false }.update(options)
+    papermill_upload_tag key, { :gallery => false, :thumbnail => false }.update(options)
   end
   def images_upload(key = nil, options = {})
-    papermill_upload_field_tag key, options
+    papermill_upload_tag key, options
   end
   def image_upload(key = nil, options = {})
-    papermill_upload_field_tag key, { :gallery => false }.update(options)
+    papermill_upload_tag key, { :gallery => false }.update(options)
   end
 end
