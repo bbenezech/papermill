@@ -39,7 +39,7 @@ class PapermillController < ApplicationController
   def update
     @asset = PapermillAsset.find_by_id(params[:id])
     render :update do |page|
-      if @asset && @asset.update(params)
+      if @asset && @asset.update_attributes(params[:papermill_asset])
         page << %{ notify("#{t("updated", :ressource => @asset.name, :scope => "papermill")}", "notice") }
       else
         page << %{ notify("#{@asset && @asset.errors.full_messages.to_sentence || t("not-found", :ressource => params[:id].to_s, :scope => "papermill")}", "warning") }
