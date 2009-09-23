@@ -1,12 +1,52 @@
 popup = function(title1, title) {
 	window.open (title1, title, config='height=700, width=600, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no')
 }
-// override at will
+
+
+/*
+If you have a popup library, override popup
+
+* e.g. facebox : 
+
+popup = function(url) {
+	jQuery.facebox(function() {
+	  jQuery.get(url, function(data) {
+	    jQuery.facebox(data)
+	  })
+	})
+	return false;
+}
+
+* e.g. Shadowbox : 
+
+popup = function(url) {
+	if(url) {
+		Shadowbox.open({ 
+	  	content:    url,
+	    player:     "iframe",
+			width: 			1280,
+			height: 		768
+	  });
+	}
+	return false;
+}
+*/
 
 notify = function(message, type) {
 	alert(type + ": " + message)
 }
-// You can override notify later, with your own notification system
+/*
+If you have a notification library, override notify
+
+* e.g. jGrowl : 
+
+notify = function(message, type) {
+	if(type == "notice") { jQuery.noticeAdd({ text: message, stayTime: 4000, stay: false, type: type }) }
+	if(type == "warning") {	jQuery.noticeAdd({ text: message, stayTime: 9000, stay: false, type: type }) }
+	if(type == "error") {	jQuery.noticeAdd({ text: message, stayTime: 20000, stay: false, type: type }) }
+}
+
+*/
 
 var Upload = {
 	files_queued: 0,
