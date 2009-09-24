@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{papermill}
-  s.version = "0.8.0"
+  s.version = "0.10.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benoit B\303\251n\303\251zech"]
-  s.date = %q{2009-09-23}
+  s.date = %q{2009-09-24}
   s.description = %q{Paperclip Swfupload UploadHelper wrapper}
   s.email = %q{benoit.benezech@gmail.com}
   s.extra_rdoc_files = [
@@ -43,23 +43,21 @@ Gem::Specification.new do |s|
      "lib/papermill/papermill_module.rb",
      "papermill.gemspec",
      "public/.DS_Store",
-     "public/flashs/swfupload.swf",
-     "public/images/.DS_Store",
-     "public/images/papermill/.DS_Store",
-     "public/images/papermill/background.png",
-     "public/images/papermill/container-background.jpg",
-     "public/images/papermill/delete.png",
-     "public/images/papermill/upload-blank.png",
-     "public/images/papermill/upload.png",
-     "public/javascripts/papermill.js",
-     "public/stylesheets/papermill.css",
+     "public/papermill/images/background.png",
+     "public/papermill/images/container-background.jpg",
+     "public/papermill/images/delete.png",
+     "public/papermill/images/upload-blank.png",
+     "public/papermill/images/upload.png",
+     "public/papermill/papermill.css",
+     "public/papermill/papermill.js",
+     "public/papermill/swfupload.swf",
      "rails/init.rb",
      "tasks/papermill_tasks.rake",
      "test/papermill_test.rb",
      "test/test_helper.rb",
      "uninstall.rb"
   ]
-  s.homepage = %q{http://github.com/BBenezech/papermill}
+  s.homepage = %q{http://github.com/bbenezech/papermill}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.4}
