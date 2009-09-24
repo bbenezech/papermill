@@ -2,5 +2,5 @@
   <span class="image"><%= image_tag(thumbnail_asset.url(thumbnail_style)) %></span>
 <% else %>
   <span class="name" title="<%= thumbnail_asset.name %>"><%= truncate(thumbnail_asset.name, :length => 15) %></span>
-  <span class="infos"><%= thumbnail_asset.content_type[1] %></span>
+  <span class="infos"><%= thumbnail_asset.content_type.join('/') %></span>
 <% end %>

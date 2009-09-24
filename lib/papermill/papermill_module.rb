@@ -15,8 +15,6 @@ module Papermill
       :height => 100,             # Recommended if :gallery[:height] is nil
       # set :width OR :height to nil to use aspect_ratio value. Remember that 4/3 == 1 => Use : 4.0/3
       :aspect_ratio => nil,
-      :max_width  => 1000,
-      :max_height => 1000,
       # You can override computed ImageMagick transformation strings that defaults to "#{:width}x#{:height}>"
       # Note that this is required if PAPERMILL_DEFAULTS[:alias_only] is true
       :style => nil,
@@ -60,6 +58,7 @@ module Papermill
     :button_after_container => false,               # set to true to move the upload button below the container
 
     # DO NOT CHANGE THESE IN YOUR CLASSES. Only application wide (routes or associations may depend on it)
+    
     :base_association_name => 'assets',
     :alias_only => false,        # set to true so that only aliases are authorized in url/path
     :aliases => {
@@ -68,7 +67,9 @@ module Papermill
     # path to the root of your public directory
     :public_root => ":rails_root/public",
     # added to :public_root as the root folder for all papermill items
-    :papermill_prefix => "system/papermill"
+    :papermill_prefix => "system/papermill",
+    :max_width  => 1000,
+    :max_height => 1000
   }.deep_merge( Papermill.const_defined?("OPTIONS") ? Papermill::OPTIONS : {} )
   
   PAPERCLIP_INTERPOLATION_STRING = ":id_partition/:style/:escaped_basename.:extension"

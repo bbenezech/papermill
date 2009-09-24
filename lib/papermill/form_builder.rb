@@ -18,7 +18,6 @@ module ActionView::Helpers::FormTagHelper
   
   private
   def papermill_upload_tag(key, options)
-    # asset_upload_tag(:my_key)
     if key.nil? && (options[:assetable].is_a?(Symbol) || options[:assetable].is_a?(String))
       key = options[:assetable]
       options[:assetable] = nil

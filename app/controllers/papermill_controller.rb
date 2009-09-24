@@ -58,7 +58,7 @@ class PapermillController < ApplicationController
     params[:assetable_key]  = params[:assetable_key].try :to_s
     params[:swfupload_file] = params.delete(:Filedata)
     unless params[:gallery]
-      @old_asset = asset_class.find(:first, :conditions => params.reject{|k, v| ![:assetable_key, :assetable_type, :assetable_id].include?(k)})
+      @old_asset = asset_class.find(:first, :conditions => params.reject{|k, v| !["assetable_key", "assetable_type", "assetable_id"].include?(k)})
     end
     @asset = asset_class.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["swfupload_file"]).include?(k)})
     
