@@ -42,6 +42,6 @@
 .papermill-asset-container.papermill-unique-item { padding-left:5px; min-height:22px; }
 
 /* Need some backgrounds?
-.papermill li { background:transparent url(/images/papermill/background.png) repeat top left; }
-.papermill-thumb-container { background:transparent url(/images/papermill/container-background.jpg) repeat top left; }
+.papermill li { background:transparent url(images/background.png) repeat top left; }
+.papermill-thumb-container { background:transparent url(images/container-background.jpg) repeat top left; }
 */

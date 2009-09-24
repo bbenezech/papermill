@@ -1,5 +1,5 @@
 <%- dom_id = "papermill_asset_#{asset.id}" -%>
-<%- delete_link = %{<a onclick="if(confirm('#{escape_javascript I18n.t("delete-confirmation", :scope => :papermill, :resource => asset.name)}')){ $.ajax({async:true, beforeSend:function(request){$('##{dom_id}').hide();}, dataType:'script', error:function(request){$('##{dom_id}').show();}, type:'delete', url:'#{papermill_url(asset)}'})}; return false;" href="#" class="delete"><img title="#{escape_javascript t("delete", :scope => "papermill", :ressource => asset.name)}" src="/images/papermill/delete.png" alt="delete"/></a>} %>
+<%- delete_link = %{<a onclick="if(confirm('#{escape_javascript I18n.t("delete-confirmation", :scope => :papermill, :resource => asset.name)}')){ $.ajax({async:true, beforeSend:function(request){$('##{dom_id}').hide();}, dataType:'script', error:function(request){$('##{dom_id}').show();}, type:'delete', url:'#{papermill_url(asset)}'})}; return false;" href="#" class="delete"><img title="#{escape_javascript t("delete", :scope => "papermill", :ressource => asset.name)}" src="/papermill/images/delete.png" alt="delete"/></a>} %>
 
 <li id="<%= dom_id %>" onDblClick="popup(jQuery(this).attr('rel')); return false;" rel="<%= edit_papermill_url(asset) %>" title="<%= t("#{thumbnail_style ? "thumbnail-" : ""}edit-title", :scope => "papermill", :ressource => asset.name) %>">
 	<%= delete_link %>

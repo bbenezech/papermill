@@ -1,3 +1,3 @@
 script/generate papermill MyMigrationName
   
-This will create the migration table.
+This will create the migration table, copy assets to public/papermill

@@ -1,1 +1,3 @@
 * non-regression tests
+* two migrations => assets & DB
+* auto-download of last release of JS dependencies (swfupload.js, his flash, and jQuery)

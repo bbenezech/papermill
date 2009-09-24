@@ -40,9 +40,9 @@ module Papermill
     # options passed on to SWFUpload. To remove an option when overriding, set it to nil.
     :swfupload => {
       # !!! Will only work if the swf file comes from the server to where the files are sent. (Flash same origin security policy)
-      :flash_url => '/flashs/swfupload.swf',
+      :flash_url => '/papermill/swfupload.swf',
       # You can use upload-blank.png with your own wording or upload.png with default "upload" wording (looks nicer)
-      :button_image_url => '/images/papermill/upload-blank.png',
+      :button_image_url => '/papermill/images/upload-blank.png',
       :button_width     => 61,
       :button_height    => 22,
       # Wording and CSS processed through an Adobe Flash styler. Result is terrible. Feel free to put a CSS button overlayed directly on the SWF button. See swfupload website.
