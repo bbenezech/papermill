@@ -10,8 +10,8 @@
       <p><%= I18n.t("content_type", :scope => 'papermill') %><span><%= @asset.content_type.join('/') %></span></p>
       <p><%= I18n.t("size", :scope => 'papermill') %><span><%= number_to_human_size(@asset.size.to_i) %></span></p>
       <% if @asset.image? %>
-        <p><%= I18n.t("width", :scope => 'papermill') %><span><%= @asset.width %>px</span></p>
-        <p><%= I18n.t("height", :scope => 'papermill') %><span><%= @asset.height %>px</span></p>
+        <p><%= I18n.t("width", :scope => 'papermill') %><span><%= @asset.width.to_i %>px</span></p>
+        <p><%= I18n.t("height", :scope => 'papermill') %><span><%= @asset.height.to_i %>px</span></p>
       <% end %>
       <p><%= I18n.t("created_at", :scope => 'papermill') %><span><%= I18n.l(@asset.created_at) %></span></p>
       <p><%= I18n.t("updated_at", :scope => 'papermill') %><span><%= I18n.l(@asset.updated_at) %></span></p>
