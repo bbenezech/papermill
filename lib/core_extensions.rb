@@ -18,7 +18,11 @@ module StringExtensions
     gsub(/\\/, '\&\&').gsub(/'/, "''")
   end
 end
-
+module StringToUrlNotFound
+  def to_url
+    gsub(/[^a-zA-Z0-9]/, "-").gsub(/-+/, "-").gsub(/^-|-$/, "")
+  end
+end
 module ObjectExtensions
   # Nil if empty.
   def nie

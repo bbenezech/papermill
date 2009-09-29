@@ -52,18 +52,20 @@ See papermill_module.rb for the complete list of options.
     ...
     config.gem papermill
     
-    # You can set options that will be available application-wide :
+    # You can set options that will be set application-wide :
     module Papermill
-      :thumbnail => {
-        :width => 150,
-        :height => 100
-      },
-      :aliases => {
-        :big => "500x500>"
-        :small => "100x100>"
-      },
-      :public_root => ":rails_root/public",         # already a default
-      :papermill_prefix => "system/papermill"       # already a default
+      OPTIONS = {
+        :thumbnail => {
+          :width => 150,
+          :height => 100
+        },
+        :aliases => {
+          :big => "500x500>"
+          :small => "100x100>"
+        },
+        :public_root => ":rails_root/public",         # already a default
+        :papermill_prefix => "system/papermill"       # already a default
+      }
     end
     # see lib/papermill/papermill_module.rb
     ...
@@ -75,18 +77,13 @@ See papermill_module.rb for the complete list of options.
   papermill :class_name => MyAssetClass
   
   # or create an association for the specific :my_gallery key
-  papermill :my_gallery_assets,
-    :class_name => MyGalleryAsset,
-    :thumbnail => {
-        :width => 90,
-        :height => 30
-    }
+  papermill :my_gallery_assets, :class_name => MyGalleryAsset
 
 === In your layout:
 
   <%= papermill_stylesheet_tag %>
   <%= papermill_javascript_tag :with_jquery => "no_conflict" %>
-  # you won't need :with_jquery if you have already loaded it.
+  # you won't need :with_jquery if you have it already.
   
 === In your edit form: 
 
@@ -109,7 +106,7 @@ See papermill_module.rb for the complete list of options.
   # equivalent to:
   @assetable.assets(:my_other_asset).first.try(:url)
 
-Also see http://github.com/bbenezech/papermill/raw/master/installation-template.txt for more precises installation steps.
+Also see http://github.com/bbenezech/papermill/raw/master/installation-template.txt
 Have a look at the API here http://rdoc.info/projects/BBenezech/papermill
 
 === Translations:

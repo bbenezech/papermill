@@ -1,4 +1,3 @@
-require 'stringex'
 require 'paperclip'
 require 'mime/types'
 require 'acts_as_list'
