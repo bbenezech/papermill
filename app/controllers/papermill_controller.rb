@@ -31,7 +31,7 @@ class PapermillController < ApplicationController
         page << "jQuery('#papermill_asset_#{params[:id]}').remove()"
       else
         page << "jQuery('#papermill_asset_#{params[:id]}').show()"
-        page << %{ notify("#{t((@asset && "not-deleted" || "not-found"), :ressource => @asset.name, :scope => "papermill")}", error) }
+        page << %{ notify("#{t((@asset && "not-deleted" || "not-found"), :ressource => @asset.name, :scope => "papermill")}", "error") }
       end
     end
   end

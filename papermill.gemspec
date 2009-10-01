@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{papermill}
-  s.version = "0.10.1"
+  s.version = "0.10.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benoit B\303\251n\303\251zech"]
-  s.date = %q{2009-09-29}
+  s.date = %q{2009-09-30}
   s.description = %q{Paperclip Swfupload UploadHelper wrapper}
   s.email = %q{benoit.benezech@gmail.com}
   s.extra_rdoc_files = [
