@@ -1,4 +1,4 @@
-<link href="/stylesheets/papermill.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="/papermill/papermill.css" media="screen" rel="stylesheet" type="text/css" />
 <div id="papermill-box">
   <div id="left">
     <%= link_to(@asset.image? ? image_tag(@asset.url("400x#{Papermill::PAPERMILL_DEFAULTS[:max_height]}>")) : I18n.t("file_type", :type => @asset.content_type.join("/"), :scope => 'papermill'), @asset.url, :popup => true) %>
