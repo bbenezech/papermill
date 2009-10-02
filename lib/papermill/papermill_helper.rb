@@ -12,13 +12,12 @@ module PapermillHelper
       html << %{<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"</script>} if options[:with_jquery] || options[:with_jqueryui_only]
       html << %{<script type="text/javascript">jQuery.noConflict();</script>} if options[:with_jquery] == "no_conflict"
     end
-    html << %{<script src="http://swfupload.googlecode.com/svn/swfupload/tags/swfupload_v2.2.0_core/swfupload.js"></script>}
     html << %{<script type="text/javascript">}
     ["SWFUPLOAD_PENDING", "SWFUPLOAD_LOADING", "SWFUPLOAD_ERROR"].each do |js_constant|
       html << %{var #{js_constant} = "#{I18n.t(js_constant, :scope => "papermill")}";}
     end
     html << %{</script>}
-    html << javascript_include_tag("/papermill/papermill")
+    html << javascript_include_tag("/papermill/papermill", "papermill/swfupload")
     unless @content_for_papermill_inline_js.blank?
       html << '<script type="text/javascript">jQuery(document).ready(function() {'
       html << @content_for_papermill_inline_js
