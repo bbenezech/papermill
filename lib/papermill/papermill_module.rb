@@ -61,8 +61,9 @@ module Papermill
     
     :base_association_name => 'assets',
     :alias_only => false,        # set to true so that only aliases are authorized in url/path
+    # aliases name must be strings!
     :aliases => {
-      # "example" => "100x100#",
+      # 'example' => "100x100#",
     },
     # path to the root of your public directory
     :public_root => ":rails_root/public",

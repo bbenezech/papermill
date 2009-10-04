@@ -4,6 +4,9 @@ Asset management made easy.
 
 == Install the gem!
   
+  # Add github as a source for latest release of thoughtbot-paperclip gem who will be installed as a dependency and remove rubyforge's paperclip if needed (old 2.1.0 version)
+  $ sudo gem source -a http://gems.github.com
+  $ sudo gem uninstall paperclip
   $ sudo gem install papermill
 
 == Try the demo!

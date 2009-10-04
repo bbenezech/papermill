@@ -9,7 +9,8 @@ class PapermillController < ApplicationController
       raise if asset.nil? || params[:style] == "original"
       style = Papermill::PAPERMILL_DEFAULTS[:aliases][params[:style]] || !Papermill::PAPERMILL_DEFAULTS[:alias_only] && params[:style]
       raise unless style
-
+      style = {:geometry => style} unless style.is_a? Hash  # new Paperclip API
+      
       if asset.image?
         temp_thumbnail = Paperclip::Thumbnail.make(asset_file = asset.file, style)
         new_parent_folder_path = File.dirname(new_image_path = asset_file.path(params[:style]))

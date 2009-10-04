@@ -31,7 +31,7 @@ begin
     gemspec.email = "benoit.benezech@gmail.com"
     gemspec.homepage = "http://github.com/bbenezech/papermill"
     gemspec.authors = ["Benoit Bénézech"]
-    gemspec.add_dependency('paperclip', '>= 2.1.2')
+    gemspec.add_dependency('thoughtbot-paperclip', '>= 2.3.1')
     gemspec.add_dependency('mime-types', '>= 1.16')
     gemspec.add_dependency('acts_as_list', '>= 0.1.2')
   end
