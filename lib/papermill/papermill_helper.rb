@@ -17,7 +17,7 @@ module PapermillHelper
       html << %{var #{js_constant} = "#{I18n.t(js_constant, :scope => "papermill")}";}
     end
     html << %{</script>}
-    html << javascript_include_tag("/papermill/papermill", "papermill/swfupload")
+    html << javascript_include_tag("/papermill/papermill", "/papermill/swfupload")
     unless @content_for_papermill_inline_js.blank?
       html << '<script type="text/javascript">jQuery(document).ready(function() {'
       html << @content_for_papermill_inline_js
