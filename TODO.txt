@@ -6,3 +6,4 @@
 * reorganize edit with forms
 * use Jcrop
 * use Picnic API
+* suppress Paperclip deprecation warning
