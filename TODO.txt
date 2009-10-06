@@ -1,2 +1,8 @@
 * non-regression tests
 * two migrations => assets & DB
+* use aliases in form helpers
+* doc&test about crop
+* better CSS for edit
+* reorganize edit with forms
+* use Jcrop
+* use Picnic API
