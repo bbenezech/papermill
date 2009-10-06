@@ -1,0 +1,3 @@
+script/generate papermill_table PapermillMigration
+  
+This will create the Papermill table migration file!

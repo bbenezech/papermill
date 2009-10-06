@@ -1,0 +1,4 @@
+script/generate papermill_assets
+  
+This will copy Papermill needed assets to public/papermill/
+The old public/papermill directory will be deleted if present!

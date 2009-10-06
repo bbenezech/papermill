@@ -1,6 +1,7 @@
 gem 'papermill'
 
-generate :papermill, "PapermillMigration"
+generate :papermill_table, "PapermillMigration"
+generate :papermill_assets
 generate :scaffold, "article title:string"
 rake "db:migrate"
 

@@ -44,12 +44,13 @@ See papermill_module.rb for the complete list of options.
 
 === Once you've installed the gem, generate a migration and copy a couple of static assets:
 
-  # copy static assets and generate a migration
-  $ ./script/generate papermill PapermillMigration
+  # Generate  the migration and migrate:
+  $ ./script/generate papermill_table PapermillMigration
   $ rake db:migrate
-
+  # copy some needed static assets to your public directory:
+  $ ./script/generate papermill_assets
+  
 === Then in environment.rb:
-
   
   ...
   
