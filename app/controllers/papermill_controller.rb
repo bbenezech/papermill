@@ -3,13 +3,13 @@ class PapermillController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
   def show
-    begin
       complete_id = (params[:id0] + params[:id1] + params[:id2]).to_i
       asset = PapermillAsset.find(complete_id)
       raise if asset.nil? || params[:style] == "original"
       style = Papermill::PAPERMILL_DEFAULTS[:aliases][params[:style]] || !Papermill::PAPERMILL_DEFAULTS[:alias_only] && params[:style]
       raise unless style
-
+      style = {:geometry => style} unless style.is_a? Hash
+      
       if asset.image?
         temp_thumbnail = Paperclip::Thumbnail.make(asset_file = asset.file, style)
         new_parent_folder_path = File.dirname(new_image_path = asset_file.path(params[:style]))
@@ -19,9 +19,6 @@ class PapermillController < ApplicationController
       else
         redirect_to asset.url
       end
-    rescue
-      render :text => t("not-processed", :scope => "papermill"), :status => "500"
-    end
   end
 
   def destroy
