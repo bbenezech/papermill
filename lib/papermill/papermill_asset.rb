@@ -8,8 +8,8 @@ class PapermillAsset < ActiveRecord::Base
   belongs_to :assetable, :polymorphic => true
   before_destroy :destroy_files
 
-  Paperclip.interpolates[:escaped_basename] = proc do |attachment, style|
-    Paperclip.interpolates[:basename].call(attachment, style).to_url
+  Paperclip.interpolates(:escaped_basename) do |attachment, style|
+    Paperclip::Interpolations[:basename].call(attachment, style).to_url
   end
   
   has_attached_file :file,
