@@ -20,7 +20,7 @@ module StringExtensions
 end
 module StringToUrlNotFound
   def to_url
-    gsub(/[^a-zA-Z0-9]/, "-").gsub(/-+/, "-").gsub(/^-|-$/, "")
+    gsub(/[^a-zA-Z0-9]/, "-").gsub(/-+/, "-").gsub(/^-|-$/, "").downcase
   end
 end
 module ObjectExtensions

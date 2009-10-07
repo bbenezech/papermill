@@ -21,19 +21,21 @@ Asset management made easy.
 
 === Generic catch-all declaration
 
-  papermill my_option_hash                              # in your papermilled assetable model
-  assets_upload(:my_key, my_option_hash)          # form helper call
-  @assetable.assets(:my_key)                  # data access in your view
+  papermill my_option_hash                                # in your papermilled assetable model
+  assets_upload(:my_key, my_option_hash)                  # form helper call
+  @assetable.assets(:my_key)                              # data access in your view
 
 === Association specific declaration
 
-  papermill :my_association, my_option_hash             # in your papermilled assetable model
-  assets_upload(:my_association, my_option_hash)  # form helper call
-  @assetable.my_association                             # data access in your view
+  papermill :my_association, my_option_hash               # in your papermilled assetable model
+  assets_upload(:my_association, my_option_hash)          # form helper call
+  @assetable.my_association                               # data access in your view
 
 
-In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash
-You can have a catch-all declaration and as many specific association as you want in your model (as long as they use different keys)
+In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash.
+
+You can have a catch-all declaration and as many specific association as you want in your model (as long as they use different keys).
+
 It's up to you. You can use the first one only, the second only or both.
 
 See papermill_module.rb for the complete list of options.
@@ -42,12 +44,13 @@ See papermill_module.rb for the complete list of options.
 
 === Once you've installed the gem, generate a migration and copy a couple of static assets:
 
-  # copy static assets and generate a migration
-  $ ./script/generate papermill PapermillMigration
+  # Generate  the migration and migrate:
+  $ ./script/generate papermill_table PapermillMigration
   $ rake db:migrate
-
+  # copy some needed static assets to your public directory:
+  $ ./script/generate papermill_assets
+  
 === Then in environment.rb:
-
   
   ...
   
