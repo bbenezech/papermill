@@ -33,7 +33,7 @@ popup = function(url) {
 */
 
 notify = function(message, type) {
-	alert(type + ": " + message)
+	if(type != "notice") { alert(type + ": " + message) }
 }
 /*
 If you have a notification library, override notify
