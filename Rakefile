@@ -32,8 +32,6 @@ begin
     gemspec.homepage = "http://github.com/bbenezech/papermill"
     gemspec.authors = ["Benoit Bénézech"]
     gemspec.add_dependency('thoughtbot-paperclip', '>= 2.3.1')
-    gemspec.add_dependency('mime-types', '>= 1.16')
-    gemspec.add_dependency('acts_as_list', '>= 0.1.2')
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

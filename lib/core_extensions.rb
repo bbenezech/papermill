@@ -29,3 +29,13 @@ module ObjectExtensions
     self.blank? ? nil : self
   end
 end
+module FileExtensions
+  
+  def get_content_type
+    begin
+      MIME::Types.type_for(self.original_filename).to_s
+    rescue NameError
+      `file --mime -br #{self.path}`.strip
+    end
+  end
+end

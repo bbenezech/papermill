@@ -58,7 +58,7 @@ See papermill_module.rb for the complete list of options.
     ...
     config.gem papermill
     
-    # You can set options that will be set application-wide :
+    # You can set application-wide options inside or before Rails::Initializer :
     module Papermill
       OPTIONS = {
         :thumbnail => {
@@ -116,7 +116,7 @@ See papermill_module.rb for the complete list of options.
   @assetable.assets(:my_other_asset).first.try(:url)
 
 Also see http://github.com/bbenezech/papermill/raw/master/installation-template.txt
-Have a look at the API here http://rdoc.info/projects/BBenezech/papermill
+Have a look at the API here http://rdoc.info/projects/bbenezech/papermill
 
 === Translations:
 

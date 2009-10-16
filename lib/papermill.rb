@@ -2,6 +2,7 @@ I18n.load_path = [File.join(File.dirname(__FILE__), "../config/locales/papermill
 require 'core_extensions'
 Object.send :include, ObjectExtensions
 Hash.send :include, HashExtensions
+File.send :include, FileExtensions
 String.send :include, StringExtensions
 String.send :include, StringToUrlNotFound unless String.instance_methods.include? "to_url"
 require 'papermill/papermill_module'
