@@ -2,16 +2,14 @@
 
 Asset management made easy.
 
-== Install the gem!
+== Install the gem
   
-  # Add github as a source for latest release of thoughtbot-paperclip gem who will be installed as a dependency and remove rubyforge's paperclip if needed (old 2.1.0 version)
-  $ sudo gem source -a http://gems.github.com
-  $ sudo gem uninstall paperclip
+  $ gem source -a http://gemcutter.org # Needed for paperclip (installed as a dependency) : Rubyforge's version is too old..
   $ sudo gem install papermill
-
-== Try the demo!
+ 
+== Try the demo
   
-  $ sudo gem install sqlite3-ruby # unless you did it already
+  $ sudo gem install sqlite3-ruby
   $ rails -m http://github.com/bbenezech/papermill/raw/master/installation-template.txt papermill-example
   $ cd papermill-example
   $ ./script/server
@@ -111,12 +109,13 @@ See papermill_module.rb for the complete list of options.
   # also equivalent to:
   @assetable.assets(:conditions => {:assetable_key => 'my_gallery_assets'}).each{ |image| image_tag image.url("100x100") }
   
-  
   @assetable.assets(:my_assets).each{ |asset| asset.url }
   # if your association name is singularizable, you can do smtg like : 
   @assetable.asset(:my_other_asset).try(:url)
   # equivalent to:
   @assetable.assets(:my_other_asset).first.try(:url)
+
+  # You can change assets/asset with :base_association_name in Papermill::OPTIONS (choose a plural word and you'll get singular association for free)
 
 Also see http://github.com/bbenezech/papermill/raw/master/installation-template.txt
 Have a look at the API here http://rdoc.info/projects/bbenezech/papermill
@@ -126,14 +125,6 @@ Have a look at the API here http://rdoc.info/projects/bbenezech/papermill
 Papermill is fully I18n-able.
 Copy config/locales/papermill.yml to your root config/locale folder to modify any wording in a any locale.
 
-
-== Word of caution:
-
-Beta. Wait for gem 1.0.0 for the production ready thing. But since gem 0.12.2, things should go smoothly.
-Rails 2.3
-
-
 Copyright (c) 2009 Benoit Bénézech, released under the MIT license
-
 
 http://rubyonrails.org/images/rails.png
