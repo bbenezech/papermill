@@ -1,10 +1,6 @@
 require 'paperclip'
-require 'mime/types'
-require 'acts_as_list'
 
 class PapermillAsset < ActiveRecord::Base
-  acts_as_list :scope => 'assetable_key'
-  
   belongs_to :assetable, :polymorphic => true
   before_destroy :destroy_files
 
@@ -18,7 +14,7 @@ class PapermillAsset < ActiveRecord::Base
   validates_attachment_presence :file
 
   def swfupload_file=(data)
-    data.content_type = MIME::Types.type_for(data.original_filename).to_s
+    data.content_type = data.get_content_type
     self.file = data
   end
   

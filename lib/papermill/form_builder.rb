@@ -66,6 +66,7 @@ module ActionView::Helpers::FormTagHelper
     html = []
     
     asset_class = options[:class_name] && options[:class_name].to_s.constantize || association && association[:class] || PapermillAsset
+    
     url_options = {
       :controller => "/papermill", 
       :action => "create", 
