@@ -42,12 +42,16 @@ class PapermillAsset < ActiveRecord::Base
     file.url(style && CGI::escape(style.to_s))
   end
   
+  def path(style = nil)
+    file.path(style)
+  end
+  
   def content_type
-    file_content_type && file_content_type.split("/")
+    file_content_type
   end
   
   def image?
-    content_type && content_type.first == "image" && content_type[1]
+    content_type && content_type.split("/")[0] == "image" && (content_type.split("/")[1] || "unknown")
   end
   
   def destroy_files

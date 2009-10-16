@@ -1,5 +1,5 @@
 popup = function(title1, title) {
-	window.open (title1, title, config='height=650, width=950, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, directories=no, status=no')
+	window.open (title1, title, config='height=580, width=870, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no')
 }
 
 
@@ -24,8 +24,8 @@ popup = function(url) {
 		Shadowbox.open({ 
 	  	content:    url,
 	    player:     "iframe",
-			width: 			950,
-			height: 		650
+			width: 			870,
+			height: 		580
 	  });
 	}
 	return false;

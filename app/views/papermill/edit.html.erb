@@ -1,39 +1,33 @@
-<link href="/papermill/papermill.css" media="screen" rel="stylesheet" type="text/css" />
 <div id="papermill-box">
   <div id="left">
-    <%= link_to(@asset.image? ? image_tag(@asset.url("400x#{Papermill::PAPERMILL_DEFAULTS[:max_height]}>")) : I18n.t("file_type", :type => @asset.content_type.join("/"), :scope => 'papermill'), @asset.url, :popup => true) %>
+    <%= link_to(@asset.image? ? image_tag(@asset.url("400x#{Papermill::PAPERMILL_DEFAULTS[:max_height]}>")) : I18n.t("file_type", :type => @asset.content_type, :scope => 'papermill'), @asset.url, :popup => true) %>
   </div>
   <div id="right">
     <div id="read-only">
-      <h3><%= I18n.t("read-only", :scope => 'papermill') %></h3>
-      <p><%= I18n.t("name", :scope => 'papermill') %><span><%= @asset.name %></span></p>
-      <p><%= I18n.t("content_type", :scope => 'papermill') %><span><%= @asset.content_type.join('/') %></span></p>
-      <p><%= I18n.t("size", :scope => 'papermill') %><span><%= number_to_human_size(@asset.size.to_i) %></span></p>
-      <% if @asset.image? %>
-        <p><%= I18n.t("width", :scope => 'papermill') %><span><%= @asset.width.to_i %>px</span></p>
-        <p><%= I18n.t("height", :scope => 'papermill') %><span><%= @asset.height.to_i %>px</span></p>
-      <% end %>
-      <p><%= I18n.t("created_at", :scope => 'papermill') %><span><%= I18n.l(@asset.created_at) %></span></p>
-      <p><%= I18n.t("updated_at", :scope => 'papermill') %><span><%= I18n.l(@asset.updated_at) %></span></p>
-      <p><%= I18n.t("class_name", :scope => 'papermill') %><span><%= @asset.class.name.underscore.humanize %></span></p>
-      <% if assetable = @asset.assetable %>
-        <p onclick="jQuery('#parent-box').toggle(); jQuery('#parent-box-more').toggle(); return false;"><%= I18n.t("parent", :scope => 'papermill') %><span id="parent-box-more">...</span></p>
-        <span style="display:none;" id="parent-box"><%= debug assetable.to_yaml %></span>
-      <% end %>
+      <table border="0">
+        <tr><td class="left-cell"><%= I18n.t("name", :scope => 'papermill') %>        </td><td><%= @asset.name %></td></tr>
+        <tr><td class="left-cell"><%= I18n.t("content_type", :scope => 'papermill') %></td><td><%= @asset.content_type %></td></tr>
+        <tr><td class="left-cell"><%= I18n.t("size", :scope => 'papermill') %>        </td><td><%= number_to_human_size(@asset.size.to_i) %></td></tr>
+        <% if @asset.image? %>                                                                
+        <tr><td class="left-cell"><%= I18n.t("width", :scope => 'papermill') %>       </td><td><%= @asset.width.to_i %>px</td></tr>
+        <tr><td class="left-cell"><%= I18n.t("height", :scope => 'papermill') %>      </td><td><%= @asset.height.to_i %>px</td></tr>
+        <% end %>                                                                             
+        <tr><td class="left-cell"><%= I18n.t("created_at", :scope => 'papermill') %>  </td><td><%= I18n.l(@asset.created_at) %></td></tr>
+        <tr><td class="left-cell"><%= I18n.t("updated_at", :scope => 'papermill') %>  </td><td><%= I18n.l(@asset.updated_at) %></td></tr>
+      </table>
     </div>
     <div id="read-write">
-      <h3><%= I18n.t("modifiable_fields", :scope => 'papermill') %></h3>
-      <% remote_form_for :papermill_asset, @asset, :url => papermill_path(@asset), :html => { :method => :put, :class => "edit_asset" } do |f| %>
-        <%= f.label :title, I18n.t("title", :scope => 'papermill') %>
-        <%= f.text_field :title, :class => "text_field" %>
-        <%= f.label :copyright, I18n.t("copyright", :scope => 'papermill') %>
-        <%= f.text_field :copyright, :class => "text_field" %>
-        <%= f.label :description, I18n.t("description", :scope => 'papermill') %>
-        <%= f.text_area :description %>
-        <div><%= submit_tag I18n.t('save', :scope => 'papermill') %></div>
-      <% end %>
+      <form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post" action="/papermill/76">
+        <input type="hidden" value="put" name="_method"/>
+        <% fields_for :papermill_asset, @asset do |form| %>
+          <%= render :partial => 'form', :object => form %>
+        <% end %>
+      </form>
     </div>
   </div>
   <div style="clear:both;"></div>
-  <p id="footer"><%= I18n.t("location", :scope => 'papermill') +  @asset.url %></p>
+  <p id="footer">
+    <%= I18n.t("location", :scope => 'papermill') +  @asset.file.path %><br />
+    <%= I18n.t("url", :scope => 'papermill') +  @asset.url %>
+  </p>
 </div>
