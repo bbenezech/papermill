@@ -42,7 +42,7 @@ fr:
     SWFUPLOAD_LOADING: "Chargement..."
     SWFUPLOAD_ERROR: "Une erreur est survenue pendant le chargement de"
     file_type: "Fichier {{type}}"
-    name: "Nom : "
+    name: "Nom"
     content_type: "Content-type"
     size: "Taille du fichier"
     class_name: "Type d'asset"
