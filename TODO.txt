@@ -1,7 +1,6 @@
 * non-regression tests
-* use aliases in form helpers
-* doc&test about crop
-* better CSS for edit
-* reorganize edit with forms
+Edit views :
+* better CSS 
+* use forms
 * use Jcrop
-* use Picnic API
+* try Picnic API

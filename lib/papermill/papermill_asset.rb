@@ -51,7 +51,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def destroy_files
-    system "rm -rf #{Papermill::papermill_interpolated_path({":id_partition" => self.id_partition}, ':id_partition')}/"
+    FileUtils.rm_r "#{Papermill::papermill_interpolated_path({":id_partition" => self.id_partition}, ':id_partition')}/"
     true
   end
 end

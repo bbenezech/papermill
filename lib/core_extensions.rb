@@ -1,6 +1,6 @@
 class PapermillException < Exception; end
 
-module HashExtensions
+module PapermillHashExtensions
   def deep_merge(hash)
     target = dup
     hash.keys.each do |key|
@@ -13,29 +13,29 @@ module HashExtensions
     target
   end
 end
-module StringExtensions
+module PapermillStringExtensions
   def simple_sql_sanitizer
     gsub(/\\/, '\&\&').gsub(/'/, "''")
   end
 end
-module StringToUrlNotFound
+module PapermillStringToUrlNotFound
   def to_url
     gsub(/[^a-zA-Z0-9]/, "-").gsub(/-+/, "-").gsub(/^-|-$/, "").downcase
   end
 end
-module ObjectExtensions
+module PapermillObjectExtensions
   # Nil if empty.
   def nie
     self.blank? ? nil : self
   end
 end
-module FileExtensions
+module PapermillFileExtensions
   
   def get_content_type
     begin
       MIME::Types.type_for(self.original_filename).to_s
     rescue NameError
-      `file --mime -br #{self.path}`.strip
+      `file --mime -br #{self.path}`.strip.split(";").first
     end
   end
 end

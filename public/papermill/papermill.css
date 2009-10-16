@@ -31,7 +31,7 @@
 .papermill-asset-container {  border:1px solid #EEE; padding:3px; }
 .papermill-asset-container li { display:block; height:22px; }
 .papermill-asset-container .swfupload .name { margin-left:21px; }
-.papermill-asset-container .name { float:left; }
+.papermill-asset-container .name { float:left; margin-top:5px; }
 .papermill-asset-container .status { margin-left:5px; float:left; }
 .papermill-asset-container .progress { float:left; margin-top:6px; margin-left:5px; width:100px; }
 .papermill-asset-container .delete { float:left; margin-top:2px; margin-right:5px; }

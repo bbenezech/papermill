@@ -78,6 +78,9 @@ See papermill_module.rb for the complete list of options.
     # You can use stringex's String#to_url (papermill will use its own String#to_url if none exists)
     config.gem 'stringex'
     ...
+    # You can use Mime-Type to get the correct mime type from upload - flash garbles it.. (default is a UNIX call to "file --mime")
+    # needed for Windows OS
+    config.gem "mime-types", :lib => "mime/types"
   end
     
 === In your assetable model:
@@ -126,8 +129,7 @@ Copy config/locales/papermill.yml to your root config/locale folder to modify an
 
 == Word of caution:
 
-Beta. Wait for gem 1.0.0 for the production ready thing.
-This is xNIX only (system("rm ...")).
+Beta. Wait for gem 1.0.0 for the production ready thing. But since gem 0.12.2, things should go smoothly.
 Rails 2.3
 
 
