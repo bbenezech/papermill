@@ -44,7 +44,7 @@ module Papermill
       :button_width     => 61,
       :button_height    => 22,
       # Wording and CSS processed through an Adobe Flash styler. Result is terrible. Feel free to put a CSS button overlayed directly on the SWF button. See swfupload website.
-      :button_text => %{<span class="button-text">#{I18n.t("upload-button-wording", :scope => :papermill)}</span>},
+      :button_text => %{<span class="button-text">#{I18n.t("papermill.upload-button-wording")}</span>},
     	:button_text_style => %{.button-text { color: red; font-size: 12pt; font-weight: bold; }},
     	:button_disabled => "false",
       :button_text_top_padding => 4,

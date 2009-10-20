@@ -14,7 +14,7 @@ module PapermillHelper
     end
     html << %{<script type="text/javascript">}
     ["SWFUPLOAD_PENDING", "SWFUPLOAD_LOADING", "SWFUPLOAD_ERROR"].each do |js_constant|
-      html << %{var #{js_constant} = "#{I18n.t(js_constant, :scope => "papermill")}";}
+      html << %{var #{js_constant} = "#{t("papermill.#{js_constant}")}";}
     end
     html << %{</script>}
     html << javascript_include_tag("/papermill/papermill", "/papermill/swfupload")

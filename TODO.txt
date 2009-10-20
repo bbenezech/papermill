@@ -1,6 +1,4 @@
 * non-regression tests
 Edit views :
-* better CSS 
-* use forms
 * use Jcrop
 * try Picnic API

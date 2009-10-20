@@ -1,13 +1,13 @@
 <p>
-  <%= form.label :title, I18n.t("title", :scope => 'papermill') %><br />
+  <%= form.label :title, t("papermill.title") %><br />
   <%= form.text_field :title, :class => "text_field" %>
 </p>
 <p>
-  <%= form.label :copyright, I18n.t("copyright", :scope => 'papermill') %><br />
+  <%= form.label :copyright, t("papermill.copyright") %><br />
   <%= form.text_field :copyright, :class => "text_field" %>
 </p>
 <p>
-  <%= form.label :description, I18n.t("description", :scope => 'papermill') %><br />
+  <%= form.label :description, t("papermill.description") %><br />
   <%= form.text_area :description %>
 </p>
-<%= submit_tag I18n.t('save', :scope => 'papermill') %>
+<%= submit_tag t('papermill.save') %>

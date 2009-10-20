@@ -1,23 +1,23 @@
 <div id="papermill-box">
   <div id="left">
-    <%= link_to(@asset.image? ? image_tag(@asset.url("400x#{Papermill::PAPERMILL_DEFAULTS[:max_height]}>")) : I18n.t("file_type", :type => @asset.content_type, :scope => 'papermill'), @asset.url, :popup => true) %>
+    <%= link_to(@asset.image? ? image_tag(@asset.url("400x#{Papermill::PAPERMILL_DEFAULTS[:max_height]}>")) : t("file_type", :type => @asset.content_type, :scope => 'papermill'), @asset.url, :popup => true) %>
   </div>
   <div id="right">
     <div id="read-only">
       <table border="0">
-        <tr><td class="left-cell"><%= I18n.t("name", :scope => 'papermill') %>        </td><td><%= @asset.name %></td></tr>
-        <tr><td class="left-cell"><%= I18n.t("content_type", :scope => 'papermill') %></td><td><%= @asset.content_type %></td></tr>
-        <tr><td class="left-cell"><%= I18n.t("size", :scope => 'papermill') %>        </td><td><%= number_to_human_size(@asset.size.to_i) %></td></tr>
+        <tr><td class="left-cell"><%= t("papermill.name") %>        </td><td><%= @asset.name %></td></tr>
+        <tr><td class="left-cell"><%= t("papermill.content_type") %></td><td><%= @asset.content_type %></td></tr>
+        <tr><td class="left-cell"><%= t("papermill.size") %>        </td><td><%= number_to_human_size(@asset.size.to_i) %></td></tr>
         <% if @asset.image? %>                                                                
-        <tr><td class="left-cell"><%= I18n.t("width", :scope => 'papermill') %>       </td><td><%= @asset.width.to_i %>px</td></tr>
-        <tr><td class="left-cell"><%= I18n.t("height", :scope => 'papermill') %>      </td><td><%= @asset.height.to_i %>px</td></tr>
+        <tr><td class="left-cell"><%= t("papermill.width") %>       </td><td><%= @asset.width.to_i %>px</td></tr>
+        <tr><td class="left-cell"><%= t("papermill.height") %>      </td><td><%= @asset.height.to_i %>px</td></tr>
         <% end %>                                                                             
-        <tr><td class="left-cell"><%= I18n.t("created_at", :scope => 'papermill') %>  </td><td><%= I18n.l(@asset.created_at) %></td></tr>
-        <tr><td class="left-cell"><%= I18n.t("updated_at", :scope => 'papermill') %>  </td><td><%= I18n.l(@asset.updated_at) %></td></tr>
+        <tr><td class="left-cell"><%= t("papermill.created_at") %>  </td><td><%= I18n.l(@asset.created_at) %></td></tr>
+        <tr><td class="left-cell"><%= t("papermill.updated_at") %>  </td><td><%= I18n.l(@asset.updated_at) %></td></tr>
       </table>
     </div>
     <div id="read-write">
-      <form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post" action="/papermill/76">
+      <form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post" action="/papermill/<%= @asset.id %>">
         <input type="hidden" value="put" name="_method"/>
         <% fields_for :papermill_asset, @asset do |form| %>
           <%= render :partial => 'form', :object => form %>
@@ -27,7 +27,7 @@
   </div>
   <div style="clear:both;"></div>
   <p id="footer">
-    <%= I18n.t("location", :scope => 'papermill') +  @asset.file.path %><br />
-    <%= I18n.t("url", :scope => 'papermill') +  @asset.url %>
+    <%= t("papermill.location") +  @asset.file.path %><br />
+    <%= t("papermill.url") +  @asset.url %>
   </p>
 </div>
