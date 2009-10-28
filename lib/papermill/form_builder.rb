@@ -91,7 +91,7 @@ module ActionView::Helpers::FormTagHelper
     collection = asset_class.find(:all, :conditions => conditions, :order => "position")
     
     html << %{<div id="#{id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
-    html << @template.content_tag(:ul, :id => id, :class => "papermill #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
+    html << @template.content_tag(:ul, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
       @template.render :partial => "papermill/asset", :collection => collection, :locals => { :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]) }
     }
     @template.content_for :papermill_inline_js do
@@ -117,7 +117,7 @@ module ActionView::Helpers::FormTagHelper
       }
   	end
   	html.reverse! if options[:button_after_container]
-	  html.join("\n")
+	  %{<div class="papermill">#{html.join("\n")}</div>}
   end
 end
 
