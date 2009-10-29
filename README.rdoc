@@ -21,6 +21,7 @@ Asset management made easy.
 
   papermill my_option_hash                                # in your papermilled assetable model
   assets_upload(:my_key, my_option_hash)                  # form helper call
+  f.input :my_key, :as => :assets_upload, my_option_hash  # if you are using formtastic
   @assetable.assets(:my_key)                              # data access in your view
 
 === Association specific declaration
@@ -64,7 +65,7 @@ See papermill_module.rb for the complete list of options.
           :height => 100
         },
         :aliases => {
-          :big => "500x500>"
+          :big => "500x500>",
           :small => "100x100>"
         },
         :public_root => ":rails_root/public",         # already a default

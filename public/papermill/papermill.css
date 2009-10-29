@@ -16,11 +16,11 @@
 .papermill a:hover { background:none; color:inherit; }
 .papermill a img { border:0px; }
 .papermill li:hover { border-color:blue; }
-.papermill li a { display:block; }
+.papermill li a { display:block;  }
 .papermill .progress { display:block; border:1px solid #C2E3EF; text-align:left; height:6px; }
 .papermill .progress span { background:#7BB963; height:6px; width:0; display:block; }
 
-.papermill-thumb-container { position:relative; border:5px solid #EEE; padding:4px; }	
+.papermill-thumb-container { position:relative; border:5px solid #EEE; padding:4px; overflow:hidden; }	
 .papermill-thumb-container li { border:0px solid transparent; min-height:25px; min-width:25px; display:block; float:left; position:relative; }
 .papermill-thumb-container li span { display:block; }
 .papermill-thumb-container li .delete { position:absolute; bottom:5px; right:5px;  }
