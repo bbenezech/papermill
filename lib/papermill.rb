@@ -5,7 +5,7 @@ Hash.send :include, PapermillHashExtensions
 File.send :include, PapermillFileExtensions
 String.send :include, PapermillStringExtensions
 String.send :include, PapermillStringToUrlNotFound unless String.instance_methods.include? "to_url"
-Formtastic::SemanticFormBuilder.send :include, PapermillFormtasticExtensions rescue LoadError, NameError
+Formtastic::SemanticFormBuilder.send(:include, PapermillFormtasticExtensions) rescue NameError
 require 'papermill/papermill_module'
 require 'papermill/papermill_asset'
 require 'papermill/form_builder'
