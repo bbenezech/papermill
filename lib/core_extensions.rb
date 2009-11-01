@@ -39,3 +39,12 @@ module PapermillFileExtensions
     end
   end
 end
+
+module PapermillFormtasticExtensions
+  def method_missing(input_type, method, options)
+    return super unless input_type.to_s.match("_input")
+    input_type = input_type.to_s.split("_input").first
+    self.label(method, options_for_label(options)) +
+    self.send(input_type, method, options)
+  end
+end

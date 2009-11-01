@@ -5,6 +5,13 @@ Hash.send :include, PapermillHashExtensions
 File.send :include, PapermillFileExtensions
 String.send :include, PapermillStringExtensions
 String.send :include, PapermillStringToUrlNotFound unless String.instance_methods.include? "to_url"
+begin
+  Formtastic::SemanticFormBuilder.send :include, PapermillFormtasticExtensions
+  puts "FORMTASTIC"
+rescue LoadError
+ puts "NO FORMTASTIC"
+end
+puts "HEYYY"
 require 'papermill/papermill_module'
 require 'papermill/papermill_asset'
 require 'papermill/form_builder'
