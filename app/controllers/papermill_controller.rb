@@ -4,24 +4,10 @@ class PapermillController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:create]
   
   def show
-    begin
-      complete_id = (params[:id0] + params[:id1] + params[:id2]).to_i
-      asset = PapermillAsset.find(complete_id)
-      raise if asset.nil? || params[:style] == "original"
-      style = Papermill::PAPERMILL_DEFAULTS[:aliases][params[:style]] || !Papermill::PAPERMILL_DEFAULTS[:alias_only] && params[:style]
-      raise unless style
-      style = {:geometry => style} unless style.is_a? Hash
-    
-      if asset.image?
-        temp_thumbnail = Paperclip::Thumbnail.make(asset_file = asset.file, style)
-        new_parent_folder_path = File.dirname(new_image_path = asset_file.path(params[:style]))
-        FileUtils.mkdir_p new_parent_folder_path unless File.exists? new_parent_folder_path
-        FileUtils.cp temp_thumbnail.path, new_image_path
-        redirect_to asset.url(params[:style])
-      else
-        redirect_to asset.url
-      end
-    rescue
+    @asset = PapermillAsset.find_by_id_partition(params)
+    if (@asset.create_thumb_file(params[:style]) rescue nil)
+      redirect_to @asset.url(params[:style])
+    else
       render :text => t('papermill.not-found'), :status => "404"
     end
   end
@@ -58,12 +44,10 @@ class PapermillController < ApplicationController
     params[:assetable_id]   = params[:assetable_id].try :to_i
     params[:assetable_type] = params[:assetable_type].try :camelize
     params[:assetable_key]  = params[:assetable_key].try :to_s
-    params[:swfupload_file] = params.delete(:Filedata)
     unless params[:gallery]
       @old_asset = asset_class.find(:first, :conditions => params.reject{|k, v| !["assetable_key", "assetable_type", "assetable_id"].include?(k)})
     end
-    @asset = asset_class.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["swfupload_file"]).include?(k)})
-    @asset.position = asset_class.find(:first, :conditions => params.reject{|k, v| !["assetable_key", "assetable_type", "assetable_id"].include?(k)}, :order => "position DESC" ).try(:position).to_i + 1
+    @asset = asset_class.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["file_data"]).include?(k)})
     
     if @asset.save
       @old_asset.destroy if @old_asset

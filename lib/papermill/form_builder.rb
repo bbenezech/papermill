@@ -1,3 +1,20 @@
+class ActionView::Helpers::FormBuilder
+  include ActionView::Helpers::FormTagHelper
+  
+  def assets_upload(key = nil, options = {})
+    papermill_upload_tag key, { :thumbnail => false }.update(options)
+  end
+  def asset_upload(key = nil, options = {})
+    papermill_upload_tag key, { :gallery => false, :thumbnail => false }.update(options)
+  end
+  def images_upload(key = nil, options = {})
+    papermill_upload_tag key, options
+  end
+  def image_upload(key = nil, options = {})
+    papermill_upload_tag key, { :gallery => false }.update(options)
+  end
+end
+
 module ActionView::Helpers::FormTagHelper
   
   def assets_upload_tag(assetable, key = nil, options = {})
@@ -104,6 +121,7 @@ module ActionView::Helpers::FormTagHelper
           file_types: "#{options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : ''}",
           file_types_description: "#{options[:thumbnail] ? 'Images' : 'Files'}",
           file_queue_limit: "#{!options[:gallery] ? '1' : '0'}",
+          file_post_name, "file_data",
           file_queued_handler: Upload.file_queued,
           file_dialog_complete_handler: Upload.file_dialog_complete,
           upload_start_handler: Upload.upload_start,
@@ -118,23 +136,5 @@ module ActionView::Helpers::FormTagHelper
   	end
   	html.reverse! if options[:button_after_container]
 	  %{<div class="papermill">#{html.join("\n")}</div>}
-  end
-end
-
-
-class ActionView::Helpers::FormBuilder
-  include ActionView::Helpers::FormTagHelper
-  
-  def assets_upload(key = nil, options = {})
-    papermill_upload_tag key, { :thumbnail => false }.update(options)
-  end
-  def asset_upload(key = nil, options = {})
-    papermill_upload_tag key, { :gallery => false, :thumbnail => false }.update(options)
-  end
-  def images_upload(key = nil, options = {})
-    papermill_upload_tag key, options
-  end
-  def image_upload(key = nil, options = {})
-    papermill_upload_tag key, { :gallery => false }.update(options)
   end
 end

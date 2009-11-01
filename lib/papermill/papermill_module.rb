@@ -131,8 +131,8 @@ module Papermill
       after_create :rebase_assets
       
       # Defines for catch-all association :
-      # Assetable#assets(*options)
       # Assetable#asset(*options)
+      # Assetable#assets(*options)
       unless self.respond_to?(base_association_name)
         [base_association_name.to_s.singularize, base_association_name].each_with_index do |association, index|
           define_method association do |*options|
@@ -161,7 +161,7 @@ module Papermill
       end
       
       # Defines for declared association : 
-      # Assetable#assoc.singularize(*options)
+      # Assetable#singularized_assoc(*options)
       # Assetable#assoc(*options)
       unless assoc_name.to_sym == :papermill_assets
         [assoc_name.to_s.singularize, assoc_name.to_s].each_with_index do |association, index|
