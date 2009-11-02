@@ -73,7 +73,7 @@ module Papermill
     :max_height => 1000
   }.deep_merge( Papermill.const_defined?("OPTIONS") ? Papermill::OPTIONS : {} )
   
-  PAPERCLIP_INTERPOLATION_STRING = ":id_partition/:style/:escaped_basename.:extension"
+  PAPERCLIP_INTERPOLATION_STRING = ":id_partition/:style/:basename.:extension"
   
   def self.included(base)
     base.extend(ClassMethods)

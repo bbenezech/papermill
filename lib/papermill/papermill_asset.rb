@@ -5,22 +5,22 @@ class PapermillAsset < ActiveRecord::Base
   before_destroy :destroy_files
   before_create :set_position
   
-  Paperclip.interpolates :escaped_basename do |attachment, style|
-    Paperclip::Interpolations[:basename].call(attachment, style).to_url
-  end
-  
   has_attached_file :file, 
     :path => "#{Papermill::PAPERMILL_DEFAULTS[:public_root]}/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
     :url => "/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
   validates_attachment_presence :file
 
-  def file_data=(data)
+  def Filedata=(data)
     self.file = data
     self.file_content_type = data.get_content_type
   end
   
+  def Filename=(name)
+    self.title = name
+  end
+  
   def create_thumb_file(style_name)
-    return unless (style = self.class.compute_style(style_name))
+    style = self.class.compute_style(style_name)
     FileUtils.mkdir_p File.dirname(file.path(style_name))
     FileUtils.mv(Paperclip::Thumbnail.make(file, style).path, file.path(style_name))
   end
@@ -30,7 +30,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def self.find_by_id_partition(params)
-    self.find_by_id (params[:id0] + params[:id1] + params[:id2]).to_i
+    self.find((params[:id0] + params[:id1] + params[:id2]).to_i)
   end
   
   def name
@@ -38,11 +38,11 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def width
-    image? && Paperclip::Geometry.from_file(file).width
+    Paperclip::Geometry.from_file(file).width
   end
   
   def height
-    image? && Paperclip::Geometry.from_file(file).height
+    Paperclip::Geometry.from_file(file).height
   end
   
   def size
@@ -62,7 +62,20 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def image?
-    content_type && content_type.split("/")[0] == "image" && (content_type.split("/")[1] || "unknown")
+    content_type.split("/")[0] == "image"
+  end
+  
+  def save(*params)
+    if super(*params)
+      if params.last.is_a?(Hash) && params.last[:unique]
+        PapermillAsset.find(:all, :conditions => {:assetable_id => assetable_id, :assetable_type => assetable_type, :assetable_key => assetable_key }).each do |asset|
+          asset.destroy unless asset == self
+        end
+      end
+      true
+    else
+      false
+    end
   end
   
   private
@@ -77,8 +90,6 @@ class PapermillAsset < ActiveRecord::Base
   
   def self.compute_style(style)
     style = Papermill::PAPERMILL_DEFAULTS[:aliases][style.to_sym] || Papermill::PAPERMILL_DEFAULTS[:aliases][style.to_s] || !Papermill::PAPERMILL_DEFAULTS[:alias_only] && style
-    return unless style
-    style = (style.is_a?(Symbol) ? style.to_s : style)
-    style.is_a?(Hash) ? style : {:geometry => style} 
+    [Symbol, String].include?(style.class) ? {:geometry => style.to_s} : style
   end  
 end

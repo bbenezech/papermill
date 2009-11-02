@@ -13,16 +13,6 @@ module PapermillHashExtensions
     target
   end
 end
-module PapermillStringExtensions
-  def simple_sql_sanitizer
-    gsub(/\\/, '\&\&').gsub(/'/, "''")
-  end
-end
-module PapermillStringToUrlNotFound
-  def to_url
-    gsub(/[^a-zA-Z0-9]/, "-").gsub(/-+/, "-").gsub(/^-|-$/, "").downcase
-  end
-end
 module PapermillObjectExtensions
   # Nil if empty.
   def nie

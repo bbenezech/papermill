@@ -95,7 +95,7 @@ module ActionView::Helpers::FormTagHelper
     }
     url_options.merge!({
       :assetable_id => assetable_id, 
-      :assetable_type => assetable_type.underscore, 
+      :assetable_type => assetable_type.underscore
     }) if assetable
     create_url = @template.url_for(url_options)
     if assetable && assetable.new_record? && !@timestamped
@@ -121,7 +121,6 @@ module ActionView::Helpers::FormTagHelper
           file_types: "#{options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : ''}",
           file_types_description: "#{options[:thumbnail] ? 'Images' : 'Files'}",
           file_queue_limit: "#{!options[:gallery] ? '1' : '0'}",
-          file_post_name, "file_data",
           file_queued_handler: Upload.file_queued,
           file_dialog_complete_handler: Upload.file_dialog_complete,
           upload_start_handler: Upload.upload_start,

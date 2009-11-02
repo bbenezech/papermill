@@ -73,12 +73,10 @@ See papermill_module.rb for the complete list of options.
       }
     end
     # see lib/papermill/papermill_module.rb
-    
-    # You can use stringex's String#to_url (papermill will use its own String#to_url if none exists)
-    config.gem 'stringex'
     ...
-    # You can use Mime-Type to get the correct mime type from upload - flash garbles it.. (default is a UNIX call to "file --mime")
-    # needed for Windows OS
+    # You can use Mime-Type to get the correct mime type from upload - flash garbles it.. 
+    # default to a UNIX call to "file --mime" that works fine,
+    # but mime-types is needed for Windows OS (it will get the mime from extension):
     config.gem "mime-types", :lib => "mime/types"
   end
     
