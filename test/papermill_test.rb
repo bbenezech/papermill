@@ -32,8 +32,6 @@ ActiveRecord::Schema.define(:version => 1) do
   end
 end
 
-
-
 class MyAsset < PapermillAsset
 end
 
@@ -48,10 +46,10 @@ end
 class PapermillTest < Test::Unit::TestCase
   @article = Article.create!
   @file = File.new(File.join(File.dirname(__FILE__), "fixtures", "5k.png"), 'rb')
-  PapermillAsset.create!(:file_data => @file, :assetable => @article, :assetable_key => "asset1")
-  PapermillAsset.create!(:file_data => @file, :assetable => @article, :assetable_key => "asset2")
-  MyAsset.create!(:file_data => @file, :assetable => @article, :assetable_key => "my_assets")
-  MyAsset.create!(:file_data => @file, :assetable => @article, :assetable_key => "my_assets")
+  PapermillAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "asset1")
+  PapermillAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "asset2")
+  MyAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "my_assets")
+  MyAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "my_assets")
   
   def initialize(*args)
     super
@@ -99,8 +97,8 @@ class PapermillTest < Test::Unit::TestCase
   end
   
   def test_path
-    assert_equal @asset1.path, "./test/../../../public/system/papermill/000/000/001/original/5k.png"
-    assert_equal @asset1.path("400x300#"), "./test/../../../public/system/papermill/000/000/001/400x300#/5k.png"
+    assert_equal @asset1.path, "./test/../../../../public/system/papermill/000/000/001/original/5k.png"
+    assert_equal @asset1.path("400x300#"), "./test/../../../../public/system/papermill/000/000/001/400x300#/5k.png"
   end
   
   def test_content_type
@@ -121,6 +119,6 @@ class PapermillTest < Test::Unit::TestCase
     assert_equal PapermillAsset.compute_style("100x100"),  :geometry => "100x100"
     assert_equal PapermillAsset.compute_style(:"100x100"),  :geometry => "100x100"
     Papermill::PAPERMILL_DEFAULTS[:alias_only] = true
-    assert_equal PapermillAsset.compute_style("100x100"), nil
+    assert_equal PapermillAsset.compute_style("100x100"), false
   end
 end
