@@ -1,4 +1,5 @@
 .DS_Store
+test/*.log
 log/*.log
 tmp/**/*
 config/database.yml
