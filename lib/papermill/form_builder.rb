@@ -95,7 +95,7 @@ module ActionView::Helpers::FormTagHelper
     }
     url_options.merge!({
       :assetable_id => assetable_id, 
-      :assetable_type => assetable_type.underscore
+      :assetable_type => assetable_type
     }) if assetable
     create_url = @template.url_for(url_options)
     if assetable && assetable.new_record? && !@timestamped
