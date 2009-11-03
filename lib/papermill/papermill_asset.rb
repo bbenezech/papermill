@@ -8,8 +8,9 @@ class PapermillAsset < ActiveRecord::Base
   has_attached_file :file, 
     :path => "#{Papermill::PAPERMILL_DEFAULTS[:public_root]}/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
     :url => "/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
+  
   validates_attachment_presence :file
-
+  
   def Filedata=(data)
     self.file = data
     self.file_content_type = data.get_content_type
@@ -20,9 +21,8 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def create_thumb_file(style_name)
-    style = self.class.compute_style(style_name)
     FileUtils.mkdir_p File.dirname(file.path(style_name))
-    FileUtils.mv(Paperclip::Thumbnail.make(file, style).path, file.path(style_name))
+    FileUtils.mv(Paperclip::Thumbnail.make(file, self.class.compute_style(style_name)).path, file.path(style_name))
   end
   
   def id_partition
@@ -84,8 +84,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def destroy_files
-    FileUtils.rm_r "#{Papermill::papermill_interpolated_path({":id_partition" => self.id_partition}, ':id_partition')}/"
-    true
+    FileUtils.rm_r(File.dirname(path).chomp("original")) rescue true
   end
   
   def self.compute_style(style)

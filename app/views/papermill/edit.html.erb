@@ -17,12 +17,7 @@
       </table>
     </div>
     <div id="read-write">
-      <form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post" action="/papermill/<%= @asset.id %>">
-        <input type="hidden" value="put" name="_method"/>
-        <% fields_for :papermill_asset, @asset do |form| %>
-          <%= render :partial => 'form', :object => form %>
-        <% end %>
-      </form>
+      <%= render :partial => 'form' %>
     </div>
   </div>
   <div style="clear:both;"></div>

@@ -1,13 +1,18 @@
-<p>
-  <%= form.label :title, t("papermill.title") %><br />
-  <%= form.text_field :title, :class => "text_field" %>
-</p>
-<p>
-  <%= form.label :copyright, t("papermill.copyright") %><br />
-  <%= form.text_field :copyright, :class => "text_field" %>
-</p>
-<p>
-  <%= form.label :description, t("papermill.description") %><br />
-  <%= form.text_area :description %>
-</p>
-<%= submit_tag t('papermill.save') %>
+<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post" action="/papermill/<%= @asset.id %>">
+  <input type="hidden" value="put" name="_method"/>
+  <% fields_for :papermill_asset, @asset do |form| %>
+    <p>
+      <%= form.label :title, t("papermill.title") %><br />
+      <%= form.text_field :title, :class => "text_field" %>
+    </p>
+    <p>
+      <%= form.label :copyright, t("papermill.copyright") %><br />
+      <%= form.text_field :copyright, :class => "text_field" %>
+    </p>
+    <p>
+      <%= form.label :description, t("papermill.description") %><br />
+      <%= form.text_area :description %>
+    </p>
+    <%= submit_tag t('papermill.save') %>
+  <% end %>
+</form>

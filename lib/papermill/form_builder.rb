@@ -41,13 +41,16 @@ module ActionView::Helpers::FormTagHelper
     end
  
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
-    options = if assetable && (association = (assetable.class.papermill_associations[key] || assetable.class.papermill_associations[:papermill_assets]))
-      association[:options].deep_merge(options)
-    elsif assetable.nil?
-      Papermill::PAPERMILL_DEFAULTS.deep_merge(options)
-    else
-      raise PapermillException.new("Can't find '#{key.to_s}' association for '#{assetable.class.to_s}'.\n\n##{assetable.class.to_s.underscore}.rb\nYou can take on of these actions: \n1. set either a catchall papermill association: 'papermill {your_option_hash}'\n2. or a specific association: 'papermill :#{key.to_s}, {your_option_hash}'")
-    end
+    options = (
+      if assetable && (association = (assetable.class.papermill_associations[key] || assetable.class.papermill_associations[:papermill_assets]))
+        association[:options].deep_merge(options)
+      elsif assetable.nil?
+        Papermill::PAPERMILL_DEFAULTS.deep_merge(options)
+      else
+        raise PapermillException.new("Can't find '#{key.to_s}' association for '#{assetable.class.to_s}'.\n\n##{assetable.class.to_s.underscore}.rb\nYou can take on of these actions: \n1. set either a catchall papermill association: 'papermill {your_option_hash}'\n2. or a specific association: 'papermill :#{key.to_s}, {your_option_hash}'")
+      end
+    )
+    
     assetable_id = assetable && (assetable.id || assetable.timestamp) || nil
     assetable_type = assetable && assetable.class.to_s || nil
     id = "papermill_#{assetable_type}_#{assetable_id}_#{key ? key.to_s : 'nil'}"
@@ -93,10 +96,12 @@ module ActionView::Helpers::FormTagHelper
       :gallery => (options[:gallery] != false), 
       :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style])
     }
+    
     url_options.merge!({
       :assetable_id => assetable_id, 
       :assetable_type => assetable_type
     }) if assetable
+    
     create_url = @template.url_for(url_options)
     if assetable && assetable.new_record? && !@timestamped
       html << @template.hidden_field(assetable.class.to_s.underscore, :timestamp, :value => assetable.timestamp)

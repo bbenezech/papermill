@@ -79,12 +79,6 @@ module Papermill
     base.extend(ClassMethods)
   end
   
-  def self.papermill_interpolated_path(replacements_pairs, up_to)
-    replacements_pairs = {"other" => "*", ":rails_root" => RAILS_ROOT}.merge(replacements_pairs)
-    a = "#{PAPERMILL_DEFAULTS[:public_root]}/#{PAPERMILL_DEFAULTS[:papermill_prefix]}/#{PAPERCLIP_INTERPOLATION_STRING}".split("/")
-    "#{a[0..(up_to && a.index(up_to) || -1)].map{ |s| s.starts_with?(':') ? (replacements_pairs[s] || replacements_pairs['other'] || s) : s }.join('/')}"
-  end
-  
   module ClassMethods
     attr_reader :papermill_associations
     
@@ -129,6 +123,7 @@ module Papermill
 
       before_destroy :destroy_assets
       after_create :rebase_assets
+      
       
       # Defines for catch-all association :
       # Assetable#asset(*options)
