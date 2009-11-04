@@ -42,7 +42,7 @@ module ActionView::Helpers::FormTagHelper
  
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
     options = (
-      if assetable && (association = (assetable.class.papermill_associations[key] || assetable.class.papermill_associations[:papermill_assets]))
+      if assetable && (association = (assetable.class.papermill_associations[key] || assetable.class.papermill_associations[Papermill::PAPERMILL_DEFAULTS[:base_association_name]]))
         association[:options].deep_merge(options)
       elsif assetable.nil?
         Papermill::PAPERMILL_DEFAULTS.deep_merge(options)
@@ -58,7 +58,7 @@ module ActionView::Helpers::FormTagHelper
       w = options[:thumbnail][:width]  || options[:thumbnail][:height] && options[:thumbnail][:aspect_ratio] && (options[:thumbnail][:height] * options[:thumbnail][:aspect_ratio]).to_i || nil
       h = options[:thumbnail][:height] || options[:thumbnail][:width]  && options[:thumbnail][:aspect_ratio] && (options[:thumbnail][:width]  / options[:thumbnail][:aspect_ratio]).to_i || nil
       options[:thumbnail][:style] ||= (w || h) && "#{w || options[:thumbnail][:max_width]}x#{h || options[:thumbnail][:max_height]}>" || "original"
-      if options[:thumbnail][:inline_css]
+      if options[:inline_css]
         size = []
         size << "width:#{w}px" if w
         size << "height:#{h}px" if h
