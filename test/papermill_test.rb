@@ -39,36 +39,44 @@ class Article < ActiveRecord::Base
   def self.table_name 
     :articles
   end
-  papermill
+  papermill 
   papermill :my_assets, :class_name => MyAsset
 end
 
 class PapermillTest < Test::Unit::TestCase
   @article = Article.create!
+  @decoy_article = Article.create!
   @file = File.new(File.join(File.dirname(__FILE__), "fixtures", "5k.png"), 'rb')
-  PapermillAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "asset1")
-  PapermillAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "asset2")
+  PapermillAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "asset1", :position => 2)
+  PapermillAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "asset1", :position => 1)
   MyAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "my_assets")
   MyAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "my_assets")
+  MyAsset.create!(:Filedata => @file, :assetable => @decoy_article, :assetable_key => "my_assets")
   
   def initialize(*args)
     super
-    @article = Article.first
     @file = File.new(File.join(File.dirname(__FILE__), "fixtures", "5k.png"), 'rb')
-    @asset1 = PapermillAsset.all[0]
-    @asset2 = PapermillAsset.all[1]
-    @asset3 = PapermillAsset.all[2]
-    @asset4 = PapermillAsset.all[3]
+    
+    @article = Article.find 1
+    @decoy_article = Article.find 2
+    
+    @asset1 = PapermillAsset.find 1
+    @asset2 = PapermillAsset.find 2
+    @asset3 = PapermillAsset.find 3
+    @asset4 = PapermillAsset.find 4
+    @asset5 = PapermillAsset.find 5
   end
   
-  def test_active_record_hooks
-    assert_equal @article.assets.map(&:id).sort, [@asset1, @asset2, @asset3, @asset4].map(&:id).sort
-    assert_equal @article.assets(:asset1), [@asset1]
-    assert_equal @article.assets(:my_assets), @article.my_assets
+  def test_namedscopes_for_specific_associations
+    assert_equal @article.my_assets.map(&:id), [3,4]
+    assert_equal @article.my_assets(:order => "position DESC").map(&:id), [4,3]
+    assert_equal @article.my_assets(:order => "position DESC", :limit => 1).map(&:id), [4]
   end
-
-  def test_default_active_record_hooks_retrieve_order
-    assert_equal @article.my_assets.map(&:position), [1,2]
+  
+  def test_namedscope_for_global_associations_and_default_order
+    assert_equal @article.assets(:asset1).map(&:id), [2,1]
+    assert_equal @article.assets(:asset1, :order => "position DESC").map(&:id), [1,2]
+    assert_equal @article.assets(:asset1, :order => "position DESC", :limit => 1).map(&:id), [1]
   end
   
   def test_id_partition

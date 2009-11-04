@@ -78,7 +78,7 @@ file "app/views/articles/show.html.erb", <<-END
 <br /><br />
 <b>@article.assets(:my_other_image).first :</b>
 <p>
-  <% image = @article.asset(:my_other_image) %>
+  <% image = @article.assets(:my_other_image).first %>
   <%= link_to(image_tag(image.url("100x100#")), image.url) if image %>
 </p>
 <br /><br />
@@ -91,9 +91,9 @@ file "app/views/articles/show.html.erb", <<-END
   </ul>
 </p>
 <br /><br />
-<b>@article.asset(:my_other_asset) :</b>
+<b>@article.assets(:my_other_asset).first :</b>
 <p>
-  <% asset = @article.asset(:my_other_asset) %>
+  <% asset = @article.assets(:my_other_asset).first %>
   <%= link_to(asset.name, asset.url) if asset %>
 </p>
 

@@ -1,7 +1,7 @@
 require 'paperclip'
 
 class PapermillAsset < ActiveRecord::Base
-  belongs_to :assetable, :polymorphic => true
+  
   before_destroy :destroy_files
   before_create :set_position
   
@@ -10,6 +10,9 @@ class PapermillAsset < ActiveRecord::Base
     :url => "/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
   
   validates_attachment_presence :file
+  
+  belongs_to :assetable, :polymorphic => true
+  default_scope :order => 'position'
   
   def Filedata=(data)
     self.file = data
@@ -80,7 +83,7 @@ class PapermillAsset < ActiveRecord::Base
   
   private
   def set_position
-    self.position = self.class.find(:first, :conditions => ["assetable_key = ? AND assetable_type = ? AND assetable_id = ?", assetable_key, assetable_type, assetable_id], :order => "position DESC" ).try(:position).to_i + 1
+    self.position ||= self.class.find(:first, :conditions => ["assetable_key = ? AND assetable_type = ? AND assetable_id = ?", assetable_key, assetable_type, assetable_id], :order => "position DESC" ).try(:position).to_i + 1
   end
   
   def destroy_files

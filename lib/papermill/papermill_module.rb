@@ -57,13 +57,14 @@ module Papermill
     :file_size_limit_mb => 10,                      # file max size
     :button_after_container => false,               # set to true to move the upload button below the container
 
-    # DO NOT CHANGE THESE IN YOUR CLASSES. Only application wide (routes or associations may depend on it)
+    # Only application wide (routes or associations may depend on it)
     
     :base_association_name => 'assets',
     :alias_only => false,        # set to true so that only aliases are authorized in url/path
     # aliases name must be strings!
     :aliases => {
       # 'example' => "100x100#",
+      # 'example2' => {:geometry => "100x100#"}
     },
     # path to the root of your public directory
     :public_root => ":rails_root/public",
@@ -84,101 +85,44 @@ module Papermill
     
     # papermill comes in 2 flavors:
     #
-    # 1. generic declaration =>
+    # 1. catch-all declaration =>
     #   declare associations with =>  papermill {my_option_hash}
     #   create assets with        =>  assets_upload(:my_key, {optional_option_hash})
     #   access assets with        =>  assetable.assets(:my_key)
     #
     # 2. association declaration =>
     #   declare associations with =>  papermill :my_association, {my_option_hash}
-    #   create assets with        =>  assets_upload(my_association, {optional_option_hash})
+    #   create assets with        =>  assets_upload(:my_association, {optional_option_hash})
     #   access assets with        =>  assetable.my_association
     #
-    # In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash
-    def papermill(assoc_name = :papermill_assets, options = {})
-      if assoc_name.is_a? Hash
-        options = assoc_name
-        assoc_name = :papermill_assets
-      end
-      base_association_name = PAPERMILL_DEFAULTS[:base_association_name]
-      if [base_association_name.to_s.singularize, base_association_name.to_s].include?(assoc_name.to_s)
-        raise PapermillException.new(
-        "':#{assoc_name.to_s}' and ':#{assoc_name.to_s.singularize}' are the default papermill associations name.\n" + 
-        "You can take one of these actions: \n" +
-        "1. use another association name instead of ':#{assoc_name.to_s}'. Eg: 'papermill :my_lovely_assets {my_options}'\n" + 
-        "2. change :base_association_name to something else than '#{base_association_name.to_s}' in the application-wide papermill option hash (change 'Papermill::OPTIONS[:base_association_name]' in your environment.rb)\n" + 
-        "3. use a catch-all 'papermill {your_options}' declaration instead of 'papermill :#{assoc_name.to_s} {your_options}'\n\n" + 
-        "If you want to take advantage of pluralized/singularized associations, always specify a singularizable name. Eg: 'my_assets' is ok, 'my_assix' is not ;). \n" + 
-        "(Anyway you can add exceptions in your config/initializer/inflections.rb)\n\n\n")
-      end
-      @papermill_associations ||= {}
-      begin
-        class_name = options.delete(:class_name)
-        asset_class = class_name && class_name.to_s.constantize || PapermillAsset
-      rescue NameError
-        raise PapermillException.new("'#{class_name.to_s}' class doesn't exist.\n'#{class_name.to_s}' should be a subclass of PapermillAsset")
-      end
-
-      @papermill_associations.merge!({assoc_name.to_sym => {:class => asset_class, :options => Papermill::PAPERMILL_DEFAULTS.deep_merge(options)}})
-
+    # In both case, you can specify a default PapermillAsset subclass to use with the form_helpers: {:class_name => MyPapermillAssetSubclass} in the option hash
+    def papermill(*args)
+      assoc_name = (!args.first.is_a?(Hash) && args.shift || PAPERMILL_DEFAULTS[:base_association_name]).to_sym
+      options = args.first || {}
+      
+      (@papermill_associations ||= {}).merge!({ assoc_name => {
+          :class => (class_name = options.delete(:class_name)) && class_name.to_s.constantize || PapermillAsset, 
+          :options => Papermill::PAPERMILL_DEFAULTS.deep_merge(options)
+      }})
+      
+      include Papermill::InstanceMethods
       before_destroy :destroy_assets
       after_create :rebase_assets
-      
-      
-      # Defines for catch-all association :
-      # Assetable#asset(*options)
-      # Assetable#assets(*options)
-      unless self.respond_to?(base_association_name)
-        [base_association_name.to_s.singularize, base_association_name].each_with_index do |association, index|
-          define_method association do |*options|
-            # case Assetable#asset<s>(:key)
-            if (options.is_a?(Symbol) || options.is_a?(String))
-              key = options
-              options = {}
-            # case Assetable#asset<s>(:key, options = {})
-            elsif (options.first.is_a?(Symbol) || options.first.is_a?(String))
-              key = options.first
-              options = options[1..-1]
-            end
-            options = options.first || {}
-            conditions = {
-              :assetable_type => self.class.sti_name,
-              :assetable_id => self.id
-            }.merge(options.delete(:conditions) || {})
-            conditions.merge!({:assetable_key => key.to_s}) if key
-            hash = {
-              :conditions => conditions, 
-              :order => options.delete(:order) || "position ASC"
-            }.merge(options)
-            PapermillAsset.find((index == 0 ? :first : :all), hash)
-          end
+      has_many :papermill_assets, :as => "Assetable"
+
+      # named_scopes (in pseudo-code) :
+      #   papermill :assoc_name, { options } => named_scope :assoc_name,            lambda { |*args| { :conditions => { :assetable_key => assoc_name } }.merge(args) }
+      #   papermill { options }              => named_scope :base_association_name, lambda { |*args| { :conditions => { :assetable_key => args.shift } }.merge(args) }
+      define_method assoc_name do |*options|
+        scope = PapermillAsset.scoped(:conditions => {:assetable_id => self.id, :assetable_type => self.class.name})
+        if assoc_name != PAPERMILL_DEFAULTS[:base_association_name].to_sym
+          scope = scope.scoped(:conditions => { :assetable_key => assoc_name.to_s })
+        elsif options.first && !options.first.is_a?(Hash)
+          scope = scope.scoped(:conditions => { :assetable_key => options.shift.to_s.nie })
         end
+        scope = scope.scoped(options.shift) if options.first
+        scope
       end
-      
-      # Defines for declared association : 
-      # Assetable#singularized_assoc(*options)
-      # Assetable#assoc(*options)
-      unless assoc_name.to_sym == :papermill_assets
-        [assoc_name.to_s.singularize, assoc_name.to_s].each_with_index do |association, index|
-          define_method assoc_name do |*options|
-            options = options.first || {}
-            conditions = {
-              :assetable_type => self.class.sti_name,
-              :assetable_id => self.id,
-              :assetable_key => assoc_name.to_s
-            }.merge(options.delete(:conditions) || {})
-            hash = {
-              :conditions => conditions, 
-              :order => options.delete(:order) || "position ASC"
-            }.merge(options)
-            asset_class.find((index == 0 ? :first : :all), hash)
-          end
-        end
-      end
-      
-      class_eval <<-EOV
-        include Papermill::InstanceMethods
-      EOV
     end
     
     def inherited(subclass)
@@ -196,13 +140,11 @@ module Papermill
     private
     
     def destroy_assets
-      PapermillAsset.find(:all, :conditions => {:assetable_id => self.id, :assetable_type => self.class.sti_name}).each do |asset|
-        asset.destroy
-      end
+      papermill_assets.each &:destroy
     end
     
     def rebase_assets
-      PapermillAsset.find(:all, :conditions => {:assetable_id => self.timestamp, :assetable_type => self.class.sti_name}).each do |asset|
+      papermill_assets.each do |asset|
         if asset.created_at < 2.hours.ago
           asset.destroy
         else

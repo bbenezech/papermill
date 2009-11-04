@@ -19,45 +19,44 @@ Asset management made easy.
 
 === Generic catch-all declaration
 
-  papermill my_option_hash                                # in your papermilled assetable model
-  assets_upload(:my_key, my_option_hash)                  # form helper call
-  f.input :my_key, :as => :assets_upload, my_option_hash  # if you are using formtastic
+  papermill {options}                                     # in your papermilled assetable model
+  assets_upload(:my_key, {options})                       # form helper call
+  form.input :my_key, :as => :assets_upload, {options}    # if you are using formtastic
   @assetable.assets(:my_key)                              # data access in your view
 
 === Association specific declaration
 
-  papermill :my_association, my_option_hash               # in your papermilled assetable model
-  assets_upload(:my_association, my_option_hash)          # form helper call
-  @assetable.my_association                               # data access in your view
+  papermill :my_association, {options}               # in your papermilled assetable model
+  assets_upload(:my_association, {options})          # form helper call
+  @assetable.my_association                          # data access in your view
 
 
 In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash.
 
 You can have a catch-all declaration and as many specific association as you want in your model (as long as they use different keys).
 
-It's up to you. You can use the first one only, the second only or both.
+You can use the first one only, the second only or both.
 
 See papermill_module.rb for the complete list of options.
 
 == Installation
 
-=== Once you've installed the gem, generate a migration and copy a couple of static assets:
+=== Once gem is installed :
 
-  # Generate  the migration and migrate:
+  # Generate migration :
   $ ./script/generate papermill_table PapermillMigration
   $ rake db:migrate
-  # copy some needed static assets to your public directory:
+  # copy static assets to your public directory:
   $ ./script/generate papermill_assets
   
 === Then in environment.rb:
   
   ...
-  
   Rails::Initializer.run do |config|
     ...
     config.gem papermill
     
-    # You can set application-wide options inside or before Rails::Initializer :
+    # You can set application-wide options inside or BEFORE Rails::Initializer :
     module Papermill
       OPTIONS = {
         :thumbnail => {
@@ -74,47 +73,34 @@ See papermill_module.rb for the complete list of options.
     end
     # see lib/papermill/papermill_module.rb
     ...
-    # You can use Mime-Type to get the correct mime type from upload - flash garbles it.. 
-    # default to a UNIX call to "file --mime" that works fine,
-    # but mime-types is needed for Windows OS (it will get the mime from extension):
+    # Needed for Windows OS !! (mime type from file extension): 
     config.gem "mime-types", :lib => "mime/types"
   end
-    
-=== In your assetable model:
-  
-  # You can set a catch-all papermill association : 
-  papermill :class_name => MyAssetClass
-  
-  # or create an association for the specific :my_gallery key
-  papermill :my_gallery_assets, :class_name => MyGalleryAsset
 
 === In your layout:
 
   <%= papermill_stylesheet_tag %>
   <%= papermill_javascript_tag :with_jquery => "no_conflict" %>
   # you won't need :with_jquery if you have it already.
-  
+
+
+=== In your assetable model:
+
+  # You can set a catch-all papermill association: 
+  papermill {options}
+
+  # or create an association for a specific key:
+  papermill :my_gallery, {options}
+
 === In your edit form: 
 
-  f.images_upload(:my_gallery)     # use specific papermill :my_gallery declaration
+  f.images_upload(:my_gallery)     # use specific papermill :my_gallery declaration to find related options
   f.assets_upload(:my_assets)      # use catch-all
   f.asset_upload(:my_other_asset)  # use catch-all
   
-=== Access them with:
+=== Access them in your views:
   
-  @assetable.my_gallery_assets.each{ |image| image_tag image.url("100x100") }
-  # equivalent to:
-  @assetable.assets(:my_gallery_assets).each{ |image| image_tag image.url("100x100") }
-  # also equivalent to:
-  @assetable.assets(:conditions => {:assetable_key => 'my_gallery_assets'}).each{ |image| image_tag image.url("100x100") }
-  
-  @assetable.assets(:my_assets).each{ |asset| asset.url }
-  # if your association name is singularizable, you can do smtg like : 
-  @assetable.asset(:my_other_asset).try(:url)
-  # equivalent to:
-  @assetable.assets(:my_other_asset).first.try(:url)
-
-  # You can change assets/asset with :base_association_name in Papermill::OPTIONS (choose a plural word and you'll get singular association for free)
+  @assetable.my_gallery.each{ |image| image_tag image.url("100x100") }
 
 Also see http://github.com/bbenezech/papermill/raw/master/installation-template.txt
 Have a look at the API here http://rdoc.info/projects/bbenezech/papermill
