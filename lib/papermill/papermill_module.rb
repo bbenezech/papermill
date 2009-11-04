@@ -61,14 +61,13 @@ module Papermill
     
     :base_association_name => 'assets',
     :alias_only => false,        # set to true so that only aliases are authorized in url/path
-    # aliases name must be strings!
     :aliases => {
       # 'example' => "100x100#",
       # 'example2' => {:geometry => "100x100#"}
     },
-    # path to the root of your public directory
+    # path to the root of your public directory (from NGINX/Apache pov)
     :public_root => ":rails_root/public",
-    # added to :public_root as the root folder for all papermill items
+    # added to :public_root as the root folder for all papermill assets
     :papermill_prefix => "system/papermill",
     :max_width  => 1000,
     :max_height => 1000
