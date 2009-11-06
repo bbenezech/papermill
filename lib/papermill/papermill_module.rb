@@ -24,7 +24,7 @@ module Papermill
       :width => nil,               # overrides calculated width. Recommended if :thumbnail[:width] is nil.
       :height => nil,              # overrides calculated height. Recommended if :thumbnail[:height] is nil.
       :columns => 8,               # number of columns. If thumbnail.width has a value, sets a width for the gallery, calculated from thumbnails width multiplied by :columns.
-      :lines => 2,                 # number of default lines. (height will autogrow) If thumbnail.height has a value, sets a min-height for the gallery, calculated from thumbnails height multiplied by :lines
+      :lines => 2,                 # number of default lines. If thumbnail.height has a value, sets a min-height for the gallery, calculated from thumbnails height multiplied by :lines
       :vpadding => 0,              # vertical padding around thumbnails
       :hpadding => 0,              # horizontal padding around thumbnails
       :vmargin => 1,               # vertical margin around thumbnails
