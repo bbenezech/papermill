@@ -18,25 +18,25 @@ Asset management made easy.
 == Features
 
 1. Ajax uploading form helpers through SWFUpload: 
-* image_upload => unique image upload field, with preview
-* images_upload => sortable image gallery upload field
-* asset_upload => simple one asset field
-* assets_upload => sortable asset list field
+  * image_upload => unique image upload field, with preview
+  * images_upload => sortable image gallery upload field
+  * asset_upload => simple one asset field
+  * assets_upload => sortable asset list field
 2. choose thumbnail size for images previews : 
-* {:thumbnail => {:width => 100, :height => 100}}
-* {:thumbnail => {:style => "100x100>"}}
-* {:thumbnail => {:width => 100, :aspect_ratio => 4.0/3.0 }}
+  * {:thumbnail => {:width => 100, :height => 100}}
+  * {:thumbnail => {:style => "100x100>"}}
+  * {:thumbnail => {:width => 100, :aspect_ratio => 4.0/3.0 }}
 3. Asset edit form: 
-* double-click on any asset in any helper to access&edit his properties
-* with pop-up/shadowbox/facebox, out of the box (or use your own pop-up system, dead-easy)
+  * double-click on any asset in any helper to access&edit his properties
+  * with pop-up/shadowbox/facebox, out of the box (or use your own pop-up system, dead-easy)
 4. Lazy created thumbnails
-* thumbnails are generated the first time they are asked-for, and only in the requested size. 
-* no need to register thumbnail size anywhere: my_asset.url("100x100>")
+  * thumbnails are generated the first time they are asked-for, and only in the requested size. 
+  * no need to register thumbnail size anywhere: my_asset.url("100x100>")
 5. Alias handling, declaration application-wide
-* :big_alias => {:geometry => "1000x>"}
-* :other_alias => "100x>"
-* :third_alias => {:crop => '100:122', :size => '89x109>', :gravity => 'NorthGravity'}
-* and use them when you need them : my_asset.url(:big_alias)
+  * :big_alias => {:geometry => "1000x>"}
+  * :other_alias => "100x>"
+  * :third_alias => {:crop => '100:122', :size => '89x109>', :gravity => 'NorthGravity'}
+  * and use them when you need them : my_asset.url(:big_alias)
 6. Nice-looking URLs: /system/papermill/000/000/001/my_alias/my-image-name.jpg
 
 == Papermill comes in 2 flavors:
