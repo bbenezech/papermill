@@ -1,4 +1,4 @@
-require 'paperclip'
+#require 'paperclip'
 
 class PapermillAsset < ActiveRecord::Base
   
@@ -25,7 +25,12 @@ class PapermillAsset < ActiveRecord::Base
   
   def create_thumb_file(style_name)
     FileUtils.mkdir_p File.dirname(file.path(style_name))
-    FileUtils.mv(Paperclip::Thumbnail.make(file, self.class.compute_style(style_name)).path, file.path(style_name))
+    thumbnail = (begin
+      Paperclip::Thumbnail.make(file, self.class.compute_style(style_name)) 
+    rescue ArgumentError 
+      Paperclip::Thumbnail.make(file, self.class.compute_style(style_name, :old))
+    end)
+    FileUtils.mv(thumbnail.path, file.path(style_name))
   end
   
   def id_partition
@@ -90,8 +95,8 @@ class PapermillAsset < ActiveRecord::Base
     FileUtils.rm_r(File.dirname(path).chomp("original")) rescue true
   end
   
-  def self.compute_style(style)
+  def self.compute_style(style, compatibility_mode = nil)
     style = Papermill::PAPERMILL_DEFAULTS[:aliases][style.to_sym] || Papermill::PAPERMILL_DEFAULTS[:aliases][style.to_s] || !Papermill::PAPERMILL_DEFAULTS[:alias_only] && style
-    [Symbol, String].include?(style.class) ? {:geometry => style.to_s} : style
+    [Symbol, String].include?(style.class) && compatibility_mode.nil? ? {:geometry => style.to_s} : style
   end  
 end

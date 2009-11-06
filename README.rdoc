@@ -2,9 +2,9 @@
 
 Asset management made easy.
 
-== Install the gem
+== Install the gems
   
-  $ gem source -a http://gemcutter.org # Needed for paperclip (installed as a dependency) : Rubyforge's version is too old..
+  $ gem source -a http://gemcutter.org
   $ sudo gem install papermill
  
 == Try the demo
@@ -46,7 +46,7 @@ Loads of 'em
 
 * :big_alias => {:geometry => "1000x>"}
 * :other_alias => "100x>"
-* :third_alias => {:crop => '100:122', :size => '89x109>', :gravity => 'NorthGravity'}
+* :third_alias => {:geometry => '100:122', :my_other_keys => 'blblabla'}  # if you have a customed Paperclip::Thumbnail processor, you can pass any values you need.
 * and use them when you need them : my_asset.url(:big_alias)
 
 == Papermill comes in 2 flavors:
@@ -88,6 +88,7 @@ See papermill_module.rb for the complete list of options.
   ...
   Rails::Initializer.run do |config|
     ...
+    config.gem paperclip
     config.gem papermill
     
     # You can set application-wide options inside or BEFORE Rails::Initializer :

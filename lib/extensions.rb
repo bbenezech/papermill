@@ -13,14 +13,15 @@ module PapermillHashExtensions
     target
   end
 end
+
 module PapermillObjectExtensions
   # Nil if empty.
   def nie
     self.blank? ? nil : self
   end
 end
+
 module PapermillFileExtensions
-  
   def get_content_type
     begin
       MIME::Types.type_for(self.original_filename).to_s
