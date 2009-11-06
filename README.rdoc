@@ -17,30 +17,32 @@ Asset management made easy.
 
 == Features
 
-==== Ajax uploading form helpers through SWFUpload: 
+Loads of 'em
+
+=== Ajax uploading form helpers through SWFUpload: 
 
 * image_upload => unique image upload field, with preview
 * images_upload => sortable image gallery upload field
 * asset_upload => simple one asset field
 * assets_upload => sortable asset list field
 
-==== choose thumbnail size for images previews : 
+=== Choose thumbnail size for images previews : 
 
 * {:thumbnail => {:width => 100, :height => 100}}
 * {:thumbnail => {:style => "100x100>"}}
 * {:thumbnail => {:width => 100, :aspect_ratio => 4.0/3.0 }}
 
-==== Asset edit form: 
+=== Asset edit form: 
 
 * double-click on any asset in any helper to access&edit his properties
 * with pop-up/shadowbox/facebox, out of the box (or use your own pop-up system, dead-easy)
 
-==== Lazy created thumbnails
+=== Lazy created thumbnails
 
 * thumbnails are generated the first time they are asked-for, and only in the requested size. 
 * no need to register thumbnail size anywhere: my_asset.url("100x100>")
 
-==== Alias handling, declaration application-wide
+=== Alias handling, declaration application-wide
 
 * :big_alias => {:geometry => "1000x>"}
 * :other_alias => "100x>"
