@@ -52,12 +52,12 @@ module ActionView::Helpers::FormTagHelper
     )
     
     assetable_id = assetable && (assetable.id || assetable.timestamp) || nil
-    assetable_type = assetable && assetable.class.to_s || nil
+    assetable_type = assetable && assetable.class.base_class.name || nil
     id = "papermill_#{assetable_type}_#{assetable_id}_#{key ? key.to_s : 'nil'}"
     if options[:thumbnail]
       w = options[:thumbnail][:width]  || options[:thumbnail][:height] && options[:thumbnail][:aspect_ratio] && (options[:thumbnail][:height] * options[:thumbnail][:aspect_ratio]).to_i || nil
       h = options[:thumbnail][:height] || options[:thumbnail][:width]  && options[:thumbnail][:aspect_ratio] && (options[:thumbnail][:width]  / options[:thumbnail][:aspect_ratio]).to_i || nil
-      options[:thumbnail][:style] ||= (w || h) && "#{w || options[:thumbnail][:max_width]}x#{h || options[:thumbnail][:max_height]}>" || "original"
+      options[:thumbnail][:style] ||= (w || h) && "#{w}x#{h}>" || "original"
       if options[:inline_css]
         size = []
         size << "width:#{w}px" if w
@@ -72,7 +72,7 @@ module ActionView::Helpers::FormTagHelper
             hm = options[:gallery][:hmargin].to_i
             b  = options[:gallery][:border_thickness].to_i
             gallery_width = (options[:gallery][:width] || w) && "width:#{options[:gallery][:width] || options[:gallery][:columns]*(w+(hp+hm+b)*2)}px;" || ""
-            gallery_height = (options[:gallery][:height] || h) && "#{options[:gallery][:autogrow] ? "" : "min-"}height:#{options[:gallery][:height] || options[:gallery][:lines]*(h+(vp+vm+b)*2)}px;" || ""
+            gallery_height = (options[:gallery][:height] || h) && "min-height:#{options[:gallery][:height] || options[:gallery][:lines]*(h+(vp+vm+b)*2)}px;" || ""
             inline_css << %{##{id} { #{gallery_width} #{gallery_height} }}
             inline_css << %{##{id} li { margin:#{vm}px #{hm}px; border-width:#{b}px; padding:#{vp}px #{hp}px; #{size}; }}
           else
@@ -83,18 +83,13 @@ module ActionView::Helpers::FormTagHelper
         end
       end
     end
-    html = []
-    
-    asset_class = options[:class_name] && options[:class_name].to_s.constantize || association && association[:class] || PapermillAsset
     
     url_options = {
       :controller => "/papermill", 
       :action => "create", 
-      :escape => false, 
-      :asset_class => asset_class.to_s,
-      :assetable_key => key, 
-      :gallery => (options[:gallery] != false), 
-      :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style])
+      :asset_class => (options[:class_name] && options[:class_name].to_s.constantize || association && association[:class] || PapermillAsset).to_s,
+      :gallery => !!options[:gallery], 
+      :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style]
     }
     
     url_options.merge!({
@@ -102,15 +97,21 @@ module ActionView::Helpers::FormTagHelper
       :assetable_type => assetable_type
     }) if assetable
     
+    url_options.merge!({
+      :assetable_key => key
+    }) if key
+    
+    
+    html = []
     create_url = @template.url_for(url_options)
     if assetable && assetable.new_record? && !@timestamped
-      html << @template.hidden_field(assetable.class.to_s.underscore, :timestamp, :value => assetable.timestamp)
+      html << @template.hidden_field(assetable_type.underscore, :timestamp, :value => assetable.timestamp)
       @timestamped = true
     end
     
     conditions = {:assetable_type => assetable_type, :assetable_id => assetable_id}
     conditions.merge!({:assetable_key => key.to_s}) if key
-    collection = asset_class.find(:all, :conditions => conditions, :order => "position")
+    collection = PapermillAsset.all(:conditions => conditions, :order => "position")
     
     html << %{<div id="#{id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
     html << @template.content_tag(:ul, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {

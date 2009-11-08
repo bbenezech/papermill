@@ -1,6 +1,6 @@
 <div id="papermill-box">
   <div id="left">
-    <%= link_to(@asset.image? ? image_tag(@asset.url("400x#{Papermill::PAPERMILL_DEFAULTS[:max_height]}>")) : t("file_type", :type => @asset.content_type, :scope => 'papermill'), @asset.url, :popup => true) %>
+    <%= link_to(@asset.image? ? image_tag(@asset.url("400x>")) : t("file_type", :type => @asset.content_type, :scope => 'papermill'), @asset.url, :popup => true) %>
   </div>
   <div id="right">
     <div id="read-only">

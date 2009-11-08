@@ -9,6 +9,10 @@ class PapermillAsset < ActiveRecord::Base
     :path => "#{Papermill::PAPERMILL_DEFAULTS[:public_root]}/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
     :url => "/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
   
+  Paperclip.interpolates :escaped_basename do |attachment, style|
+    Paperclip::Interpolations[:basename].call(attachment, style).to_url
+  end
+  
   validates_attachment_presence :file
   
   belongs_to :assetable, :polymorphic => true
@@ -25,12 +29,7 @@ class PapermillAsset < ActiveRecord::Base
   
   def create_thumb_file(style_name)
     FileUtils.mkdir_p File.dirname(file.path(style_name))
-    thumbnail = (begin
-      Paperclip::Thumbnail.make(file, self.class.compute_style(style_name)) 
-    rescue ArgumentError 
-      Paperclip::Thumbnail.make(file, self.class.compute_style(style_name, :old))
-    end)
-    FileUtils.mv(thumbnail.path, file.path(style_name))
+    FileUtils.mv(Paperclip::Thumbnail.make(file, self.class.compute_style(style_name)).path, file.path(style_name))
   end
   
   def id_partition
@@ -88,7 +87,7 @@ class PapermillAsset < ActiveRecord::Base
   
   private
   def set_position
-    self.position ||= self.class.find(:first, :conditions => ["assetable_key = ? AND assetable_type = ? AND assetable_id = ?", assetable_key, assetable_type, assetable_id], :order => "position DESC" ).try(:position).to_i + 1
+    self.position ||= PapermillAsset.first(:conditions => {:assetable_key => assetable_key, :assetable_type => assetable_type, :assetable_id => assetable_id}, :order => "position DESC" ).try(:position).to_i + 1
   end
   
   def destroy_files
@@ -97,6 +96,6 @@ class PapermillAsset < ActiveRecord::Base
   
   def self.compute_style(style, compatibility_mode = nil)
     style = Papermill::PAPERMILL_DEFAULTS[:aliases][style.to_sym] || Papermill::PAPERMILL_DEFAULTS[:aliases][style.to_s] || !Papermill::PAPERMILL_DEFAULTS[:alias_only] && style
-    [Symbol, String].include?(style.class) && compatibility_mode.nil? ? {:geometry => style.to_s} : style
+    [Symbol, String].include?(style.class) ? {:geometry => style.to_s} : style
   end  
 end

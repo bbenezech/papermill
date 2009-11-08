@@ -62,7 +62,6 @@ file "app/views/articles/_form.html.erb", <<-END
 <% end %>
 END
 
-
 file "app/views/articles/show.html.erb", <<-END
 <p>
   <b>Title:</b>

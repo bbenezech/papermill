@@ -3,13 +3,10 @@ require 'extensions'
 Object.send :include, PapermillObjectExtensions
 Hash.send :include, PapermillHashExtensions
 File.send :include, PapermillFileExtensions
+String.send :include, StringToUrlNotFound unless String.instance_methods.include? "to_url"
 Formtastic::SemanticFormBuilder.send(:include, PapermillFormtasticExtensions) rescue NameError
 
-begin
-  require 'paperclip' unless defined?(Paperclip)
-rescue LoadError
-  raise PapermillException.new("Paperclip not found. \nInstall it with: \nsudo gem install paperclip")
-end
+require 'paperclip' unless defined?(Paperclip)
 require 'papermill/papermill_module'
 require 'papermill/papermill_asset'
 require 'papermill/form_builder'

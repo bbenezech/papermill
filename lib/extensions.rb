@@ -39,3 +39,10 @@ module PapermillFormtasticExtensions
     self.send(input_type, method, options)
   end
 end
+
+
+module StringToUrlNotFound
+  def to_url
+    gsub(/[^a-zA-Z0-9]/, "-").gsub(/-+/, "-").gsub(/^-|-$/, "")
+  end
+end

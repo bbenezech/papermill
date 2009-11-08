@@ -88,7 +88,6 @@ See papermill_module.rb for the complete list of options.
   ...
   Rails::Initializer.run do |config|
     ...
-    config.gem paperclip
     config.gem papermill
     
     # You can set application-wide options inside or BEFORE Rails::Initializer :
