@@ -4,7 +4,9 @@ module Papermill
     :inline_css => true,
     :images_only => false,
     :file_size_limit_mb => 10,
-    :button_after_container => false,
+    :form_helper_elements => [:upload_button, :container, :dashboard],
+    :mass_edition => true,
+    :mass_editable_fields => ["title", "copyright", "description"],
     :thumbnail => {
       :width => 100,
       :height => 100, 

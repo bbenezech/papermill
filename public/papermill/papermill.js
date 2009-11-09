@@ -4,7 +4,7 @@ popup = function(title1, title) {
 
 
 /*
-If you have a popup library, override popup
+If you have a popup library, override popup in your application.js
 
 * e.g. facebox : 
 
@@ -35,6 +35,7 @@ popup = function(url) {
 notify = function(message, type) {
 	if(type != "notice") { alert(type + ": " + message) }
 }
+
 /*
 If you have a notification library, override notify
 
@@ -119,5 +120,15 @@ var Upload = {
 	},
 	file_queue_error: function(file, error_code, message) {
 		upload_error(file, error_code, message)
+	}
+}
+
+modify_all = function(papermill_id) {
+	container = jQuery("#" + papermill_id)[0];
+	attribute_name = jQuery("#batch_" + papermill_id)[0].value
+	attribute_wording = jQuery("#batch_" + papermill_id + " option:selected").text();
+	value = prompt(attribute_wording + ":")
+	if(value != null) {
+		jQuery.ajax({async:true, data:jQuery(container).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/batch_modification?attribute=' + attribute_name + "&value=" + value})
 	}
 }

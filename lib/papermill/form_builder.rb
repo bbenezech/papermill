@@ -83,7 +83,7 @@ module ActionView::Helpers::FormTagHelper
         end
       end
     end
-    
+        
     url_options = {
       :controller => "/papermill", 
       :action => "create", 
@@ -102,10 +102,10 @@ module ActionView::Helpers::FormTagHelper
     }) if key
     
     
-    html = []
+    html = {}
     create_url = @template.url_for(url_options)
     if assetable && assetable.new_record? && !@timestamped
-      html << @template.hidden_field(assetable_type.underscore, :timestamp, :value => assetable.timestamp)
+      @timestamp_field = @template.hidden_field(assetable_type.underscore, :timestamp, :value => assetable.timestamp)
       @timestamped = true
     end
     
@@ -113,10 +113,17 @@ module ActionView::Helpers::FormTagHelper
     conditions.merge!({:assetable_key => key.to_s}) if key
     collection = PapermillAsset.all(:conditions => conditions, :order => "position")
     
-    html << %{<div id="#{id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
-    html << @template.content_tag(:ul, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
+    html[:upload_button] = %{<div id="#{id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
+    html[:container] = @template.content_tag(:ul, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
       @template.render :partial => "papermill/asset", :collection => collection, :locals => { :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]) }
-    }
+    } 
+    html[:dashboard] = options[:gallery] && options[:mass_edition] && %{<select id="batch_#{id}">
+            #{options[:mass_editable_fields].map do |field|
+                %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
+              end.join("\n")}
+          </select>
+          <a onclick="modify_all('#{id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a>}
+    
     @template.content_for :papermill_inline_js do
       %{
         #{%{(jQuery("##{id}")).sortable({update:function(){jQuery.ajax({async:true, data:jQuery(this).sortable('serialize'), dataType:'script', type:'post', url:'#{@template.controller.send("sort_papermill_path")}'})}})} if options[:gallery]}
@@ -139,7 +146,6 @@ module ActionView::Helpers::FormTagHelper
         });
       }
   	end
-  	html.reverse! if options[:button_after_container]
-	  %{<div class="papermill">#{html.join("\n")}</div>}
+	  %{<div class="papermill">#{@timestamp_field.to_s + options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}</div>}
   end
 end

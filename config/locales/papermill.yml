@@ -27,6 +27,7 @@ en:
     save: "Send to server"
     location: "File : "
     url: "URL : "
+    modify-all: "Modify all"
 fr:
   papermill:
     not-processed: "Erreur/ressource non trouvée"
@@ -56,3 +57,4 @@ fr:
     save: "Envoyer"
     location: "Fichier : "
     url: "Lien : "
+    modify-all: "Modifier tout"

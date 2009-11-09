@@ -54,4 +54,14 @@ class PapermillController < ApplicationController
     end
     render :nothing => true
   end
+  
+  def batch_modification
+    render :update do |page|
+      params[:papermill_asset].each do |id|
+        @asset = PapermillAsset.find(id) 
+        @asset.update_attribute(params[:attribute], params[:value])
+        page << %{ notify("#{t("papermill.updated", :ressource => @asset.name)}", "notice") }
+      end
+    end
+  end
 end
