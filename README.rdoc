@@ -1,6 +1,6 @@
 = Papermill 
 
-Asset management made easy.
+Asset management made easy. Now in pre-1.0.0 release!
 
 == Install the gems
   
@@ -11,13 +11,10 @@ Asset management made easy.
   
   $ sudo gem install sqlite3-ruby
   $ rails -m http://github.com/bbenezech/papermill/raw/master/installation-template.txt papermill-example
-  $ cd papermill-example
-  $ ./script/server
-  Open localhost:3000 in your browser and try to create an article with assets but without title
 
 == Features
 
-Loads of 'em
+Loads of them
 
 === Ajax uploading form helpers through SWFUpload: 
 
@@ -54,25 +51,94 @@ Loads of 'em
 === Generic catch-all declaration
 
   papermill {options}                                     # in your papermilled assetable model
-  assets_upload(:my_key, {options})                       # form helper call
-  form.input :my_key, :as => :assets_upload, {options}    # if you are using formtastic
-  @assetable.assets(:my_key)                              # data access in your view
+  @article.assets(:any_key, options_hash)               # data access
 
 === Association specific declaration
 
-  papermill :my_association, {options}               # in your papermilled assetable model
-  assets_upload(:my_association, {options})          # form helper call
-  @assetable.my_association                          # data access in your view
+  papermill :my_association, options_hash                 # in your papermilled assetable model
+  @article.my_association                               # data access
 
+== Usage:
 
-In both case, you can specify a PapermillAsset subclass to use with :class_name => MyPapermillAssetSubclass in the option hash.
+=== Model declaration
 
-You can have a catch-all declaration and as many specific association as you want in your model (as long as they use different keys).
+You can have a generic association and as many declarative associations as you want in your model. Papermill will always use specific if found.
 
-You can use the first one only, the second only or both.
+article.rb
+  class Article < ActiveRecord::Base
+    papermill :class_name => ColorAsset, other_options..
+  end
 
-See papermill_module.rb for the complete list of options.
+entry.rb
+  class Entry < ActiveRecord::Base
+    papermill :mug_shot, other_options.. # default class_name is built-in PapermillAsset
+    papermill :diaporama, :class_name => ColorAsset, other_options..
+  end
 
+color_asset.rb  # You should add columns to papermill_assets and use STI on PapermillAsset to extend defaults capabilities (or re-open PapermillAsset and monkey-patch it..)
+  class ColorAsset < PapermillAsset
+    named_scope :red, :conditions => {:color => 'red'}
+  end
+
+=== Form helpers
+
+FormHelpers
+  form_for @article do 
+    f.image_upload  :cover_image, options_hash
+    f.images_upload :illustrations, options_hash
+    f.asset_upload  :pdf, options_hash
+    f.image_upload  :other_ressources, options_hash
+  end
+  
+Or with formtastic :
+  semantic_form_for @article do |f|
+    f.input @article, :cover_image, options_hash, :as => :image_upload
+    f.input @article, :illustrations, options_hash, :as => :images_upload
+    f.input @article, :pdf, options_hash, :as => :asset_upload
+    f.input @article, :other_ressources, options_hash, :as => :image_upload
+  end
+
+FormTagHelpers
+  image_upload_tag  @article, :cover_image, options_hash
+  images_upload_tag @article, :illustrations, options_hash
+  asset_upload_tag  @article, :pdf, options_hash
+  image_upload_tag  @article, :other_ressources, options_hash
+  # For resources not linked to any assetable model :
+  image_upload_tag #{current_organization.name}_logo
+  
+=== Resources access
+
+With generic papermill association, Papermill generates an #assets(:key, *args) named_scope
+  @article.assets(:illustrations)
+  @article.assets(:illustrations, :order => "created_at DESC")
+  @article.illustrations.red.first
+  @article.assets(:illustrations, :order => "created_at DESC").red.first
+  # etc.
+  
+With declarative papermill associations, Papermill generates an #<association_key>(*args) named_scope
+  @entry.mug_shot.first
+  @entry.diaporama
+  @entry.diaporama(:order => "created_at DESC")
+  @entry.diaporama.red
+  # === @entry.diaporama(:conditions => {:color => "red"}) 
+  # etc.
+
+Or for non-assetable resources : 
+  PapermillAsset.all(:conditions => { :assetable_key => "#{current_organization.name}_logo" }).first
+  ColorAsset.all.red
+
+=== Using PapermillAsset
+  
+  @asset = @entry.mug_shot.first
+  image_tag @asset.url              # original
+  image_tag @asset.url("100x>")
+  image_tag @asset.url(:big)        # assuming you have a :big alias in your environment.rb
+  @asset.name
+  @asset.content_type
+  @asset.path                       # original
+  @asset.path("100x>")
+  # etc.
+  
 == Installation
 
 === Once gem is installed :
@@ -90,7 +156,7 @@ See papermill_module.rb for the complete list of options.
     ...
     config.gem papermill
     
-    # You can set application-wide options inside or BEFORE Rails::Initializer :
+    # You can set application-wide options INSIDE or BEFORE Rails::Initializer :
     module Papermill
       OPTIONS = {
         :thumbnail => {
@@ -116,28 +182,6 @@ See papermill_module.rb for the complete list of options.
   <%= papermill_stylesheet_tag %>
   <%= papermill_javascript_tag :with_jquery => "no_conflict" %>
   # you won't need :with_jquery if you have it already.
-
-
-=== In your assetable model:
-
-  # You can set a catch-all papermill association: 
-  papermill {options}
-
-  # or create an association for a specific key:
-  papermill :my_gallery, {options}
-
-=== In your edit form: 
-
-  f.images_upload(:my_gallery)     # use specific papermill :my_gallery declaration to find related options
-  f.assets_upload(:my_assets)      # use catch-all
-  f.asset_upload(:my_other_asset)  # use catch-all
-  
-=== Access them in your views:
-  
-  @assetable.my_gallery.each{ |image| image_tag image.url("100x100") }
-
-Also see http://github.com/bbenezech/papermill/raw/master/installation-template.txt
-Have a look at the API here http://rdoc.info/projects/bbenezech/papermill
 
 === Translations:
 

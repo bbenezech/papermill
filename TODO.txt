@@ -1,5 +1,3 @@
-* non-regression tests
-* write rake task to delete all forgotten images.
 Edit views :
 * use Jcrop
 * try Picnic API

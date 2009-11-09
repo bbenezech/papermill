@@ -4,28 +4,28 @@ class PapermillController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:create]
   
   def show
-    @asset = PapermillAsset.find_by_id_partition(params)
+    @asset = PapermillAsset.find_by_id_partition params
     if @asset.create_thumb_file(params[:style])
       redirect_to @asset.url(params[:style])
     else
-      render :text => t('papermill.not-found'), :status => "404"
+      render :nothing => true, :status => 500
     end
   end
 
   def destroy
-    @asset = PapermillAsset.find_by_id(params[:id])
+    @asset = PapermillAsset.find params[:id]
     render :update do |page|
-      if @asset && @asset.destroy
+      if @asset.destroy
         page << "jQuery('#papermill_asset_#{params[:id]}').remove()"
       else
         page << "jQuery('#papermill_asset_#{params[:id]}').show()"
-        page << %{ notify("#{t((@asset && "papermill.not-deleted" || "papermill.not-found"), :ressource => @asset.name)}", "error") }
+        page << %{ notify("#{t("papermill.not-deleted", :ressource => @asset.name)}", "error") }
       end
     end
   end
   
   def update
-    @asset = PapermillAsset.find(params[:id])
+    @asset = PapermillAsset.find params[:id]
     render :update do |page|
       if @asset.update_attributes(params[:papermill_asset])
         page << %{ notify("#{t("papermill.updated", :ressource => @asset.name)}", "notice") }
@@ -44,7 +44,7 @@ class PapermillController < ApplicationController
     if @asset.save(:unique => !params[:gallery])
       render :partial => "papermill/asset", :object => @asset, :locals => {:gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style]}
     else
-      render :text => @asset.errors.full_messages.join('<br />'), :status => "500"
+      render :text => @asset.errors.full_messages.join('<br />'), :status => 500
     end
   end
   

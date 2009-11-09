@@ -74,7 +74,7 @@ class PapermillAsset < ActiveRecord::Base
   
   def save(*params)
     if super(*params)
-      if params.last.is_a?(Hash) && params.last[:unique]
+      if params.last.is_a?(Hash) && params.last[:unique] && assetable_key
         PapermillAsset.find(:all, :conditions => {:assetable_id => assetable_id, :assetable_type => assetable_type, :assetable_key => assetable_key }).each do |asset|
           asset.destroy unless asset == self
         end
@@ -83,6 +83,10 @@ class PapermillAsset < ActiveRecord::Base
     else
       false
     end
+  end
+  
+  def self.cleanup
+    PapermillAsset.all(:conditions => ["id < 0 AND created_at < ?", DateTime.now.yesterday]).each &:destroy
   end
   
   private

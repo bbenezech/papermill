@@ -93,7 +93,7 @@ module Papermill
     def timestamp
       @timestamp ||= "-#{(Time.now.to_f * 1000).to_i.to_s[4..-1]}"
     end
-  
+    
     private
     
     def destroy_assets
