@@ -19,7 +19,7 @@ class PapermillController < ApplicationController
         page << "jQuery('#papermill_asset_#{params[:id]}').remove()"
       else
         page << "jQuery('#papermill_asset_#{params[:id]}').show()"
-        page << %{ notify("#{t("papermill.not-deleted", :ressource => @asset.name)}", "error") }
+        page << %{ notify("#{ escape_javascript t("papermill.not-deleted", :ressource => @asset.name) }", "error") }
       end
     end
   end
@@ -28,9 +28,9 @@ class PapermillController < ApplicationController
     @asset = PapermillAsset.find params[:id]
     render :update do |page|
       if @asset.update_attributes(params[:papermill_asset])
-        page << %{ notify("#{t("papermill.updated", :ressource => @asset.name)}", "notice") }
+        page << %{ notify("#{ escape_javascript t("papermill.updated", :ressource => @asset.name)}", "notice") }
       else
-        page << %{ notify("#{@asset.errors.full_messages.to_sentence}", "warning") }
+        page << %{ notify("#{ escape_javascript @asset.errors.full_messages.to_sentence }", "warning") }
       end
     end
   end
@@ -55,13 +55,28 @@ class PapermillController < ApplicationController
     render :nothing => true
   end
   
-  def batch_modification
+  def delete_all
     render :update do |page|
-      params[:papermill_asset].each do |id|
-        @asset = PapermillAsset.find(id) 
-        @asset.update_attribute(params[:attribute], params[:value])
-        page << %{ notify("#{t("papermill.updated", :ressource => @asset.name)}", "notice") }
+      (params[:papermill_asset] || []).each do |id|
+        @asset = PapermillAsset.find(id)
+        if @asset.destroy
+          page << "jQuery('#papermill_asset_#{id}').remove()"
+        else
+          page << %{ notify('#{ escape_javascript t("papermill.not-deleted", :ressource => @asset.name)}', 'error') }
+        end
       end
+    end
+  end
+  
+  def batch_modification
+    message = []
+    (params[:papermill_asset] || []).each do |id|
+      @asset = PapermillAsset.find(id) 
+      @asset.update_attribute(params[:attribute], params[:value])
+      message << t("papermill.updated", :ressource => @asset.name)
+    end
+    render :update do |page|
+      page << %{ notify('#{ escape_javascript message.join("<br />")}', "notice") } unless message.empty?
     end
   end
 end

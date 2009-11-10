@@ -117,12 +117,19 @@ module ActionView::Helpers::FormTagHelper
     html[:container] = @template.content_tag(:ul, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
       @template.render :partial => "papermill/asset", :collection => collection, :locals => { :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]) }
     } 
-    html[:dashboard] = options[:gallery] && options[:mass_edition] && %{<select id="batch_#{id}">
-            #{options[:mass_editable_fields].map do |field|
+    
+    if options[:gallery]
+      html[:dashboard] = {}
+      html[:dashboard][:mass_edition] = %{<select id="batch_#{id}">#{options[:mass_editable_fields].map do |field|
                 %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
-              end.join("\n")}
-          </select>
-          <a onclick="modify_all('#{id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a>}
+              end.join("\n")}</select>
+              <a onclick="modify_all('#{id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a>}
+      html[:dashboard][:mass_deletion] = %{<a onclick="if(confirm('#{@template.escape_javascript I18n.t("papermill.delete-all-confirmation")}')){ 
+        jQuery.ajax({async:true, data:jQuery('##{id}').sortable('serialize'), dataType:'script', type:'post', url:'#{@template.controller.send("delete_all_papermill_path")}'})
+      }; return false;" style="cursor:pointer">#{I18n.t("papermill.delete-all")}</a>}
+      
+      html[:dashboard] = @template.content_tag(:ul, options[:dashboard].map{|action| @template.content_tag(:li, html[:dashboard][action], :class => action.to_s) }.join("\n"), :class => "dashboard")
+    end
     
     @template.content_for :papermill_inline_js do
       %{

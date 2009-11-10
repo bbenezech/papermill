@@ -12,8 +12,9 @@
 #papermill-box .right-cell {}
 #papermill-box .left-cell {font-weight:bold; padding-right:10px; text-align:right;}
 
+
+
 .papermill { overflow:hidden; }
-.papermill a:hover { background:none; color:inherit; }
 .papermill a img { border:0px; }
 .papermill li:hover { border-color:blue; }
 .papermill li a { display:block;  }

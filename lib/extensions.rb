@@ -32,11 +32,21 @@ module PapermillFileExtensions
 end
 
 module PapermillFormtasticExtensions
-  def method_missing(input_type, method, options)
-    return super unless input_type.to_s.match("_input")
-    input_type = input_type.to_s.split("_input").first
+  def image_upload_input(method, options)
     self.label(method, options_for_label(options)) +
-    self.send(input_type, method, options)
+    self.send(:image_upload, method, options)
+  end
+  def images_upload_input(method, options)
+    self.label(method, options_for_label(options)) +
+    self.send(:images_upload, method, options)
+  end
+  def asset_upload_input(method, options)
+    self.label(method, options_for_label(options)) +
+    self.send(:asset_upload, method, options)
+  end
+  def assets_upload_input(method, options)
+    self.label(method, options_for_label(options)) +
+    self.send(:assets_upload, method, options)
   end
 end
 

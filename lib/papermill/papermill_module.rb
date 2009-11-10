@@ -5,7 +5,7 @@ module Papermill
     :images_only => false,
     :file_size_limit_mb => 10,
     :form_helper_elements => [:upload_button, :container, :dashboard],
-    :mass_edition => true,
+    :dashboard => [:mass_edition, :mass_deletion],
     :mass_editable_fields => ["title", "copyright", "description"],
     :thumbnail => {
       :width => 100,

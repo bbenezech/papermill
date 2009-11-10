@@ -28,6 +28,8 @@ en:
     location: "File : "
     url: "URL : "
     modify-all: "Modify all"
+    delete-all: "Delete all"
+    delete-all-confirmation: "Are you sure?"
 fr:
   papermill:
     not-processed: "Erreur/ressource non trouvée"
@@ -58,3 +60,5 @@ fr:
     location: "Fichier : "
     url: "Lien : "
     modify-all: "Modifier tout"
+    delete-all: "Supprimer tout"
+    delete-all-confirmation: "Êtes-vous sûr ?"
