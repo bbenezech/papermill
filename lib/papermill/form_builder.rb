@@ -42,10 +42,10 @@ module ActionView::Helpers::FormTagHelper
  
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
     options = (
-      if assetable && (association = (assetable.class.papermill_associations[key] || assetable.class.papermill_associations[Papermill::PAPERMILL_DEFAULTS[:base_association_name]]))
+      if assetable && (association = (assetable.class.papermill_associations[key] || assetable.class.papermill_associations[Papermill::options[:base_association_name]]))
         association[:options].deep_merge(options)
       elsif assetable.nil?
-        Papermill::PAPERMILL_DEFAULTS.deep_merge(options)
+        Papermill::options.deep_merge(options)
       else
         raise PapermillException.new("Can't find '#{key.to_s}' association for '#{assetable.class.to_s}'.\n\n##{assetable.class.to_s.underscore}.rb\nYou can take on of these actions: \n1. set either a catchall papermill association: 'papermill {your_option_hash}'\n2. or a specific association: 'papermill :#{key.to_s}, {your_option_hash}'")
       end
@@ -137,9 +137,7 @@ module ActionView::Helpers::FormTagHelper
         new SWFUpload({
           upload_id: "#{id}",
           upload_url: "#{@template.escape_javascript create_url}",
-          file_size_limit: "#{options[:file_size_limit_mb].megabytes}",
           file_types: "#{options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : ''}",
-          file_types_description: "#{options[:thumbnail] ? 'Images' : 'Files'}",
           file_queue_limit: "#{!options[:gallery] ? '1' : '0'}",
           file_queued_handler: Upload.file_queued,
           file_dialog_complete_handler: Upload.file_dialog_complete,

@@ -148,6 +148,8 @@ Or for non-assetable resources :
   $ rake db:migrate
   # copy static assets to your public directory:
   $ ./script/generate papermill_assets
+  # create the option hash in config/initializers/papermill.rb
+  $ ./script/generate papermill_initializer
   
 === Then in environment.rb:
   
@@ -155,25 +157,7 @@ Or for non-assetable resources :
   Rails::Initializer.run do |config|
     ...
     config.gem papermill
-    
-    # You can set application-wide options INSIDE or BEFORE Rails::Initializer :
-    module Papermill
-      OPTIONS = {
-        :thumbnail => {
-          :width => 150,
-          :height => 100
-        },
-        :aliases => {
-          :big => "500x500>",
-          :small => "100x100>"
-        },
-        :public_root => ":rails_root/public",         # already a default
-        :papermill_prefix => "system/papermill"       # already a default
-      }
-    end
-    # see lib/papermill/papermill_module.rb
-    ...
-    # Needed for Windows OS !! (mime type from file extension): 
+    # Needed for Windows OS (mime type from file extension): 
     config.gem "mime-types", :lib => "mime/types"
   end
 
@@ -181,7 +165,7 @@ Or for non-assetable resources :
 
   <%= papermill_stylesheet_tag %>
   <%= papermill_javascript_tag :with_jquery => "no_conflict" %>
-  # you won't need :with_jquery if you have it already.
+  # you don't need :with_jquery if you already had it loaded.
 
 === Translations:
 

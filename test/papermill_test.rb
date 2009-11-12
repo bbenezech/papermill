@@ -126,7 +126,7 @@ class PapermillTest < Test::Unit::TestCase
     assert_equal PapermillAsset.compute_style("hashed_style"), :geometry => "100x100"
     assert_equal PapermillAsset.compute_style("100x100"),  :geometry => "100x100"
     assert_equal PapermillAsset.compute_style(:"100x100"),  :geometry => "100x100"
-    Papermill::PAPERMILL_DEFAULTS[:alias_only] = true
+    Papermill::options[:alias_only] = true
     assert_equal PapermillAsset.compute_style("100x100"), false
   end
 end

@@ -1,13 +1,11 @@
-#require 'paperclip'
-
 class PapermillAsset < ActiveRecord::Base
   
   before_destroy :destroy_files
   before_create :set_position
   
   has_attached_file :file, 
-    :path => "#{Papermill::PAPERMILL_DEFAULTS[:public_root]}/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
-    :url => "/#{Papermill::PAPERMILL_DEFAULTS[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
+    :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
+    :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
   
   Paperclip.interpolates :escaped_basename do |attachment, style|
     Paperclip::Interpolations[:basename].call(attachment, style).to_url
@@ -99,7 +97,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def self.compute_style(style, compatibility_mode = nil)
-    style = Papermill::PAPERMILL_DEFAULTS[:aliases][style.to_sym] || Papermill::PAPERMILL_DEFAULTS[:aliases][style.to_s] || !Papermill::PAPERMILL_DEFAULTS[:alias_only] && style
+    style = Papermill::options[:aliases][style.to_sym] || Papermill::options[:aliases][style.to_s] || !Papermill::options[:alias_only] && style
     [Symbol, String].include?(style.class) ? {:geometry => style.to_s} : style
   end  
 end

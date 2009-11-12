@@ -1,17 +1,22 @@
 class <%= migration_name %> < ActiveRecord::Migration
   def self.up
     create_table :papermill_assets do |t|
+      # mandatory
       t.string   :file_file_name
       t.string   :file_content_type
       t.integer  :file_file_size
       t.integer  :position
-      t.text     :description
-      t.string   :copyright
-      t.string   :title
       t.integer  :assetable_id
       t.string   :assetable_type
       t.string   :assetable_key
       t.string   :type
+      t.string   :title
+      
+      
+      # optionnal
+      t.text     :description
+      t.string   :copyright
+      t.string   :alt
       t.timestamps
     end
   end

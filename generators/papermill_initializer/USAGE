@@ -1,0 +1,4 @@
+script/generate papermill_initializer
+  
+This will copy Papermill option hash to your config/initializers directory
+The old file directory will be deleted if present!
