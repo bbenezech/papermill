@@ -12,14 +12,17 @@
 #papermill-box .right-cell {}
 #papermill-box .left-cell {font-weight:bold; padding-right:10px; text-align:right;}
 
-
-
 .papermill { overflow:hidden; }
 .papermill a img { border:0px; }
 .papermill li:hover { border-color:blue; }
 .papermill li a { display:block;  }
 .papermill .progress { display:block; border:1px solid #C2E3EF; text-align:left; height:6px; }
 .papermill .progress span { background:#7BB963; height:6px; width:0; display:block; }
+
+.papermill .dashboard li { float:left; margin-right:10px; margin-top:3px; }
+.papermill .dashboard li a { float:left; padding-top:3px; padding-right:3px; padding-left:20px; }
+.papermill .dashboard li.mass_edit a { background:transparent url(images/mass-edit.png) no-repeat top left; }
+.papermill .dashboard li.mass_delete a { background:transparent url(images/mass-delete.png) no-repeat top left; }
 
 .papermill-thumb-container { position:relative; border:5px solid #EEE; padding:4px; overflow:hidden; }	
 .papermill-thumb-container li { border:0px solid transparent; min-height:25px; min-width:25px; display:block; float:left; position:relative; }
@@ -37,9 +40,11 @@
 .papermill-asset-container li .progress { float:left; margin-top:6px; margin-left:5px; width:100px; }
 .papermill-asset-container li .delete { float:left; margin-top:2px; margin-right:5px; }
 
+.papermill-thumb-container.papermill-multiple-items li { cursor:move; }
+
 .papermill-asset-container.papermill-multiple-items { padding-left:10px; border-left:5px solid #EEE; min-height:44px; }
 .papermill-asset-container.papermill-multiple-items li { cursor:row-resize; }
-.papermill-thumb-container.papermill-multiple-items li { cursor:move; }
+
 .papermill-asset-container.papermill-unique-item { padding-left:5px; min-height:22px; }
 
 /* Using formtastic? Move this to your formtastic_changes.css to make it cleaner : */

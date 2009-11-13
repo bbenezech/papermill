@@ -1,5 +1,6 @@
-<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post" action="/papermill/<%= @asset.id %>">
+<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); try {jQuery(document).trigger('close.facebox');} catch (e) {}; try{Shadowbox.close();} catch (e) {};  try{self.close();} catch (e) {}; return false;" method="post" action="/papermill/<%= @asset.id %>">
   <input type="hidden" value="put" name="_method"/>
+  
   <% fields_for :papermill_asset, @asset do |form| %>
     <p>
       <%= form.label :title, t("papermill.title") %><br />
@@ -16,3 +17,4 @@
     <%= submit_tag t('papermill.save') %>
   <% end %>
 </form>
+<%= javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js") if params[:with_jquery] %>

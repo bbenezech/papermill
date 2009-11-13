@@ -120,14 +120,11 @@ module ActionView::Helpers::FormTagHelper
     
     if options[:gallery]
       html[:dashboard] = {}
-      html[:dashboard][:mass_edition] = %{<select id="batch_#{id}">#{options[:mass_editable_fields].map do |field|
+      html[:dashboard][:mass_edit] = %{<select id="batch_#{id}">#{options[:mass_editable_fields].map do |field|
                 %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
               end.join("\n")}</select>
               <a onclick="modify_all('#{id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a>}
-      html[:dashboard][:mass_deletion] = %{<a onclick="if(confirm('#{@template.escape_javascript I18n.t("papermill.delete-all-confirmation")}')){ 
-        jQuery.ajax({async:true, data:jQuery('##{id}').sortable('serialize'), dataType:'script', type:'post', url:'#{@template.controller.send("delete_all_papermill_path")}'})
-      }; return false;" style="cursor:pointer">#{I18n.t("papermill.delete-all")}</a>}
-      
+      html[:dashboard][:mass_delete] = %{<a onclick="mass_delete('#{id}', '#{@template.escape_javascript I18n.t("papermill.delete-all-confirmation")}'); return false;" style="cursor:pointer">#{I18n.t("papermill.delete-all")}</a>}
       html[:dashboard] = @template.content_tag(:ul, options[:dashboard].map{|action| @template.content_tag(:li, html[:dashboard][action], :class => action.to_s) }.join("\n"), :class => "dashboard")
     end
     
@@ -147,7 +144,7 @@ module ActionView::Helpers::FormTagHelper
           upload_success_handler: Upload.upload_success,
           upload_complete_handler: Upload.upload_complete,
           button_placeholder_id : "browse_for_#{id}",
-          #{options[:swfupload].map{ |key, value| ["false", "true"].include?(value.to_s) ? "#{key.to_s}: #{value.to_s}" : "#{key.to_s}: '#{value.to_s}'"  }.compact.join(", ")}
+          #{options[:swfupload].map{ |key, value| (["false", "true"].include?(value.to_s) ? "#{key.to_s}: #{value.to_s}" : "#{key.to_s}: '#{value.to_s}'") if value  }.compact.join(", ")}
         });
       }
   	end

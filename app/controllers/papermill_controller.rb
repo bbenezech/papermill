@@ -37,6 +37,7 @@ class PapermillController < ApplicationController
   
   def edit
     @asset = PapermillAsset.find params[:id]
+    render :action => "edit", :layout => (params[:layout] || "none")
   end
   
   def create
@@ -55,7 +56,7 @@ class PapermillController < ApplicationController
     render :nothing => true
   end
   
-  def delete_all
+  def mass_delete
     render :update do |page|
       (params[:papermill_asset] || []).each do |id|
         @asset = PapermillAsset.find(id)
@@ -68,7 +69,7 @@ class PapermillController < ApplicationController
     end
   end
   
-  def batch_modification
+  def mass_edit
     message = []
     (params[:papermill_asset] || []).each do |id|
       @asset = PapermillAsset.find(id) 

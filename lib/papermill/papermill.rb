@@ -14,9 +14,6 @@ module Papermill
     attr_reader :papermill_associations
     
     def papermill(*args)
-      raise PapermillException.new("No options found. Please run ./script/generate papermill_initializer") if Papermill::options.empty?
-      require 'papermill/papermill_asset' unless defined?(PapermillAsset)
-      
       assoc_name = (!args.first.is_a?(Hash) && args.shift.try(:to_sym) || Papermill::options[:base_association_name])
       options = args.first || {}
       

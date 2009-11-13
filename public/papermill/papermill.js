@@ -1,10 +1,17 @@
-popup = function(title1, title) {
-	window.open (title1, title, config='height=580, width=870, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no')
+popup = function(url) {
+	window.open (url + "?with_jquery=true", "Papermill", config='height=580, width=870, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no')
+}
+
+close_popup = function(source) {
+	source.close();
 }
 
 
 /*
-If you have a popup library, override popup in your application.js
+If you have a popup library, OVERRIDE popup and close_popup in your application.js
+You'll need jQuery loaded, so specify with_jquery=true if you load edit in an iframe or a true popup.
+You can specify a layout as well, with layout=application in your URL.
+
 
 * e.g. facebox : 
 
@@ -16,20 +23,26 @@ popup = function(url) {
 	})
 	return false;
 }
+close_popup = function(source) {
+	jQuery(document).trigger('close.facebox');
+}
 
 * e.g. Shadowbox : 
 
 popup = function(url) {
-	if(url) {
-		Shadowbox.open({ 
-	  	content:    url,
-	    player:     "iframe",
-			width: 			870,
-			height: 		580
-	  });
-	}
+	Shadowbox.open({ 
+  	content:    url + "?with_jquery=true",
+    player:     "iframe",
+		width: 			870,
+		height: 		580
+  });
 	return false;
 }
+
+close_popup = function(source) {
+	Shadowbox.close();
+}
+
 */
 
 notify = function(message, type) {
@@ -129,6 +142,12 @@ modify_all = function(papermill_id) {
 	attribute_wording = jQuery("#batch_" + papermill_id + " option:selected").text();
 	value = prompt(attribute_wording + ":")
 	if(value != null) {
-		jQuery.ajax({async:true, data:jQuery(container).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/batch_modification?attribute=' + attribute_name + "&value=" + value})
+		jQuery.ajax({async:true, data:jQuery(container).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/mass_edit?attribute=' + attribute_name + "&value=" + value})
 	}
+}
+
+mass_delete = function(papermill_id, wording) {
+	if(confirm(wording)){ 
+    jQuery.ajax({async:true, data:jQuery('#' + papermill_id).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/mass_delete'})
+  }
 }
