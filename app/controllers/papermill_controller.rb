@@ -3,8 +3,10 @@ class PapermillController < ApplicationController
   # Yet SwfUpload doesn't send the right header for request.xhr? to be true and thus fails to disable verify_authenticity_token automatically.
   skip_before_filter :verify_authenticity_token, :only => [:create]
   
+  prepend_before_filter :load_asset, :only => ["show", "destroy", "update", "edit"]
+  prepend_before_filter :load_assets, :only => ["sort", "mass_delete", "mass_edit"]
+  
   def show
-    @asset = PapermillAsset.find_by_id_partition params
     if @asset.create_thumb_file(params[:style])
       redirect_to @asset.url(params[:style])
     else
@@ -13,7 +15,6 @@ class PapermillController < ApplicationController
   end
 
   def destroy
-    @asset = PapermillAsset.find params[:id]
     render :update do |page|
       if @asset.destroy
         page << "jQuery('#papermill_asset_#{params[:id]}').remove()"
@@ -25,7 +26,6 @@ class PapermillController < ApplicationController
   end
   
   def update
-    @asset = PapermillAsset.find params[:id]
     render :update do |page|
       if @asset.update_attributes(params[:papermill_asset])
         page << %{ notify("#{ escape_javascript t("papermill.updated", :ressource => @asset.name)}", "notice") }
@@ -36,7 +36,6 @@ class PapermillController < ApplicationController
   end
   
   def edit
-    @asset = PapermillAsset.find params[:id]
     render :action => "edit", :layout => (params[:layout] || "none")
   end
   
@@ -50,34 +49,40 @@ class PapermillController < ApplicationController
   end
   
   def sort
-    params[:papermill_asset].each_with_index do |id, index|
-      PapermillAsset.find(id).update_attribute(:position, index + 1)
+    @assets.each_with_index do |asset, index|
+      asset.update_attribute(:position, index + 1)
     end
     render :nothing => true
   end
   
   def mass_delete
     render :update do |page|
-      (params[:papermill_asset] || []).each do |id|
-        @asset = PapermillAsset.find(id)
-        if @asset.destroy
-          page << "jQuery('#papermill_asset_#{id}').remove()"
+      @assets.each do |asset|
+        if asset.destroy
+          page << "jQuery('#papermill_asset_#{asset.id}').remove()"
         else
-          page << %{ notify('#{ escape_javascript t("papermill.not-deleted", :ressource => @asset.name)}', 'error') }
+          page << %{ notify('#{ escape_javascript t("papermill.not-deleted", :ressource => asset.name)}', 'error') }
         end
       end
     end
   end
   
   def mass_edit
-    message = []
-    (params[:papermill_asset] || []).each do |id|
-      @asset = PapermillAsset.find(id) 
-      @asset.update_attribute(params[:attribute], params[:value])
-      message << t("papermill.updated", :ressource => @asset.name)
+    @assets.each do |asset|
+      asset.update_attribute(params[:attribute], params[:value])
+      (message ||= []) << t("papermill.updated", :ressource => asset.name)
     end
     render :update do |page|
-      page << %{ notify('#{ escape_javascript message.join("<br />")}', "notice") } unless message.empty?
+      page << %{ notify('#{ escape_javascript message.join("<br />")}', "notice") } if defined?(message)
     end
+  end
+  
+  private
+  def load_asset
+    @asset = PapermillAsset.find(params[:id] || (params[:id0] + params[:id1] + params[:id2]).to_i)
+  end
+  
+  def load_assets
+    @assets = (params[:papermill_asset] || []).map{ |id| PapermillAsset.find(id) }
   end
 end

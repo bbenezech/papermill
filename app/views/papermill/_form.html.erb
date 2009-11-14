@@ -1,19 +1,16 @@
-<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); try {jQuery(document).trigger('close.facebox');} catch (e) {}; try{Shadowbox.close();} catch (e) {};  try{self.close();} catch (e) {}; return false;" method="post" action="/papermill/<%= @asset.id %>">
+<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); close_popup(self); return false;" method="post" action="/papermill/<%= @asset.id %>">
   <input type="hidden" value="put" name="_method"/>
-  
   <% fields_for :papermill_asset, @asset do |form| %>
-    <p>
-      <%= form.label :title, t("papermill.title") %><br />
-      <%= form.text_field :title, :class => "text_field" %>
-    </p>
-    <p>
-      <%= form.label :copyright, t("papermill.copyright") %><br />
-      <%= form.text_field :copyright, :class => "text_field" %>
-    </p>
-    <p>
-      <%= form.label :description, t("papermill.description") %><br />
-      <%= form.text_area :description %>
-    </p>
+    <% PapermillAsset.columns.map{|c| [c.name, c.type] }.reject{ |c| ["slug", "file_file_name", "file_content_type", "file_file_size", "position", "assetable_id", "assetable_type", "assetable_key", "type", "id", "created_at", "updated_at"].include?(c.first) }.each do |c| %>
+      <p>
+        <%= form.label c.first, t("papermill.#{c.first}") %><br />
+        <% if c.last == :text %>
+          <%= form.text_area c.first %>
+        <% else %>
+          <%= form.text_field c.first %>
+        <% end -%>
+      </p>
+    <% end %>
     <%= submit_tag t('papermill.save') %>
   <% end %>
 </form>

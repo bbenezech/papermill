@@ -9,7 +9,7 @@ Formtastic::SemanticFormBuilder.send(:include, PapermillFormtasticExtensions) re
 begin
   require File.join(File.dirname(RAILS_ROOT), "config/initializers/papermill.rb")
 rescue LoadError
-  require 'papermill/papermill_options'
+  require 'papermill/papermill_options.rb'
 end
 
 require 'paperclip' unless defined?(Paperclip)

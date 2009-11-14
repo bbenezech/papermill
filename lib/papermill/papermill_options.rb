@@ -2,7 +2,6 @@
 # It MUST stand in your RAILS_ROOT/config/initializer folder
 # It is explicitely early-loaded by Papermill
 # Papermill::OPTIONS constant needs to be set before PapermillAsset is loaded, and PapermillAsset cannot be lazy-loaded
-
 module Papermill
 
   # All these options will be used as defaults. You can change them : 
@@ -27,6 +26,7 @@ module Papermill
   # Merges are recursive (for :gallery, :thumbnail and :swfupload sub-hashs)
   
   unless defined?(OPTIONS)
+  
     OPTIONS = {
       # Associated PapermillAsset subclass
       :class_name => "PapermillAsset",

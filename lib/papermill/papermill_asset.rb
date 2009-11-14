@@ -3,9 +3,14 @@ class PapermillAsset < ActiveRecord::Base
   before_destroy :destroy_files
   before_create :set_position
   
+  attr_protected :position, :file_file_name
+  
+  
   has_attached_file :file, 
     :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
     :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
+  
+  before_post_process :set_real_file_name
   
   Paperclip.interpolates :escaped_basename do |attachment, style|
     Paperclip::Interpolations[:basename].call(attachment, style).to_url
@@ -22,7 +27,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def Filename=(name)
-    self.title = name
+    @real_file_name = name
   end
   
   def create_thumb_file(style_name)
@@ -34,12 +39,16 @@ class PapermillAsset < ActiveRecord::Base
     ("%09d" % self.id).scan(/\d{3}/).join("/")
   end
   
-  def self.find_by_id_partition(params)
-    self.find((params[:id0] + params[:id1] + params[:id2]).to_i)
-  end
-  
   def name
     file_file_name
+  end
+  
+  def basename
+    name.gsub(/#{extension}$/, "").strip
+  end
+  
+  def extension
+    File.extname(name)
   end
   
   def width
@@ -88,6 +97,11 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   private
+  
+  def set_real_file_name
+    self.file_file_name = @real_file_name
+  end
+  
   def set_position
     self.position ||= PapermillAsset.first(:conditions => {:assetable_key => assetable_key, :assetable_type => assetable_type, :assetable_id => assetable_id}, :order => "position DESC" ).try(:position).to_i + 1
   end
