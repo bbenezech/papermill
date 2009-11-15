@@ -2,7 +2,10 @@
 
 Asset management made easy. Now in pre-1.0.0 release!
 
-== IE6 Problems
+== Announcements..
+
+1.0.0 Release, finally!
+Things should be more stable now.
 
 I can't make it work with IE6, there seems to be a jQuery problem. SWFUpload and jQuery should both work fine with it, but anyway, it dies with strange errors that I don't understand. Any help appreciated...
 
