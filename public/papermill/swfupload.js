@@ -3,7 +3,7 @@
  *
  * mmSWFUpload 1.0: Flash upload dialog - http://profandesign.se/swfupload/,  http://www.vinterwebb.se/
  *
- * SWFUpload is (c) 2006-2007 Lars Huring, Olov NilzÃ©n and Mammon Media and is released under the MIT License:
+ * SWFUpload is (c) 2006-2007 Lars Huring, Olov Nilzén and Mammon Media and is released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  *
  * SWFUpload 2 is (c) 2007-2008 Jake Roberts and is released under the MIT License:
@@ -505,13 +505,6 @@ SWFUpload.prototype.cancelUpload = function (fileID, triggerErrorEvent) {
 SWFUpload.prototype.stopUpload = function () {
 	this.callFlash("StopUpload");
 };
-
-// Public: requeueUpload requeues any file. If the file is requeued or already queued true is returned.
-// If the file is not found or is currently uploading false is returned
-SWFUpload.prototype.stopUpload = function (indexOrFileID) {
-	return this.callFlash("RequeueUpload", [indexOrFileID]);
-};
-
 
 /* ************************
  * Settings methods
