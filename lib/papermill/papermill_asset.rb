@@ -1,10 +1,7 @@
 class PapermillAsset < ActiveRecord::Base
   
   before_destroy :destroy_files
-  before_create :set_position
-  
-  attr_protected :position, :file_file_name
-  
+  before_create :set_position  
   
   has_attached_file :file, 
     :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
@@ -99,7 +96,7 @@ class PapermillAsset < ActiveRecord::Base
   private
   
   def set_real_file_name
-    self.file_file_name = @real_file_name
+    self.file_file_name = @real_file_name if @real_file_name
   end
   
   def set_position
