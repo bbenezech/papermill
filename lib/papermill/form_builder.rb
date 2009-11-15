@@ -85,6 +85,7 @@ module ActionView::Helpers::FormTagHelper
     end
         
     url_options = {
+      :escape => false,
       :controller => "/papermill", 
       :action => "create", 
       :asset_class => (options[:class_name] && options[:class_name].to_s.constantize || association && association[:class] || PapermillAsset).to_s,
@@ -143,8 +144,8 @@ module ActionView::Helpers::FormTagHelper
           upload_error_handler: Upload.upload_error,
           upload_success_handler: Upload.upload_success,
           upload_complete_handler: Upload.upload_complete,
-          button_placeholder_id : "browse_for_#{id}",
-          #{options[:swfupload].map{ |key, value| (["false", "true"].include?(value.to_s) ? "#{key.to_s}: #{value.to_s}" : "#{key.to_s}: '#{value.to_s}'") if value  }.compact.join(", ")}
+          button_placeholder_id: "browse_for_#{id}",
+          #{options[:swfupload].map{ |key, value| "#{key}: #{(value.is_a?(String) ? "\"#{@template.escape_javascript(value)}\"" : @template.escape_javascript(value.to_s))}" if value }.compact.join(",\n")}
         });
       }
   	end
