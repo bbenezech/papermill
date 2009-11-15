@@ -36,10 +36,11 @@ class PapermillController < ApplicationController
   end
   
   def edit
-    render :action => "edit", :layout => (params[:layout] || "none")
+    render :action => "edit", :layout => (params[:layout] || false)
   end
   
   def create
+    puts "HAHA"
     @asset = params[:asset_class].constantize.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["Filedata", "Filename"]).include?(k)})
     if @asset.save(:unique => !params[:gallery])
       render :partial => "papermill/asset", :object => @asset, :locals => {:gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style]}
