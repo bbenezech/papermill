@@ -36,7 +36,7 @@ class PapermillController < ApplicationController
   end
   
   def edit
-    render :action => "edit", :layout => (params[:layout] || false)
+    render :action => "edit"
   end
   
   def create

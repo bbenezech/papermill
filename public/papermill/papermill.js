@@ -1,5 +1,5 @@
 popup = function(url) {
-	window.open (url + "?with_jquery=true", "Papermill", config='height=580, width=870, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no')
+	window.open (url, "Papermill", config='height=580, width=870, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no')
 }
 
 close_popup = function(source) {
@@ -8,10 +8,7 @@ close_popup = function(source) {
 
 
 /*
-If you have a popup library, OVERRIDE popup and close_popup in your application.js
-You'll need jQuery loaded, so specify with_jquery=true if you load edit in an iframe or a true popup.
-You can specify a layout as well, with layout=application in your URL.
-
+If you have a popup library, override popup and close_popup in your application.js
 
 * e.g. facebox : 
 
@@ -31,7 +28,7 @@ close_popup = function(source) {
 
 popup = function(url) {
 	Shadowbox.open({ 
-  	content:    url + "?with_jquery=true",
+  	content:    url-,
     player:     "iframe",
 		width: 			870,
 		height: 		580
