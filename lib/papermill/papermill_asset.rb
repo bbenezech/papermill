@@ -90,7 +90,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def self.cleanup
-    PapermillAsset.all(:conditions => ["id < 0 AND created_at < ?", DateTime.now.yesterday]).each &:destroy
+    self.all(:conditions => ["id < 0 AND created_at < ?", DateTime.now.yesterday]).each &:destroy
   end
   
   private
