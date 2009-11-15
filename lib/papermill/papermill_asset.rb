@@ -19,8 +19,8 @@ class PapermillAsset < ActiveRecord::Base
   default_scope :order => 'position'
   
   def Filedata=(data)
+    data.content_type = data.get_content_type # SWFUpload content-type fix
     self.file = data
-    self.file.instance_write("content_type", data.get_content_type)
   end
   
   def Filename=(name)
