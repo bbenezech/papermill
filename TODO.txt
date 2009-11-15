@@ -1,4 +1,3 @@
 Edit views :
 * use Jcrop
 * try Picnic API
-* clean close()
