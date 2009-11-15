@@ -121,10 +121,9 @@ module ActionView::Helpers::FormTagHelper
     
     if options[:gallery]
       html[:dashboard] = {}
-      html[:dashboard][:mass_edit] = %{<select id="batch_#{id}">#{options[:mass_editable_fields].map do |field|
+      html[:dashboard][:mass_edit] = %{<a onclick="modify_all('#{id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a><select id="batch_#{id}">#{options[:mass_editable_fields].map do |field|
                 %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
-              end.join("\n")}</select>
-              <a onclick="modify_all('#{id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a>}
+              end.join("\n")}</select>}
       html[:dashboard][:mass_delete] = %{<a onclick="mass_delete('#{id}', '#{@template.escape_javascript I18n.t("papermill.delete-all-confirmation")}'); return false;" style="cursor:pointer">#{I18n.t("papermill.delete-all")}</a>}
       html[:dashboard] = @template.content_tag(:ul, options[:dashboard].map{|action| @template.content_tag(:li, html[:dashboard][action], :class => action.to_s) }.join("\n"), :class => "dashboard")
     end

@@ -19,8 +19,7 @@
 .papermill .progress { display:block; border:1px solid #C2E3EF; text-align:left; height:6px; }
 .papermill .progress span { background:#7BB963; height:6px; width:0; display:block; }
 
-.papermill .dashboard li { float:left; margin-right:10px; margin-top:3px; }
-.papermill .dashboard li a { float:left; padding-top:3px; padding-right:3px; padding-left:20px; }
+.papermill .dashboard li a { display:inline; padding-top:3px; padding-right:3px; padding-left:20px; }
 .papermill .dashboard li.mass_edit a { background:transparent url(images/mass-edit.png) no-repeat top left; }
 .papermill .dashboard li.mass_delete a { background:transparent url(images/mass-delete.png) no-repeat top left; }
 
