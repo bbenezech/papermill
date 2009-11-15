@@ -52,11 +52,11 @@ class PapermillTest < Test::Unit::TestCase
   @article = Article.create!
   @decoy_article = Article.create!
   @file = File.new(File.join(File.dirname(__FILE__), "fixtures", "5k.png"), 'rb')
-  PapermillAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "asset1", :position => 2)
-  PapermillAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "asset1", :position => 1)
-  MyAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "my_assets")
-  MyAsset.create!(:Filedata => @file, :assetable => @article, :assetable_key => "my_assets")
-  MyAsset.create!(:Filedata => @file, :assetable => @decoy_article, :assetable_key => "my_assets")
+  PapermillAsset.create!(:file => @file, :assetable => @article, :assetable_key => "asset1", :position => 2)
+  PapermillAsset.create!(:file => @file, :assetable => @article, :assetable_key => "asset1", :position => 1)
+  MyAsset.create!(:file => @file, :assetable => @article, :assetable_key => "my_assets")
+  MyAsset.create!(:file => @file, :assetable => @article, :assetable_key => "my_assets")
+  MyAsset.create!(:file => @file, :assetable => @decoy_article, :assetable_key => "my_assets")
   
   def initialize(*args)
     super
