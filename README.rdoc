@@ -2,7 +2,7 @@
 
 Asset management made easy. Now in pre-1.0.0 release!
 
-== Announcements..
+== News..
 
 1.0.0 Release, finally!
 Things should be more stable now.
