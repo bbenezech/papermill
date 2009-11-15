@@ -20,7 +20,7 @@ class PapermillAsset < ActiveRecord::Base
   
   def Filedata=(data)
     self.file = data
-    self.file_content_type = data.get_content_type
+    self.file.instance_write("content_type", data.get_content_type)
   end
   
   def Filename=(name)
