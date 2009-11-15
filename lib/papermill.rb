@@ -7,7 +7,7 @@ String.send :include, StringToUrlNotFound unless String.instance_methods.include
 Formtastic::SemanticFormBuilder.send(:include, PapermillFormtasticExtensions) rescue NameError
 
 begin
-  require File.join(File.dirname(RAILS_ROOT), "config/initializers/papermill.rb")
+  require File.join(RAILS_ROOT, "config/initializers/papermill.rb")
 rescue LoadError
   require 'papermill/papermill_options.rb'
 end
