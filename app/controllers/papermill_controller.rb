@@ -40,7 +40,6 @@ class PapermillController < ApplicationController
   end
   
   def create
-    puts "HAHA"
     @asset = params[:asset_class].constantize.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["Filedata", "Filename"]).include?(k)})
     if @asset.save(:unique => !params[:gallery])
       render :partial => "papermill/asset", :object => @asset, :locals => {:gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style]}
