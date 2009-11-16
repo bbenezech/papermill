@@ -103,8 +103,8 @@ file "app/views/layouts/application.html.erb", <<-END
   </head>
   <body>
   <%= yield %>
-  </body>
   <%= papermill_javascript_tag :with_jquery => true %>
+  </body>
 </html>
 END
 
