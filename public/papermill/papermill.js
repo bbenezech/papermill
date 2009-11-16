@@ -114,7 +114,7 @@ var Upload = {
 				notify("Too many files selected.", "error");
 				return;
 			default:
-				notify("An error occurred in the upload. Are you connected ?", "error");
+				notify("An error occurred in the upload.", "error");
 				return;
 			}
 		} catch (ex) {
@@ -138,7 +138,7 @@ var Upload = {
 		}
 	},
 	
-	file_queue_error_handler: function(file, errorCode, message)  {
+	file_queue_error: function(file, errorCode, message)  {
 		try {
 			switch (errorCode) {
 			case SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED:
@@ -154,7 +154,7 @@ var Upload = {
 				notify("File is not an allowed file type.", "error");
 				return;
 			default:
-				notify("An error occurred in the upload. Are you connected ?", "error");
+				notify("An error occurred in the upload.", "error");
 				return;
 			}
 		} catch (e) {
