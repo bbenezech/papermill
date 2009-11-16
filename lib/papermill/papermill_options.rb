@@ -96,7 +96,7 @@ module Papermill
       	:button_text_left_padding => 4,
       	:debug => false,
       	:prevent_swf_caching => true,
-        :file_size_limit_mb => 10.megabytes
+        :file_size_limit => "10 MB"
       },
     
       # APPLICATION WIDE PARAMETERS

@@ -152,6 +152,7 @@ module ActionView::Helpers::FormTagHelper
           file_dialog_complete_handler: Upload.file_dialog_complete,
           upload_start_handler: Upload.upload_start,
           upload_progress_handler: Upload.upload_progress,
+          file_queue_error_handler: Upload.file_queue_error_handler,
           upload_error_handler: Upload.upload_error,
           upload_success_handler: Upload.upload_success,
           upload_complete_handler: Upload.upload_complete,

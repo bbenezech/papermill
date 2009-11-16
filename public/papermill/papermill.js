@@ -107,11 +107,20 @@ var Upload = {
 		percent = Math.ceil((bytes / total) * 100);
 		jQuery('#' + file.id + ' .progress span').width(percent + '%');
 	},
-	upload_error: function(file, code, message)
-	{
-		notify(SWFUPLOAD_ERROR + " " + file.name + " (" + message + " [" + code + "])", "error");
-		jQuery('#' + file.id).remove();
-	},
+	upload_error: function(file, errorCode, message) {
+		try {
+			switch (errorCode) {
+			case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
+				notify("Too many files selected.", "error");
+				return;
+			default:
+				notify("An error occurred in the upload. Are you connected ?", "error");
+				return;
+			}
+		} catch (ex) {
+		}
+	}, 
+	
 	upload_success: function(file, data)
 	{
 		if(jQuery(data).length == 0) {
@@ -128,8 +137,28 @@ var Upload = {
 			this.startUpload(this.sorted_queue[this.index++].id)
 		}
 	},
-	file_queue_error: function(file, error_code, message) {
-		upload_error(file, error_code, message)
+	
+	file_queue_error_handler: function(file, errorCode, message)  {
+		try {
+			switch (errorCode) {
+			case SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED:
+				notify("Too many files selected.", "error");
+				return;
+			case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
+				notify("File is too big.", "error");
+				return;
+			case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
+				notify("File is empty.  Please select another file.", "error");
+				return;
+			case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
+				notify("File is not an allowed file type.", "error");
+				return;
+			default:
+				notify("An error occurred in the upload. Are you connected ?", "error");
+				return;
+			}
+		} catch (e) {
+		}
 	}
 }
 
