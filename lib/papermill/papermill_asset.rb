@@ -96,7 +96,7 @@ class PapermillAsset < ActiveRecord::Base
   private
   
   def set_real_file_name
-    self.file_file_name = @real_file_name if @real_file_name
+    self.file.instance_write(:file_name, @real_file_name) if @real_file_name
   end
   
   def set_position
