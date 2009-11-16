@@ -54,12 +54,12 @@ Loads of them
 
 === Generic catch-all declaration
 
-  papermill {options}                                     # in your papermilled assetable model
+  papermill options_hash                                # in your papermilled assetable model
   @article.assets(:any_key, options_hash)               # data access
 
 === Association specific declaration
 
-  papermill :my_association, options_hash                 # in your papermilled assetable model
+  papermill :my_association, options_hash               # in your papermilled assetable model
   @article.my_association                               # data access
 
 == Usage:
