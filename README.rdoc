@@ -2,10 +2,6 @@
 
 Asset management made easy.
 
-== News..
-
-I can't make it work with IE6, there seems to be a jQuery problem. SWFUpload and jQuery should both work fine with it, but anyway, it dies with strange errors that I don't understand. Any help appreciated...
-
 == Install the gems
   
   $ gem source -a http://gemcutter.org
