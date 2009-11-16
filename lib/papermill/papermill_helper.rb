@@ -19,9 +19,13 @@ module PapermillHelper
     html << %{</script>}
     html << javascript_include_tag("/papermill/papermill", "/papermill/swfupload")
     unless @content_for_papermill_inline_js.blank?
-      html << '<script type="text/javascript">jQuery(document).ready(function() {'
+      html << '<script type="text/javascript">'
+      html << '//<![CDATA['
+      html << 'jQuery(document).ready(function() {'
       html << @content_for_papermill_inline_js
-      html << '});</script>'
+      html << '});'
+      html << '//]]>'
+      html << '</script>'
     end
     html.join("\n")
   end

@@ -83,15 +83,15 @@ var Upload = {
 			})
 			var self = this;
 			jQuery(this.sorted_queue).each( function(index, file) {
-				li = jQuery('<li></li>').attr({ 'id': file.id, 'class': 'swfupload' });
-				li.append(jQuery('<span></span>').attr('class', 'name').html(file.name.substring(0, 10) + '...'));
-				li.append(jQuery('<span></span>').attr('class', 'status').html(SWFUPLOAD_PENDING));
-				li.append(jQuery('<span></span>').attr('class', 'progress').append('<span></span>'));
+				div = jQuery('<div></div>').attr({ 'id': file.id, 'class': 'swfupload asset' });
+				div.append(jQuery('<span></span>').attr('class', 'name').html(file.name.substring(0, 10) + '...'));
+				div.append(jQuery('<span></span>').attr('class', 'status').html(SWFUPLOAD_PENDING));
+				div.append(jQuery('<span></span>').attr('class', 'progress').append('<span></span>'));
 
 				if(self.settings.file_queue_limit == 1) {
-					jQuery("#" + self.settings.upload_id).html(li);
+					jQuery("#" + self.settings.upload_id).html(div);
 				} else {
-					jQuery("#" + self.settings.upload_id).append(li);
+					jQuery("#" + self.settings.upload_id).append(div);
 				}
 			})
 			this.startUpload(this.sorted_queue[this.index++].id);
