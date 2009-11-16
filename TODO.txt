@@ -1,3 +1,4 @@
 Edit views :
 * use Jcrop
 * try Picnic API
+* trad errors
