@@ -37,29 +37,17 @@ END
 file "app/views/articles/_form.html.erb", <<-END
 <% form_for(@article) do |f| %>
   <%= f.error_messages %>
-  <p>
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
-  </p>
-  <p>
-    <%= f.label :image_gallery %><br />
-    <%= f.images_upload(:image_gallery) %>
-  </p>
-  <p>
-    <%= f.label :my_other_image %><br />
-    <%= f.image_upload(:my_other_image) %> 
-  </p>
-  <p>
-    <%= f.label :my_assets %><br />
-    <%= f.assets_upload(:my_assets) %>
-  </p>
-  <p>
-    <%= f.label :my_other_asset %><br />
-    <%= f.asset_upload(:my_other_asset) %>
-  </p>
-  <p>
-    <%= f.submit 'Send' %>
-  </p>
+  <%= f.label :title %><br />
+  <%= f.text_field :title %>
+  <%= f.label :image_gallery %><br />
+  <%= f.images_upload(:image_gallery) %>
+  <%= f.label :my_other_image %><br />
+  <%= f.image_upload(:my_other_image) %> 
+  <%= f.label :my_assets %><br />
+  <%= f.assets_upload(:my_assets) %>
+  <%= f.label :my_other_asset %><br />
+  <%= f.asset_upload(:my_other_asset) %>
+  <%= f.submit 'Send' %>
 <% end %>
 END
 
