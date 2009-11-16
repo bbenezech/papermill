@@ -4,7 +4,7 @@
 # Papermill::OPTIONS constant needs to be set before PapermillAsset is loaded, and PapermillAsset cannot be lazy-loaded
 module Papermill
 
-  # All these options will be used as defaults. You can change them : 
+  # All the options setted here will be used as defaults. You can set them : 
   #
   # * here
   #
