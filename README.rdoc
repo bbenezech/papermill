@@ -118,8 +118,7 @@ FormTagHelpers
 With generic papermill association, Papermill generates an #assets(:key, *args) named_scope
   @article.assets(:illustrations)
   @article.assets(:illustrations, :order => "created_at DESC")
-  @article.illustrations.red.first
-  @article.assets(:illustrations, :order => "created_at DESC").red.first
+  @article.assets(:illustrations).red.first
   # etc.
   
 With declarative papermill associations, Papermill generates an #<association_key>(*args) named_scope
