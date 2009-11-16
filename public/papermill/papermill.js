@@ -81,17 +81,17 @@ var Upload = {
 			this.sorted_queue = file_queue.sort(function(a,b){
 				if(b.name < a.name){return (1)}
 			})
-			self = this;
+			var self = this;
 			jQuery(this.sorted_queue).each( function(index, file) {
-				li = jQuery('<li></li>').attr({ 'id': file.id, 'class': 'swfupload' });
-				li.append(jQuery('<span></span>').attr('class', 'name').html(file.name.substring(0, 10) + '...'));
-				li.append(jQuery('<span></span>').attr('class', 'status').html(SWFUPLOAD_PENDING));
-				li.append(jQuery('<span></span>').attr('class', 'progress').append('<span></span>'));
+				div = jQuery('<div></div>').attr({ 'id': file.id, 'class': 'swfupload asset' });
+				div.append(jQuery('<span></span>').attr('class', 'name').html(file.name.substring(0, 10) + '...'));
+				div.append(jQuery('<span></span>').attr('class', 'status').html(SWFUPLOAD_PENDING));
+				div.append(jQuery('<span></span>').attr('class', 'progress').append('<span></span>'));
 
 				if(self.settings.file_queue_limit == 1) {
-					jQuery("#" + self.settings.upload_id).html(li);
+					jQuery("#" + self.settings.upload_id).html(div);
 				} else {
-					jQuery("#" + self.settings.upload_id).append(li);
+					jQuery("#" + self.settings.upload_id).append(div);
 				}
 			})
 			this.startUpload(this.sorted_queue[this.index++].id);
@@ -107,11 +107,20 @@ var Upload = {
 		percent = Math.ceil((bytes / total) * 100);
 		jQuery('#' + file.id + ' .progress span').width(percent + '%');
 	},
-	upload_error: function(file, code, message)
-	{
-		notify(SWFUPLOAD_ERROR + " " + file.name + " (" + message + " [" + code + "])", "error");
-		jQuery('#' + file.id).remove();
-	},
+	upload_error: function(file, errorCode, message) {
+		try {
+			switch (errorCode) {
+			case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
+				notify("Too many files selected.", "error");
+				return;
+			default:
+				notify("An error occurred in the upload.", "error");
+				return;
+			}
+		} catch (ex) {
+		}
+	}, 
+	
 	upload_success: function(file, data)
 	{
 		if(jQuery(data).length == 0) {
@@ -128,8 +137,28 @@ var Upload = {
 			this.startUpload(this.sorted_queue[this.index++].id)
 		}
 	},
-	file_queue_error: function(file, error_code, message) {
-		upload_error(file, error_code, message)
+	
+	file_queue_error: function(file, errorCode, message)  {
+		try {
+			switch (errorCode) {
+			case SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED:
+				notify("Too many files selected.", "error");
+				return;
+			case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
+				notify("File is too big.", "error");
+				return;
+			case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
+				notify("File is empty.  Please select another file.", "error");
+				return;
+			case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
+				notify("File is not an allowed file type.", "error");
+				return;
+			default:
+				notify("An error occurred in the upload.", "error");
+				return;
+			}
+		} catch (e) {
+		}
 	}
 }
 

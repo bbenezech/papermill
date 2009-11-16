@@ -1,5 +1,5 @@
 module Papermill
-  PAPERCLIP_INTERPOLATION_STRING = ":id_partition/:style/:escaped_basename.:extension"
+  PAPERCLIP_INTERPOLATION_STRING = ":id_partition/:style/:basename.:extension"
   
   def self.included(base)
     base.extend(ClassMethods)

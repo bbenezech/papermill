@@ -74,9 +74,9 @@ module ActionView::Helpers::FormTagHelper
             gallery_width = (options[:gallery][:width] || w) && "width:#{options[:gallery][:width] || options[:gallery][:columns]*(w+(hp+hm+b)*2)}px;" || ""
             gallery_height = (options[:gallery][:height] || h) && "min-height:#{options[:gallery][:height] || options[:gallery][:lines]*(h+(vp+vm+b)*2)}px;" || ""
             inline_css << %{##{id} { #{gallery_width} #{gallery_height} }}
-            inline_css << %{##{id} li { margin:#{vm}px #{hm}px; border-width:#{b}px; padding:#{vp}px #{hp}px; #{size}; }}
+            inline_css << %{##{id} .asset { margin:#{vm}px #{hm}px; border-width:#{b}px; padding:#{vp}px #{hp}px; #{size}; }}
           else
-            inline_css << %{##{id}, ##{id} li { #{size} }}
+            inline_css << %{##{id}, ##{id} .asset { #{size} }}
           end
           inline_css << %{##{id} .name { width:#{w || "100"}px; }}
           inline_css.join("\n")
@@ -115,7 +115,7 @@ module ActionView::Helpers::FormTagHelper
     collection = PapermillAsset.all(:conditions => conditions, :order => "position")
     
     html[:upload_button] = %{<div id="#{id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
-    html[:container] = @template.content_tag(:ul, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
+    html[:container] = @template.content_tag(:div, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
       @template.render :partial => "papermill/asset", :collection => collection, :locals => { :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]) }
     } 
     
@@ -128,9 +128,21 @@ module ActionView::Helpers::FormTagHelper
       html[:dashboard] = @template.content_tag(:ul, options[:dashboard].map{|action| @template.content_tag(:li, html[:dashboard][action], :class => action.to_s) }.join("\n"), :class => "dashboard")
     end
     
-    @template.content_for :papermill_inline_js do
-      %{
-        #{%{(jQuery("##{id}")).sortable({update:function(){jQuery.ajax({async:true, data:jQuery(this).sortable('serialize'), dataType:'script', type:'post', url:'#{@template.controller.send("sort_papermill_path")}'})}})} if options[:gallery]}
+    @template.content_for :papermill_inline_js do %{
+      jQuery("##{id}").sortable({
+        update:function(){
+          jQuery.ajax({
+            async: true, 
+            data: jQuery(this).sortable('serialize'), 
+            dataType: 'script', 
+            type: 'post', 
+            url: '#{@template.controller.send("sort_papermill_path")}'
+          })
+        }
+      })
+    } end if options[:gallery]
+    
+    @template.content_for :papermill_inline_js do %{
         new SWFUpload({
           upload_id: "#{id}",
           upload_url: "#{@template.escape_javascript create_url}",
@@ -140,6 +152,7 @@ module ActionView::Helpers::FormTagHelper
           file_dialog_complete_handler: Upload.file_dialog_complete,
           upload_start_handler: Upload.upload_start,
           upload_progress_handler: Upload.upload_progress,
+          file_queue_error_handler: Upload.file_queue_error,
           upload_error_handler: Upload.upload_error,
           upload_success_handler: Upload.upload_success,
           upload_complete_handler: Upload.upload_complete,

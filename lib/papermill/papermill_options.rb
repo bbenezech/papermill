@@ -4,7 +4,7 @@
 # Papermill::OPTIONS constant needs to be set before PapermillAsset is loaded, and PapermillAsset cannot be lazy-loaded
 module Papermill
 
-  # All these options will be used as defaults. You can change them : 
+  # All the options setted here will be used as defaults. You can set them : 
   #
   # * here
   #
@@ -96,7 +96,7 @@ module Papermill
       	:button_text_left_padding => 4,
       	:debug => false,
       	:prevent_swf_caching => true,
-        :file_size_limit_mb => 10.megabytes
+        :file_size_limit => "10 MB"
       },
     
       # APPLICATION WIDE PARAMETERS

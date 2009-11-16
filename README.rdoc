@@ -1,13 +1,6 @@
 = Papermill 
 
-Asset management made easy. Now in pre-1.0.0 release!
-
-== News..
-
-1.0.0 Release, finally!
-Things should be more stable now.
-
-I can't make it work with IE6, there seems to be a jQuery problem. SWFUpload and jQuery should both work fine with it, but anyway, it dies with strange errors that I don't understand. Any help appreciated...
+Asset management made easy.
 
 == Install the gems
   
@@ -57,12 +50,12 @@ Loads of them
 
 === Generic catch-all declaration
 
-  papermill {options}                                     # in your papermilled assetable model
+  papermill options_hash                                # in your papermilled assetable model
   @article.assets(:any_key, options_hash)               # data access
 
 === Association specific declaration
 
-  papermill :my_association, options_hash                 # in your papermilled assetable model
+  papermill :my_association, options_hash               # in your papermilled assetable model
   @article.my_association                               # data access
 
 == Usage:

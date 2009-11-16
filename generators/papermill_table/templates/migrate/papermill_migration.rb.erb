@@ -8,14 +8,14 @@ class <%= migration_name %> < ActiveRecord::Migration
       t.integer  :file_file_size
       
       # Papermill fields (required)
-      t.integer  :position
-      t.integer  :assetable_id
-      t.string   :assetable_type
-      t.string   :assetable_key
-      t.string   :type
+      t.integer  :position          # sets are ordered by position
+      t.integer  :assetable_id      # Assetable
+      t.string   :assetable_type    # Assetable
+      t.string   :assetable_key     # Assetable sets
+      t.string   :type              # STI
+      t.string   :title             # raw filename, without file extension, for your own use
       
       # Custom fields (optionnals)
-      t.string   :title
       t.string   :alt
       t.string   :copyright
       t.text     :description

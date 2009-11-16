@@ -7,11 +7,7 @@ class PapermillAsset < ActiveRecord::Base
     :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
     :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
   
-  before_post_process :set_real_file_name
-  
-  Paperclip.interpolates :escaped_basename do |attachment, style|
-    Paperclip::Interpolations[:basename].call(attachment, style).to_url
-  end
+  before_post_process :set_file_name
   
   validates_attachment_presence :file
   
@@ -95,8 +91,10 @@ class PapermillAsset < ActiveRecord::Base
   
   private
   
-  def set_real_file_name
-    self.file_file_name = @real_file_name if @real_file_name
+  def set_file_name
+    return if @real_file_name.blank?
+    self.title = (basename = @real_file_name.gsub(/#{extension = File.extname(@real_file_name)}$/, ""))
+    self.file.instance_write(:file_name, "#{basename.to_url}#{extension}")
   end
   
   def set_position
