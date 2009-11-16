@@ -8,8 +8,8 @@ module PapermillHelper
   def papermill_javascript_tag(options = {})
     html = []
     if options[:with_jquery] || options[:with_jqueryui]
-      html << %{<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"</script>} if options[:with_jquery]
-      html << %{<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"</script>} if options[:with_jquery] || options[:with_jqueryui_only]
+      html << %{<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>} if options[:with_jquery]
+      html << %{<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>} if options[:with_jquery] || options[:with_jqueryui_only]
       html << %{<script type="text/javascript">jQuery.noConflict();</script>} if options[:with_jquery] == "no_conflict"
     end
     html << %{<script type="text/javascript">}
