@@ -81,7 +81,7 @@ var Upload = {
 			this.sorted_queue = file_queue.sort(function(a,b){
 				if(b.name < a.name){return (1)}
 			})
-			self = this;
+			var self = this;
 			jQuery(this.sorted_queue).each( function(index, file) {
 				li = jQuery('<li></li>').attr({ 'id': file.id, 'class': 'swfupload' });
 				li.append(jQuery('<span></span>').attr('class', 'name').html(file.name.substring(0, 10) + '...'));
