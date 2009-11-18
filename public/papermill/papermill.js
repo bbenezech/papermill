@@ -114,7 +114,7 @@ var Upload = {
 				notify("Too many files selected", "error");
 				return;
 			default:
-				notify("An error occurred in the upload" + errorCode, "error");
+				notify("An error occurred while sending the file" + errorCode, "error");
 				return;
 			}
 		} catch (ex) {
@@ -154,7 +154,7 @@ var Upload = {
 				notify("File is not an allowed file type", "error");
 				return;
 			default:
-				notify("An error occurred in the upload" + errorCode, "error");
+				notify("An error occurred while sending the file" + errorCode, "error");
 				return;
 			}
 		} catch (e) {
