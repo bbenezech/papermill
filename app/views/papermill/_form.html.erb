@@ -1,5 +1,6 @@
-<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); close_popup(self); return false;" method="post" action="/papermill/<%= @asset.id %>">
+<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post" class="edit_papermill_asset">
   <input type="hidden" value="put" name="_method"/>
+  <div id="error"></div>
   <% fields_for :papermill_asset, @asset do |form| %>
     <% PapermillAsset.columns.map{|c| [c.name, c.type] }.reject{ |c| ["slug", "file_file_name", "file_content_type", "file_file_size", "position", "assetable_id", "assetable_type", "assetable_key", "type", "id", "created_at", "updated_at"].include?(c.first) }.each do |c| %>
       <p>
@@ -11,6 +12,6 @@
         <% end -%>
       </p>
     <% end %>
-    <%= submit_tag t('papermill.save') %>
   <% end %>
+  <%= submit_tag t('papermill.save') %>
 </form>

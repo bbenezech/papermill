@@ -9,6 +9,8 @@
 #papermill-box #footer { text-align:center; font-size:10px; padding:5px }
 #papermill-box #read-write { margin:10px 0 0 5px; }
 
+#papermill-box #error { color:red; padding:10px; }
+
 #papermill-box .right-cell {}
 #papermill-box .left-cell {font-weight:bold; padding-right:10px; text-align:right;}
 

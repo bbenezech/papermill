@@ -1,5 +1,5 @@
 popup = function(url) {
-	window.open (url, "Papermill", config='height=580, width=870, toolbar=no, menubar=no, scrollbars=yes, resizable=yes, location=no, directories=no, status=no')
+	window.open (url, "Papermill", config='height=600, width=900, toolbar=no, menubar=no, scrollbars=yes, resizable=no, location=no, directories=no, status=no')
 }
 
 close_popup = function(source) {
@@ -43,7 +43,7 @@ close_popup = function(source) {
 */
 
 notify = function(message, type) {
-	if(type != "notice") { alert(type + ": " + message) }
+	if(type != "notice") { alert(message) }
 }
 
 /*
@@ -56,6 +56,8 @@ notify = function(message, type) {
 	if(type == "warning") {	jQuery.noticeAdd({ text: message, stayTime: 9000, stay: false, type: type }) }
 	if(type == "error") {	jQuery.noticeAdd({ text: message, stayTime: 20000, stay: false, type: type }) }
 }
+
+Or you can just update div's in your application (like dynamic rails flash)
 
 */
 
@@ -108,27 +110,18 @@ var Upload = {
 		jQuery('#' + file.id + ' .progress span').width(percent + '%');
 	},
 	upload_error: function(file, errorCode, message) {
-		try {
-			switch (errorCode) {
-			case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
-				notify("Too many files selected", "error");
-				return;
-			default:
-				notify("An error occurred while sending the file" + errorCode, "error");
-				return;
-			}
-		} catch (ex) {
+		switch (errorCode) {
+		case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
+			notify("Too many files selected", "error"); break;
+		default:
+			notify("An error occurred while sending the file", "error");
 		}
+		jQuery("#"+file.id).remove();
 	}, 
 	
 	upload_success: function(file, data)
 	{
-		if(jQuery(data).length == 0) {
-			notify(data, "warning");
-			jQuery('#' + file.id).remove();
-		} else {
-			jQuery('#' + file.id).replaceWith(jQuery(data));
-		}
+		jQuery('#' + file.id).replaceWith(jQuery(data));
 	},
 	upload_complete: function(file)
 	{
@@ -139,26 +132,19 @@ var Upload = {
 	},
 	
 	file_queue_error: function(file, errorCode, message)  {
-		try {
-			switch (errorCode) {
-			case SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED:
-				notify("Too many files selected", "error");
-				return;
-			case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
-				notify("File is too big", "error");
-				return;
-			case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
-				notify("File is empty.  Please select another file", "error");
-				return;
-			case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
-				notify("File is not an allowed file type", "error");
-				return;
-			default:
-				notify("An error occurred while sending the file" + errorCode, "error");
-				return;
-			}
-		} catch (e) {
+		switch (errorCode) {
+		case SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED:
+			notify("Too many files selected", "error"); break;
+		case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
+			notify("File is too big", "error"); break;
+		case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
+			notify("File is empty.  Please select another file", "error"); break;
+		case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
+			notify("File is not an allowed file type", "error"); break;
+		default:
+			notify("An error occurred while sending the file", "error");
 		}
+		jQuery("#"+file.id).remove();
 	}
 }
 
