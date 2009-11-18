@@ -42,8 +42,8 @@ module ActionView::Helpers::FormTagHelper
  
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
     options = (
-      if assetable && (association = (assetable.class.papermill_associations[key] || assetable.class.papermill_associations[Papermill::options[:base_association_name]]))
-        association[:options].deep_merge(options)
+      if assetable && (association = (assetable.class.papermill_associations[key.to_sym] || assetable.class.papermill_associations[Papermill::options[:base_association_name]]))
+        association.deep_merge(options)
       elsif assetable.nil?
         Papermill::options.deep_merge(options)
       else
@@ -83,12 +83,12 @@ module ActionView::Helpers::FormTagHelper
         end
       end
     end
-        
+    
     url_options = {
       :escape => false,
       :controller => "/papermill", 
       :action => "create", 
-      :asset_class => (options[:class_name] && options[:class_name].to_s.constantize || association && association[:class] || PapermillAsset).to_s,
+      :asset_class => (options[:class_name] || PapermillAsset).to_s,
       :gallery => !!options[:gallery], 
       :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style]
     }

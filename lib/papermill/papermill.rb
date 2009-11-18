@@ -14,13 +14,10 @@ module Papermill
     attr_reader :papermill_associations
     
     def papermill(*args)
-      assoc_name = (!args.first.is_a?(Hash) && args.shift.try(:to_sym) || Papermill::options[:base_association_name])
-      options = args.first || {}
-      
-      (@papermill_associations ||= {}).merge!({ assoc_name => {
-          :class => (class_name = options.delete(:class_name)) && class_name.to_s.constantize || PapermillAsset, 
-          :options => Papermill::options.deep_merge(options)
-      }})
+      assoc_name = (!args.first.is_a?(Hash) && args.shift || Papermill::options[:base_association_name]).to_sym
+      local_options = args.first || {}
+
+      (@papermill_associations ||= {}).merge!( assoc_name => Papermill::options.deep_merge(local_options) )
       
       include Papermill::InstanceMethods
       before_destroy :destroy_assets
