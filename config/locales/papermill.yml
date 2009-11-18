@@ -12,7 +12,7 @@ en:
     SWFUPLOAD_PENDING: "Pending..."
     SWFUPLOAD_LOADING: "Loading..."
     SWFUPLOAD_ERROR: "File is too big, of unauthorized type, or an error occured on the server."
-    file_type: "{{type.capitalize}} file"
+    file_type: "{{type}} file"
     name: "Name"
     content_type: "Content-type"
     size: "File size"

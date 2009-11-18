@@ -79,7 +79,7 @@ var Upload = {
 				global_index++;
 			} while (file != null);
 			this.sorted_queue = file_queue.sort(function(a,b){
-				if(b.name < a.name){return (1)}
+				if(b.name < a.name){ return (1) } else { return (-1) }
 			})
 			var self = this;
 			jQuery(this.sorted_queue).each( function(index, file) {
