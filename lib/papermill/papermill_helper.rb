@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module PapermillHelper
   
   # Sets all the javascript needed for papermill.
