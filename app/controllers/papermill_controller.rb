@@ -27,11 +27,8 @@ class PapermillController < ApplicationController
   
   def update
     render :update do |page|
-      if @asset.update_attributes(params[:papermill_asset])
-        page << %{ notify("#{ escape_javascript t("papermill.updated", :ressource => @asset.name)}", "notice") }
-      else
-        page << %{ notify("#{ escape_javascript @asset.errors.full_messages.to_sentence }", "warning") }
-      end
+      @asset.update_attributes(params[:papermill_asset])
+      page << %{ notify("#{ escape_javascript t("papermill.updated", :ressource => @asset.name)}", "notice") }
     end
   end
   
@@ -41,11 +38,8 @@ class PapermillController < ApplicationController
   
   def create
     @asset = params[:asset_class].constantize.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["Filedata", "Filename"]).include?(k)})
-    if @asset.save(:unique => !params[:gallery])
-      render :partial => "papermill/asset", :object => @asset, :locals => {:gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style]}
-    else
-      render :text => @asset.errors.full_messages.join('<br />'), :status => 500
-    end
+    @asset.save(:unique => !params[:gallery])
+    render :partial => "papermill/asset", :object => @asset, :locals => {:gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style]}
   end
   
   def sort
@@ -58,11 +52,8 @@ class PapermillController < ApplicationController
   def mass_delete
     render :update do |page|
       @assets.each do |asset|
-        if asset.destroy
-          page << "jQuery('#papermill_asset_#{asset.id}').remove()"
-        else
-          page << %{ notify('#{ escape_javascript t("papermill.not-deleted", :ressource => asset.name)}', 'error') }
-        end
+        asset.destroy
+        page << "jQuery('#papermill_asset_#{asset.id}').remove()"
       end
     end
   end
