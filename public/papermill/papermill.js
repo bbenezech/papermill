@@ -111,10 +111,10 @@ var Upload = {
 		try {
 			switch (errorCode) {
 			case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
-				notify("Too many files selected.", "error");
+				notify("Too many files selected", "error");
 				return;
 			default:
-				notify("An error occurred in the upload.", "error");
+				notify("An error occurred in the upload", "error");
 				return;
 			}
 		} catch (ex) {
@@ -142,19 +142,19 @@ var Upload = {
 		try {
 			switch (errorCode) {
 			case SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED:
-				notify("Too many files selected.", "error");
+				notify("Too many files selected", "error");
 				return;
 			case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
-				notify("File is too big.", "error");
+				notify("File is too big", "error");
 				return;
 			case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
-				notify("File is empty.  Please select another file.", "error");
+				notify("File is empty.  Please select another file", "error");
 				return;
 			case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
-				notify("File is not an allowed file type.", "error");
+				notify("File is not an allowed file type", "error");
 				return;
 			default:
-				notify("An error occurred in the upload.", "error");
+				notify("An error occurred in the upload", "error");
 				return;
 			}
 		} catch (e) {

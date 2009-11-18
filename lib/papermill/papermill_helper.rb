@@ -15,7 +15,7 @@ module PapermillHelper
       html << %{<script type="text/javascript">jQuery.noConflict();</script>} if options[:with_jquery] == "no_conflict"
     end
     html << %{<script type="text/javascript">}
-    ["SWFUPLOAD_PENDING", "SWFUPLOAD_LOADING", "SWFUPLOAD_ERROR"].each do |js_constant|
+    ["SWFUPLOAD_PENDING", "SWFUPLOAD_LOADING"].each do |js_constant|
       html << %{var #{js_constant} = "#{t("papermill.#{js_constant}")}";}
     end
     html << %{</script>}
