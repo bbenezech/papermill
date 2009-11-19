@@ -8,13 +8,10 @@ Associate any image or list of images with any model and any key.
 
 === Out-of-the-box OPTIONAL compatibility with : 
 
-Formtastic          # use :as => :[image|asset](s)_upload
-
-JGrowl              # instead of alert for notifications
-
-FaceBox/Shadowbox   # instead of a pop_up for edit form
-
-Stringex            # (or any String#to_url) for asset filename/url generation
+* Formtastic          # use :as => :[image|asset](s)_upload
+* JGrowl              # instead of alert for notifications
+* FaceBox/Shadowbox   # instead of a pop_up for edit form
+* Stringex            # (or any String#to_url) for asset filename/url generation
 
 === Navigator minimal requirements: 
 
@@ -22,9 +19,10 @@ IE6+, Flash 9+, Javascript ON. Check your audience.
 
 === Server requirements:
 
-makes internal use of JQuery (but loaded in compatibility mode by default, compatible with Prototype/whatever... JRails not needed.)
-Rails 2.3 (rail's I18n, engine)
-Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed)
+* Makes internal use of JQuery (but loaded in compatibility mode by default, compatible with Prototype/whatever... JRails not needed.)
+* Rails 2.3 (rail's I18n, engine)
+* Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed => You can require your own version of Papermill)
+
 Windows environnement :
   # Mime/Types library. Ex:
   config.gem "mime-types", :lib => "mime/types"
