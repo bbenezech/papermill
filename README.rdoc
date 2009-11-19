@@ -1,10 +1,8 @@
 = Papermill 
 
-Asset management made easy, 10 minutes integration.
-
-All-you-can-eat glue around Polymorphic Paperclip table, SWFUpload & JQuery. 
-
-Associate any image or list of images with any model and any key. 
+* Asset management made easy, 10 minutes integration.
+* All-you-can-eat glue around Polymorphic Paperclip table, SWFUpload & JQuery. 
+* Associate any image or list of images with any model and any key. 
 
 === Out-of-the-box OPTIONAL compatibility with : 
 
@@ -15,20 +13,22 @@ Associate any image or list of images with any model and any key.
 
 === Navigator minimal requirements: 
 
-IE6+, Flash 9+, Javascript ON. Check your audience.
+* IE6+
+* Flash 9+
+* Javascript ON. 
+
+Check your audience.
 
 === Server requirements:
 
 * Makes internal use of JQuery (but loaded in compatibility mode by default, compatible with Prototype/whatever... JRails not needed.)
 * Rails 2.3 (rail's I18n, engine)
 * Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed => You can require your own version of Papermill)
-
-Windows environnement :
+* Front web server serving static assets if present, and forwarding demand to rails if not. (Usually a no-brainer on any classic installation. Works with Webrick)
+* Windows environnement :
   # Mime/Types library. Ex:
   config.gem "mime-types", :lib => "mime/types"
  
-Front web server serving static assets if present, and forwarding demand to rails if not. (Usually a no-brainer on any classic installation. Works with Webrick)
-
 == Install the gem
   
   $ sudo gem install papermill
