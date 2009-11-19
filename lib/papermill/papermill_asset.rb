@@ -71,7 +71,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def self.assetable_papermill_options(assetable_class, assetable_key)
-    if assetable_class 
+    if assetable_class
       assoc = assetable_class.constantize.papermill_associations
       assoc[assetable_key.try(:to_sym)] || assoc[Papermill::options[:base_association_name]]
     else
@@ -100,7 +100,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def set_position
-    self.position ||= PapermillAsset.first(:conditions => { :assetable_key => assetable_key, :assetable_type => assetable_type, :assetable_id => assetable_id } ).try(:position).to_i + 1
+    self.position ||= PapermillAsset.last(:conditions => { :assetable_key => assetable_key, :assetable_type => assetable_type, :assetable_id => assetable_id } ).try(:position).to_i + 1
   end
   
   def destroy_files

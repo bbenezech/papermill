@@ -41,7 +41,7 @@ module ActionView::Helpers::FormTagHelper
     end
  
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
-    options = PapermillAsset.assetable_papermill_options(assetable.class.name, key).deep_merge(options)
+    options = PapermillAsset.assetable_papermill_options(assetable && assetable.class.name, key).deep_merge(options)
     
     assetable_id = assetable && (assetable.id || assetable.timestamp) || nil
     assetable_type = assetable && assetable.class.base_class.name || nil
@@ -104,7 +104,7 @@ module ActionView::Helpers::FormTagHelper
     
     conditions = {:assetable_type => assetable_type, :assetable_id => assetable_id}
     conditions.merge!({:assetable_key => key.to_s}) if key
-    collection = PapermillAsset.all(:conditions => conditions, :order => "position")
+    collection = PapermillAsset.all(:conditions => conditions)
     
     html[:upload_button] = %{<div id="#{id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
     html[:container] = @template.content_tag(:div, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {

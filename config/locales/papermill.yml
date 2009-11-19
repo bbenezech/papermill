@@ -33,7 +33,7 @@ en:
 fr:
   papermill:
     not-processed: "Erreur/ressource non trouvée"
-    updated: "{{ressource}} mis(e) à jour"
+    updated: "{{ressource}} modifiés(s)"
     not-deleted: "{{ressource}} n'a pas pu être supprimée"
     not-found: "Asset #{{ressource}} non trouvé"
     edit-title: "Cliquer pour éditer '{{ressource}}'"

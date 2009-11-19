@@ -30,7 +30,7 @@ class PapermillController < ApplicationController
       if @asset.update_attributes(params[:papermill_asset])
         page << %{ notify("#{ escape_javascript t("papermill.updated", :ressource => @asset.name)}", "notice"); close_popup(self);  }
       else
-        page << %{ jQuery("#error").html("#{ escape_javascript @asset.errors.full_messages.join('<br>') }"); jQuery("#error").show(); }
+        page << %{ jQuery("#error").html("#{ escape_javascript @asset.errors.full_messages.join('<br />') }"); jQuery("#error").show(); }
       end
     end
   end
@@ -48,7 +48,7 @@ class PapermillController < ApplicationController
       render :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style] }
     else
       render :update do |page|
-        page << %{ notify("#{ escape_javascript(@asset.errors.join('<br />')) }", "warning"); }
+        page << %{ notify("#{ escape_javascript(@asset.errors.to_sentence) }", "warning"); }
       end
     end
   end
@@ -69,18 +69,9 @@ class PapermillController < ApplicationController
   end
   
   def mass_edit
-    ok_messages = []
-    ko_messages = []
-    @assets.each do |asset|
-      if asset.update_attributes({params[:attribute] => params[:value]})
-        ok_messages << t("papermill.updated", :ressource => asset.name) 
-      else
-        ko_messages << "#{asset.name} -> #{asset.errors.full_messages.to_sentence}"
-      end
-    end
+    @assets.each { |asset| asset.update_attribute(params[:attribute], params[:value]) }
     render :update do |page|
-      page << %{ notify("#{ escape_javascript ok_messages.join('\n') }", "notice"); } unless ok_messages.empty?
-      page << %{ notify("#{ escape_javascript ko_messages.join('\n') }", "error"); } unless ko_messages.empty?
+      page << %{ notify("#{ escape_javascript  t("papermill.updated", :ressource => @assets.map(&:name).to_sentence)  }", "notice"); } unless @assets.blank? 
     end
   end
   
