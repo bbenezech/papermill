@@ -12,7 +12,9 @@ class PapermillAsset < ActiveRecord::Base
   validates_attachment_presence :file
   
   belongs_to :assetable, :polymorphic => true
-  default_scope :order => 'position'
+  default_scope :order => 'assetable_key ASC, position ASC'
+  
+  named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key] }
   
   def Filedata=(data)
     data.content_type = data.get_content_type # SWFUpload content-type fix
@@ -68,21 +70,21 @@ class PapermillAsset < ActiveRecord::Base
     file_content_type
   end
   
-  def image?
-    content_type.split("/")[0] == "image"
+  def self.assetable_papermill_options(assetable_class, assetable_key)
+    if assetable_class 
+      assoc = assetable_class.constantize.papermill_associations
+      assoc[assetable_key.try(:to_sym)] || assoc[Papermill::options[:base_association_name]]
+    else
+      Papermill::options
+    end
   end
   
-  def save(*params)
-    if super(*params)
-      if params.last.is_a?(Hash) && params.last[:unique] && assetable_key
-        PapermillAsset.find(:all, :conditions => {:assetable_id => assetable_id, :assetable_type => assetable_type, :assetable_key => assetable_key }).each do |asset|
-          asset.destroy unless asset == self
-        end
-      end
-      true
-    else
-      false
-    end
+  def assetable_papermill_options
+    self.class.assetable_papermill_options(assetable_type, assetable_key)
+  end
+  
+  def image?
+    content_type.split("/")[0] == "image"
   end
   
   def self.cleanup
@@ -105,7 +107,7 @@ class PapermillAsset < ActiveRecord::Base
     FileUtils.rm_r(File.dirname(path).chomp("original")) rescue true
   end
   
-  def self.compute_style(style, compatibility_mode = nil)
+  def self.compute_style(style)
     style = Papermill::options[:aliases][style.to_sym] || Papermill::options[:aliases][style.to_s] || !Papermill::options[:alias_only] && style
     [Symbol, String].include?(style.class) ? {:geometry => style.to_s} : style
   end  

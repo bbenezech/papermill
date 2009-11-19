@@ -10,7 +10,7 @@ class PapermillController < ApplicationController
     if @asset.create_thumb_file(params[:style])
       redirect_to @asset.url(params[:style])
     else
-      render :nothing => true, :status => 500
+      render :nothing => true, :status => 404
     end
   end
 
@@ -41,7 +41,10 @@ class PapermillController < ApplicationController
   
   def create
     @asset = params[:asset_class].constantize.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["Filedata", "Filename"]).include?(k)})
-    if @asset.save(:unique => !params[:gallery])
+    if @asset.save
+      PapermillAsset.find(:all, :conditions => { :assetable_id => @asset.assetable_id, :assetable_type => @asset.assetable_type, :assetable_key => @asset.assetable_key }).each do |asset|
+        asset.destroy unless asset == @asset
+      end if !!params[:gallery]
       render :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style] }
     else
       render :update do |page|
@@ -66,11 +69,18 @@ class PapermillController < ApplicationController
   end
   
   def mass_edit
+    ok_messages = []
+    ko_messages = []
     @assets.each do |asset|
-      (message ||= []) << t("papermill.updated", :ressource => asset.name) if asset.update_attribute(params[:attribute], params[:value])
+      if asset.update_attributes({params[:attribute] => params[:value]})
+        ok_messages << t("papermill.updated", :ressource => asset.name) 
+      else
+        ko_messages << "#{asset.name} -> #{asset.errors.full_messages.to_sentence}"
+      end
     end
     render :update do |page|
-      page << %{ notify("#{ escape_javascript message.join('<br />') }", "notice"); } if defined?(message)
+      page << %{ notify("#{ escape_javascript ok_messages.join('\n') }", "notice"); } unless ok_messages.empty?
+      page << %{ notify("#{ escape_javascript ko_messages.join('\n') }", "error"); } unless ko_messages.empty?
     end
   end
   

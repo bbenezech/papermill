@@ -1,27 +1,49 @@
 = Papermill 
 
-Asset management made easy.
+Asset management made easy, 10 minutes integration.
+All-you-can-eat glue around Polymorphic Paperclip table, SWFUpload & JQuery. 
+Associate any image or list of images with any model and any key. 
 
-== Install the gems
+=== Out-of-the-box OPTIONAL compatibility with : 
+
+Formtastic          # use :as => :[image|asset](s)_upload
+JGrowl              # instead of alert for notifications
+FaceBox/Shadowbox   # instead of a pop_up for edit form
+Stringex            # (or any String#to_url) for asset filename/url generation
+
+=== Navigator minimal requirements: 
+
+IE6+, Flash 9+, Javascript ON. Check your audience.
+
+=== Server requirements:
+
+makes internal use of JQuery (but loaded in compatibility mode by default, compatible with Prototype/whatever... JRails not needed.)
+Rails 2.3 (rail's I18n, engine)
+Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed)
+Windows environnement :
+  # Mime/Types library. Ex:
+  config.gem "mime-types", :lib => "mime/types"
+ 
+Front web server serving static assets if present, and forwarding demand to rails if not. (Usually a no-brainer on any classic installation. Works with Webrick)
+
+== Install the gem
   
-  $ gem source -a http://gemcutter.org
   $ sudo gem install papermill
  
 == Try the demo
   
-  $ sudo gem install sqlite3-ruby
-  $ rails -m http://github.com/bbenezech/papermill/raw/master/installation-template.txt papermill-example
+  $ rails -m http://github.com/bbenezech/papermill/raw/master/demo.txt papermill-example
 
 == Features
 
 Loads of them
 
-=== Ajax uploading form helpers through SWFUpload: 
+=== Ajax uploading form helpers through SWFUpload => [image|asset](s)_upload
 
-* image_upload => unique image upload field, with preview
-* images_upload => sortable image gallery upload field
-* asset_upload => simple one asset field
-* assets_upload => sortable asset list field
+* image_upload => one image, with thumbnail preview
+* images_upload => sortable image thumbnail gallery
+* asset_upload => one asset
+* assets_upload => sortable asset list
 
 === Choose thumbnail size for images previews : 
 
@@ -39,12 +61,12 @@ Loads of them
 * thumbnails are generated the first time they are asked-for, and only in the requested size. 
 * no need to register thumbnail size anywhere: my_asset.url("100x100>")
 
-=== Alias handling, declaration application-wide
+=== Alias handling, declaration application-wide (in config/initializers/papermill.rb, after you do a ./script/generate papermill_initializer)
 
 * :big_alias => {:geometry => "1000x>"}
 * :other_alias => "100x>"
 * :third_alias => {:geometry => '100:122', :my_other_keys => 'blblabla'}  # if you have a customed Paperclip::Thumbnail processor, you can pass any values you need.
-* and use them when you need them : my_asset.url(:big_alias)
+* Use them when you need them : my_asset.url(:big_alias)
 
 == Papermill comes in 2 flavors:
 
@@ -106,7 +128,7 @@ FormTagHelpers
   # For resources not linked to any assetable model :
   image_upload_tag #{current_organization.name}_logo
   
-=== Resources access
+=== Resource access
 
 With generic papermill association, Papermill generates an #assets(:key, *args) named_scope
   @article.assets(:illustrations)
@@ -123,7 +145,7 @@ With declarative papermill associations, Papermill generates an #<association_ke
   # etc.
 
 Or for non-assetable resources : 
-  PapermillAsset.all(:conditions => { :assetable_key => "#{current_organization.name}_logo" }).first
+  PapermillAsset.key("#{current_organization.name}_logo").first
   ColorAsset.all.red
 
 === Using PapermillAsset
@@ -131,7 +153,7 @@ Or for non-assetable resources :
   @asset = @entry.mug_shot.first
   image_tag @asset.url              # original
   image_tag @asset.url("100x>")
-  image_tag @asset.url(:big)        # assuming you have a :big alias in your environment.rb
+  image_tag @asset.url(:big)        # assuming you have a :big alias
   @asset.name
   @asset.content_type
   @asset.path                       # original
@@ -156,8 +178,7 @@ Or for non-assetable resources :
   Rails::Initializer.run do |config|
     ...
     config.gem papermill
-    # Needed for Windows OS (mime type from file extension): 
-    config.gem "mime-types", :lib => "mime/types"
+    config.gem "mime-types", :lib => "mime/types"  # required for windows only
   end
 
 === In your layout:

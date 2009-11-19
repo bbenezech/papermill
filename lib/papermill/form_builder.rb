@@ -35,21 +35,13 @@ module ActionView::Helpers::FormTagHelper
   
   private
   def papermill_upload_tag(key, options)
-    if key.nil? && (options[:assetable].is_a?(Symbol) || options[:assetable].is_a?(String))
+    if key.nil? && options[:assetable]
       key = options[:assetable]
       options[:assetable] = nil
     end
  
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
-    options = (
-      if assetable && (association = (assetable.class.papermill_associations[key.to_sym] || assetable.class.papermill_associations[Papermill::options[:base_association_name]]))
-        association.deep_merge(options)
-      elsif assetable.nil?
-        Papermill::options.deep_merge(options)
-      else
-        raise PapermillException.new("Can't find '#{key.to_s}' association for '#{assetable.class.to_s}'.\n\n##{assetable.class.to_s.underscore}.rb\nYou can take on of these actions: \n1. set either a catchall papermill association: 'papermill {your_option_hash}'\n2. or a specific association: 'papermill :#{key.to_s}, {your_option_hash}'")
-      end
-    )
+    options = PapermillAsset.assetable_papermill_options(assetable.class.name, key)
     
     assetable_id = assetable && (assetable.id || assetable.timestamp) || nil
     assetable_type = assetable && assetable.class.base_class.name || nil

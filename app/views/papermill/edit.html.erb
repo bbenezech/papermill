@@ -8,16 +8,16 @@
         <tr><td class="left-cell"><%= t("papermill.name") %>        </td><td><%= @asset.name %></td></tr>
         <tr><td class="left-cell"><%= t("papermill.content_type") %></td><td><%= @asset.content_type %></td></tr>
         <tr><td class="left-cell"><%= t("papermill.size") %>        </td><td><%= number_to_human_size(@asset.size.to_i) %></td></tr>
-        <% if @asset.image? %>                                                                
-        <tr><td class="left-cell"><%= t("papermill.width") %>       </td><td><%= @asset.width.to_i %>px</td></tr>
-        <tr><td class="left-cell"><%= t("papermill.height") %>      </td><td><%= @asset.height.to_i %>px</td></tr>
-        <% end %>                                                                             
+        <% if @asset.image? %>
+          <tr><td class="left-cell"><%= t("papermill.width") %>       </td><td><%= @asset.width.to_i %>px</td></tr>
+          <tr><td class="left-cell"><%= t("papermill.height") %>      </td><td><%= @asset.height.to_i %>px</td></tr>
+        <% end %>
         <tr><td class="left-cell"><%= t("papermill.created_at") %>  </td><td><%= I18n.l(@asset.created_at) %></td></tr>
         <tr><td class="left-cell"><%= t("papermill.updated_at") %>  </td><td><%= I18n.l(@asset.updated_at) %></td></tr>
       </table>
     </div>
     <div id="read-write">
-      <%= render :partial => 'form', :locals => { :editable_fields => Papermill::options[:editable_fields] } %>
+      <%= render :partial => 'form' %>
     </div>
   </div>
   <div style="clear:both;"></div>
