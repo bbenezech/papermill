@@ -41,7 +41,7 @@ module ActionView::Helpers::FormTagHelper
     end
  
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
-    options = PapermillAsset.assetable_papermill_options(assetable.class.name, key)
+    options = PapermillAsset.assetable_papermill_options(assetable.class.name, key).deep_merge(options)
     
     assetable_id = assetable && (assetable.id || assetable.timestamp) || nil
     assetable_type = assetable && assetable.class.base_class.name || nil

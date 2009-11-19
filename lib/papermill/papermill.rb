@@ -22,7 +22,7 @@ module Papermill
       include Papermill::InstanceMethods
       before_destroy :destroy_assets
       after_create :rebase_assets
-      has_many :papermill_assets, :as => "Assetable", :dependent => :destroy, :order => 'assetable_key ASC, position ASC'
+      has_many :papermill_assets, :as => "Assetable", :dependent => :destroy
 
       define_method assoc_name do |*options|
         scope = PapermillAsset.scoped(:conditions => {:assetable_id => self.id, :assetable_type => self.class.base_class.name})

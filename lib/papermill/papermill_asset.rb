@@ -14,7 +14,7 @@ class PapermillAsset < ActiveRecord::Base
   belongs_to :assetable, :polymorphic => true
   default_scope :order => 'assetable_key ASC, position ASC'
   
-  named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key] }
+  named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key] }}
   
   def Filedata=(data)
     data.content_type = data.get_content_type # SWFUpload content-type fix
@@ -100,7 +100,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def set_position
-    self.position ||= PapermillAsset.first(:conditions => {:assetable_key => assetable_key, :assetable_type => assetable_type, :assetable_id => assetable_id}, :order => "position DESC" ).try(:position).to_i + 1
+    self.position ||= PapermillAsset.first(:conditions => { :assetable_key => assetable_key, :assetable_type => assetable_type, :assetable_id => assetable_id } ).try(:position).to_i + 1
   end
   
   def destroy_files
@@ -109,6 +109,6 @@ class PapermillAsset < ActiveRecord::Base
   
   def self.compute_style(style)
     style = Papermill::options[:aliases][style.to_sym] || Papermill::options[:aliases][style.to_s] || !Papermill::options[:alias_only] && style
-    [Symbol, String].include?(style.class) ? {:geometry => style.to_s} : style
-  end  
+    [Symbol, String].include?(style.class) ? { :geometry => style.to_s } : style
+  end
 end
