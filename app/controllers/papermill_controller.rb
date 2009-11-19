@@ -44,7 +44,7 @@ class PapermillController < ApplicationController
     if @asset.save
       PapermillAsset.find(:all, :conditions => { :assetable_id => @asset.assetable_id, :assetable_type => @asset.assetable_type, :assetable_key => @asset.assetable_key }).each do |asset|
         asset.destroy unless asset == @asset
-      end if !!params[:gallery]
+      end if !params[:gallery]
       render :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style] }
     else
       render :update do |page|
