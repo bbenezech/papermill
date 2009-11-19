@@ -6,6 +6,14 @@
 * All-you-can-eat glue around Polymorphic Paperclip table, SWFUpload & JQuery. 
 * Associate any image or list of images with any model and any key. 
 
+== Install the gem
+  
+  $ sudo gem install papermill
+ 
+== Try the demo
+  
+  $ rails -m http://github.com/bbenezech/papermill/raw/master/demo.txt papermill-example
+
 === Out-of-the-box OPTIONAL compatibility with : 
 
 * Formtastic          # use :as => :[image|asset](s)_upload
@@ -27,19 +35,13 @@ Check your audience.
 * Rails 2.3 (rail's I18n, engine)
 * Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed => You can require your own version of Paperclip)
 * Front web server serving static assets if present, and forwarding demand to rails if not. (Usually a no-brainer on any classic installation. Works with Webrick)
-* Windows environnement :
+
+
+=== Windows environnement :
 
   # Mime/Types library. Ex:
   config.gem "mime-types", :lib => "mime/types"
  
-== Install the gem
-  
-  $ sudo gem install papermill
- 
-== Try the demo
-  
-  $ rails -m http://github.com/bbenezech/papermill/raw/master/demo.txt papermill-example
-
 == Features
 
 Loads of them
