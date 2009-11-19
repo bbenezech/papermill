@@ -1,14 +1,19 @@
 = Papermill 
 
 Asset management made easy, 10 minutes integration.
+
 All-you-can-eat glue around Polymorphic Paperclip table, SWFUpload & JQuery. 
+
 Associate any image or list of images with any model and any key. 
 
 === Out-of-the-box OPTIONAL compatibility with : 
 
 Formtastic          # use :as => :[image|asset](s)_upload
+
 JGrowl              # instead of alert for notifications
+
 FaceBox/Shadowbox   # instead of a pop_up for edit form
+
 Stringex            # (or any String#to_url) for asset filename/url generation
 
 === Navigator minimal requirements: 
