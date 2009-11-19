@@ -1,14 +1,20 @@
 <form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post" class="edit_papermill_asset">
   <input type="hidden" value="put" name="_method"/>
-  <div id="error"></div>
+  <div id="error" style="display:none;"></div>
   <% fields_for :papermill_asset, @asset do |form| %>
-    <% PapermillAsset.columns.map{|c| [c.name, c.type] }.reject{ |c| ["slug", "file_file_name", "file_content_type", "file_file_size", "position", "assetable_id", "assetable_type", "assetable_key", "type", "id", "created_at", "updated_at"].include?(c.first) }.each do |c| %>
+    <% editable_fields.each do |field| %>
+    <% key = field.keys.first %>
       <p>
-        <%= form.label c.first, t("papermill.#{c.first}") %><br />
-        <% if c.last == :text %>
-          <%= form.text_area c.first %>
+        <%= form.label key, field[key][:label] || t("papermill.#{key}") %><br />
+        <% case field[key][:type] 
+           when "text" %>
+          <%= form.text_area key %>
+        <% when "string" %>
+          <%= form.text_field key %>
+        <% when "boolean" -%>
+          <%= form.check_box key %>
         <% else %>
-          <%= form.text_field c.first %>
+          <%= form.text_field key %>
         <% end -%>
       </p>
     <% end %>

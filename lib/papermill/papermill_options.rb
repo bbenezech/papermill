@@ -48,6 +48,14 @@ module Papermill
     
       # Attributes editable at once for all assets in a gallery
       :mass_editable_fields => ["title", "copyright", "description"],
+      
+      # Attributes you can edit in the form. You can use :type and :label
+      :editable_fields => [
+        {:title =>       {:type => "string"}}, 
+        {:alt =>         {:type => "string"}}, 
+        {:copyright =>   {:type => "string"}},
+        {:description => {:type => "text"  }}, 
+      ],
     
       # FormHelper gallery options
       # If :inline_css is true, css will be generated automatically and added through @content_for_papermill_inline_css (papermill_stylesheet_tag includes it)

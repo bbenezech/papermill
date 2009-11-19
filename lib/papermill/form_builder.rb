@@ -116,7 +116,7 @@ module ActionView::Helpers::FormTagHelper
     
     html[:upload_button] = %{<div id="#{id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
     html[:container] = @template.content_tag(:div, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
-      @template.render :partial => "papermill/asset", :collection => collection, :locals => { :thumbnail_style => (options[:thumbnail] && options[:thumbnail][:style]) }
+      @template.render :partial => "papermill/asset", :collection => collection, :locals => { :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style] }
     } 
     
     if options[:gallery]

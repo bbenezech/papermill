@@ -1,7 +1,7 @@
 <%- dom_id = "papermill_asset_#{asset.id}" -%>
 <%- delete_link = %{<a onclick="if(confirm('#{escape_javascript t("papermill.delete-confirmation", :resource => asset.name)}')){ jQuery.ajax({async:true, beforeSend:function(request){jQuery('##{dom_id}').hide();}, dataType:'script', error:function(request){jQuery('##{dom_id}').show();}, type:'delete', url:'#{papermill_url(asset)}'})}; return false;" href="#" class="delete"><img title="#{escape_javascript t("papermill.delete", :ressource => asset.name)}" src="/papermill/images/delete.png" alt="delete"/></a>} %>
 
-<div id="<%= dom_id %>" class="asset" title="<%= t("papermill.#{thumbnail_style ? "thumbnail-" : ""}edit-title", :ressource => asset.name) %>" onDblClick="popup(jQuery(this).attr('rel')); return false;" rel="<%= edit_papermill_url(asset) %>">
+<div id="<%= dom_id %>" class="asset" title="<%= t("papermill.#{(thumbnail_style) ? "thumbnail-" : ""}edit-title", :ressource => asset.name) %>" onDblClick="popup(jQuery(this).attr('rel')); return false;" rel="<%= edit_papermill_url(asset) %>">
 	<%= delete_link %>
 	<%- if thumbnail_style -%>
 	  <%= render :partial => "papermill/thumbnail_asset", :object => asset, :locals => {:thumbnail_style => thumbnail_style} %>

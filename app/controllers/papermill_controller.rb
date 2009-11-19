@@ -30,7 +30,7 @@ class PapermillController < ApplicationController
       if @asset.update_attributes(params[:papermill_asset])
         page << %{ notify("#{ escape_javascript t("papermill.updated", :ressource => @asset.name)}", "notice"); close_popup(self);  }
       else
-        page << %{ jQuery("#error").html("#{escape_javascript @asset.errors.full_messages.join('<br>')}"); }
+        page << %{ jQuery("#error").html("#{ escape_javascript @asset.errors.full_messages.join('<br>') }"); jQuery("#error").show(); }
       end
     end
   end
@@ -70,7 +70,7 @@ class PapermillController < ApplicationController
       (message ||= []) << t("papermill.updated", :ressource => asset.name) if asset.update_attribute(params[:attribute], params[:value])
     end
     render :update do |page|
-      page << %{ notify("#{ escape_javascript message.join('<br />')}", "notice"); } if defined?(message)
+      page << %{ notify("#{ escape_javascript message.join('<br />') }", "notice"); } if defined?(message)
     end
   end
   

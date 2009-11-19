@@ -17,7 +17,7 @@
       </table>
     </div>
     <div id="read-write">
-      <%= render :partial => 'form' %>
+      <%= render :partial => 'form', :locals => { :editable_fields => Papermill::options[:editable_fields] } %>
     </div>
   </div>
   <div style="clear:both;"></div>
