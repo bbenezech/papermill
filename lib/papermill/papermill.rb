@@ -34,6 +34,8 @@ module Papermill
         scope = scope.scoped(options.shift) if options.first
         scope
       end
+      ActionController::Dispatcher.middleware.delete(FlashSessionCookieMiddleware)
+      ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key])
     end
     
     def inherited(subclass)

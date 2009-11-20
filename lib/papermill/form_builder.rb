@@ -109,7 +109,7 @@ module ActionView::Helpers::FormTagHelper
     html[:upload_button] = %{<div id="#{id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
     html[:container] = @template.content_tag(:div, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
       @template.render :partial => "papermill/asset", :collection => collection, :locals => { :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style] }
-    } 
+    }
     
     if options[:gallery]
       html[:dashboard] = {}
@@ -136,6 +136,10 @@ module ActionView::Helpers::FormTagHelper
     
     @template.content_for :papermill_inline_js do %{
         new SWFUpload({
+          post_params: {
+            "#{ActionController::Base.session_options[:key]}": "#{@template.cookies[ActionController::Base.session_options[:key]]}",
+            "authenticity_token": "#{@template.form_authenticity_token}"
+          },
           upload_id: "#{id}",
           upload_url: "#{@template.escape_javascript create_url}",
           file_types: "#{options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : ''}",
@@ -153,6 +157,7 @@ module ActionView::Helpers::FormTagHelper
         });
       }
   	end
+    
 	  %{<div class="papermill">#{@timestamp_field.to_s + options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}</div>}
   end
 end

@@ -1,8 +1,4 @@
 class PapermillController < ApplicationController
-  # Create is protected because of the Ajax same origin policy. 
-  # Yet SwfUpload doesn't send the right header for request.xhr? to be true and thus fails to disable verify_authenticity_token automatically.
-  skip_before_filter :verify_authenticity_token, :only => [:create]
-  
   prepend_before_filter :load_asset, :only => [ "show", "destroy", "update", "edit" ]
   prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit" ]
   

@@ -9,10 +9,10 @@ module PapermillHelper
   # If you loaded jQuery and need to load only jQueryUI, call papermill_javascript_tag(:with_jqueryui_only => true)
   def papermill_javascript_tag(options = {})
     html = []
-    if options[:with_jquery] || options[:with_jqueryui]
+    if options[:with_jquery] || options[:with_jqueryui_only]
       html << %{<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>} if options[:with_jquery]
       html << %{<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script>} if options[:with_jquery] || options[:with_jqueryui_only]
-      html << %{<script type="text/javascript">jQuery.noConflict();</script>} if options[:with_jquery] == "no_conflict"
+      html << %{<script type="text/javascript">jQuery.noConflict();</script>} if options[:with_jquery].to_s == "no_conflict"
     end
     html << %{<script type="text/javascript">}
     ["SWFUPLOAD_PENDING", "SWFUPLOAD_LOADING"].each do |js_constant|
