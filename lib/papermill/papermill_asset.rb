@@ -1,7 +1,7 @@
 class PapermillAsset < ActiveRecord::Base
   
   before_destroy :destroy_files
-  before_create :set_position  
+  before_create :set_position
   
   has_attached_file :file, 
     :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
@@ -12,7 +12,7 @@ class PapermillAsset < ActiveRecord::Base
   validates_attachment_presence :file
   
   belongs_to :assetable, :polymorphic => true
-  default_scope :order => 'assetable_key ASC, position ASC'
+  default_scope :order => 'assetable_type, assetable_id, assetable_key, position'
   
   named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key] }}
   
@@ -100,7 +100,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def set_position
-    self.position ||= PapermillAsset.last(:conditions => { :assetable_key => assetable_key, :assetable_type => assetable_type, :assetable_id => assetable_id } ).try(:position).to_i + 1
+    self.position ||= PapermillAsset.maximum(:position, :conditions => { :assetable_type => assetable_type, :assetable_id => assetable_id, :assetable_key => assetable_key } ).to_i + 1
   end
   
   def destroy_files
