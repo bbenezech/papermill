@@ -76,12 +76,24 @@ class PapermillTest < Test::Unit::TestCase
     assert_equal @article.my_assets.map(&:id), [3,4]
     assert_equal @article.my_assets(:order => "position DESC").map(&:id), [4,3]
     assert_equal @article.my_assets(:order => "position DESC", :limit => 1).map(&:id), [4]
+    
+    assert_equal @article.assets(:my_assets).map(&:id), [3,4]
+    assert_equal @article.assets(:my_assets, :order => "position DESC").map(&:id), [4,3]
+    assert_equal @article.assets(:my_assets, :order => "position DESC", :limit => 1).map(&:id), [4]
+    
+    assert_equal @article.papermill_assets.key(:my_assets).map(&:id), [3,4]
+    assert_equal @article.papermill_assets.key(:my_assets).all(:order => "position DESC").map(&:id), [4,3]
+    assert_equal @article.papermill_assets.key(:my_assets).all(:order => "position DESC", :limit => 1).map(&:id), [4]
   end
   
-  def test_namedscope_for_global_associations_and_default_order
+  def test_namedscope_for_global_associations
     assert_equal @article.assets(:asset1).map(&:id), [2,1]
     assert_equal @article.assets(:asset1, :order => "position DESC").map(&:id), [1,2]
     assert_equal @article.assets(:asset1, :order => "position DESC", :limit => 1).map(&:id), [1]
+    
+    assert_equal @article.papermill_assets.key(:asset1).map(&:id), [2,1]
+    assert_equal @article.papermill_assets.key(:asset1).all(:order => "position DESC").map(&:id), [1,2]
+    assert_equal @article.papermill_assets.key(:asset1).all(:order => "position DESC", :limit => 1).map(&:id), [1]
   end
   
   def test_id_partition

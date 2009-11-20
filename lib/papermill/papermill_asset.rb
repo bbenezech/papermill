@@ -14,7 +14,7 @@ class PapermillAsset < ActiveRecord::Base
   belongs_to :assetable, :polymorphic => true
   default_scope :order => 'assetable_type, assetable_id, assetable_key, position'
   
-  named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key] }}
+  named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key.to_s] }}
   
   def Filedata=(data)
     data.content_type = data.get_content_type # SWFUpload content-type fix
