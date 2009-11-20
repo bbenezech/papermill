@@ -80,13 +80,14 @@ Loads of them
 
 === Generic catch-all declaration
 
-  papermill options_hash                                # in your papermilled assetable model
-  @article.assets(:any_key, options_hash)               # data access
+  papermill options_hash
+  @article.assets(:any_key, options_hash)
 
 === Association specific declaration
-
-  papermill :my_association, options_hash               # in your papermilled assetable model
-  @article.my_association                               # data access
+  
+  papermill :my_association, options_hash
+  # You also get access to a specific namescope: 
+  @article.my_association
 
 == Usage:
 
@@ -150,6 +151,7 @@ With declarative papermill associations, Papermill generates an #<association_ke
   @entry.diaporama(:order => "created_at DESC")
   @entry.diaporama.red
   # === @entry.diaporama(:conditions => {:color => "red"}) 
+  # === @entry.assets(:diaporama, :conditions => {:color => "red"})
   # etc.
 
 Or for non-assetable resources : 
