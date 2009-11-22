@@ -135,7 +135,7 @@ FormTagHelpers
   asset_upload_tag  @article, :pdf, options_hash
   image_upload_tag  @article, :other_ressources, options_hash
   # For resources not linked to any assetable model :
-  image_upload_tag #{current_organization.name}_logo
+  image_upload_tag "#{current_organization.name}_logo"
   
 === Resource access
 
