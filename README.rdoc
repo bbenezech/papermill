@@ -35,9 +35,8 @@ Check your audience.
 * Rails 2.3 (rail's I18n, engine)
 * Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed => You can require your own version of Paperclip)
 * Front web server serving static assets if present, and forwarding demand to rails if not. (Usually a no-brainer on any classic installation. Works with Webrick)
+* Windows environnement :
 
-
-=== Windows environnement :
 
   # Mime/Types library. Ex:
   config.gem "mime-types", :lib => "mime/types"
