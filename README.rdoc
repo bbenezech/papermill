@@ -131,7 +131,7 @@ With generic papermill association, Papermill generates an #assets(:key, *args) 
   @article.assets(:illustrations).red.first
   # etc.
   
-With declarative papermill associations, Papermill generates an #<association_key>(*args) named_scope
+With declarative papermill associations, Papermill also generates an #<association_key>(*args) named_scope
   @entry.mug_shot.first
   @entry.diaporama
   @entry.diaporama(:order => "created_at DESC")
