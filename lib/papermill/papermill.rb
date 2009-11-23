@@ -24,18 +24,20 @@ module Papermill
       after_create :rebase_assets
       has_many :papermill_assets, :as => "Assetable", :dependent => :destroy
 
-      define_method assoc_name do |*options|
-        scope = PapermillAsset.scoped(:conditions => {:assetable_id => self.id, :assetable_type => self.class.base_class.name})
-        if assoc_name != Papermill::options[:base_association_name]
-          scope = scope.scoped(:conditions => { :assetable_key => assoc_name.to_s })
-        elsif options.first && !options.first.is_a?(Hash)
-          scope = scope.scoped(:conditions => { :assetable_key => options.shift.to_s.nie })
+      [assoc_name, Papermill::options[:base_association_name].to_sym].uniq.each do |assoc|
+        define_method assoc do |*options|
+          scope = PapermillAsset.scoped(:conditions => {:assetable_id => self.id, :assetable_type => self.class.base_class.name})
+          if assoc != Papermill::options[:base_association_name]
+            scope = scope.scoped(:conditions => { :assetable_key => assoc.to_s })
+          elsif options.first && !options.first.is_a?(Hash)
+            scope = scope.scoped(:conditions => { :assetable_key => options.shift.to_s.nie })
+          end
+          scope = scope.scoped(options.shift) if options.first
+          scope
         end
-        scope = scope.scoped(options.shift) if options.first
-        scope
       end
-      ActionController::Dispatcher.middleware.delete(FlashSessionCookieMiddleware)
-      ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key])
+      ActionController::Dispatcher.middleware.delete(FlashSessionCookieMiddleware) rescue nil
+      ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key]) rescue nil
     end
     
     def inherited(subclass)

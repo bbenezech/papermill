@@ -8,11 +8,11 @@
 
 == Install the gem
   
-  $ sudo gem install papermill
+  sudo gem install papermill
  
 == Try the demo
   
-  $ rails -m http://github.com/bbenezech/papermill/raw/master/demo.txt papermill-example
+  rails -m http://github.com/bbenezech/papermill/raw/master/demo.txt papermill-example
 
 === Out-of-the-box OPTIONAL compatibility with : 
 
@@ -76,21 +76,6 @@ Loads of them
 * :third_alias => {:geometry => '100:122', :my_other_keys => 'blblabla'}  # if you have a customed Paperclip::Thumbnail processor, you can pass any values you need.
 * Use them when you need them : my_asset.url(:big_alias)
 
-== Papermill comes in 2 flavors:
-
-=== Generic catch-all declaration
-
-  papermill options_hash
-  @article.assets(:any_key, options_hash)
-
-=== Association specific declaration
-  
-  papermill :my_association, options_hash
-  # You also get access to a specific namescope: 
-  @article.my_association
-
-== Usage:
-
 === Model declaration
 
 You can have a generic association and as many declarative associations as you want in your model. Papermill will always use specific if found.
@@ -102,7 +87,7 @@ article.rb
 
 entry.rb
   class Entry < ActiveRecord::Base
-    papermill :mug_shot, other_options.. # default class_name is built-in PapermillAsset
+    papermill :mug_shot, other_options..
     papermill :diaporama, :class_name => ColorAsset, other_options..
   end
 
@@ -134,7 +119,8 @@ FormTagHelpers
   images_upload_tag @article, :illustrations, options_hash
   asset_upload_tag  @article, :pdf, options_hash
   image_upload_tag  @article, :other_ressources, options_hash
-  # For resources not linked to any assetable model :
+
+For resources not linked to any assetable model :
   image_upload_tag "#{current_organization.name}_logo"
   
 === Resource access
@@ -174,21 +160,26 @@ Or for non-assetable resources :
 
 === Once gem is installed :
 
-  # Generate migration :
-  $ ./script/generate papermill_table PapermillMigration
-  $ rake db:migrate
-  # copy static assets to your public directory:
-  $ ./script/generate papermill_assets
-  # create the option hash in config/initializers/papermill.rb
-  $ ./script/generate papermill_initializer
+Generate the migration :
+  ./script/generate papermill_table PapermillMigration
+Edit its fields and migrate :
+  rake db:migrate
+
+copy static assets to your public directory:
+  ./script/generate papermill_assets
   
-=== Then in environment.rb:
+create the option hash in config/initializers/papermill.rb
+  ./script/generate papermill_initializer
+
+Then see config/initializers/papermill.rb for the option hash.
+  
+=== environment.rb:
   
   ...
   Rails::Initializer.run do |config|
     ...
     config.gem papermill
-    config.gem "mime-types", :lib => "mime/types"  # required for windows only
+    config.gem "mime-types", :lib => "mime/types"  # required for windows OS
   end
 
 === In your layout:
