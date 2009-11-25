@@ -15,6 +15,7 @@ rescue LoadError
 end
 
 require 'paperclip' unless defined?(Paperclip)
+require 'papermill/papermill_paperclip_processor'
 require 'papermill/papermill'
 require 'papermill/papermill_asset'
 require 'papermill/form_builder'

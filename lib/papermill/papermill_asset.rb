@@ -4,6 +4,7 @@ class PapermillAsset < ActiveRecord::Base
   before_create :set_position
   
   has_attached_file :file, 
+    :processors => [:papermill_paperclip_processor],
     :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
     :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
   
@@ -27,7 +28,7 @@ class PapermillAsset < ActiveRecord::Base
   
   def create_thumb_file(style_name)
     FileUtils.mkdir_p File.dirname(file.path(style_name))
-    FileUtils.mv(Paperclip::Thumbnail.make(file, self.class.compute_style(style_name)).path, file.path(style_name))
+    FileUtils.mv(Paperclip::PapermillPaperclipProcessor.make(file, self.class.compute_style(style_name)).path, file.path(style_name))
   end
   
   def id_partition
