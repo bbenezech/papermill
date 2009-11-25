@@ -32,7 +32,7 @@ Check your audience.
 === Server requirements:
 
 * Makes internal use of JQuery (but loaded in compatibility mode by default, compatible with Prototype/whatever... JRails not needed.)
-* Rails 2.3 (rail's I18n, engine)
+* Rails 2.3.4 (rail's I18n, engine. older 2.3.x have issues with CRSF or try to check for CRSF stamp against AJAX request, useless with AJAX same origin policy, fixed with 2.3.4)
 * Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed => You can require your own version of Paperclip)
 * Front web server serving static assets if present, and forwarding demand to rails if not. (Usually a no-brainer on any classic installation. Works with Webrick)
 

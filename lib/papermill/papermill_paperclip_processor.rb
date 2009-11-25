@@ -42,7 +42,7 @@ module Paperclip
     end
     
     def transformation_command
-      puts "crop_command= #{crop_command ? super.sub(/ -crop \S+/, crop_command) : super}"
+      #puts "crop_command= #{crop_command ? super.sub(/ -crop \S+/, crop_command) : super}"
       
       crop_command ? super.sub(/ -crop \S+/, crop_command) : super
     end
