@@ -81,17 +81,20 @@ Loads of them
 You can have a generic association and as many declarative associations as you want in your model. Papermill will always use specific if found.
 
 article.rb
+
   class Article < ActiveRecord::Base
     papermill :class_name => ColorAsset, other_options..
   end
 
 entry.rb
+
   class Entry < ActiveRecord::Base
     papermill :mug_shot, other_options..
     papermill :diaporama, :class_name => ColorAsset, other_options..
   end
 
 color_asset.rb  # You should add columns to papermill_assets and use STI on PapermillAsset to extend defaults capabilities (or re-open PapermillAsset and monkey-patch it..)
+
   class ColorAsset < PapermillAsset
     named_scope :red, :conditions => {:color => 'red'}
   end
@@ -99,6 +102,7 @@ color_asset.rb  # You should add columns to papermill_assets and use STI on Pape
 === Form helpers
 
 FormHelpers
+
   form_for @article do 
     f.image_upload  :cover_image, options_hash
     f.images_upload :illustrations, options_hash
@@ -107,6 +111,7 @@ FormHelpers
   end
   
 Or with formtastic :
+
   semantic_form_for @article do |f|
     f.input @article, :cover_image, options_hash, :as => :image_upload
     f.input @article, :illustrations, options_hash, :as => :images_upload
@@ -115,6 +120,7 @@ Or with formtastic :
   end
 
 FormTagHelpers
+
   image_upload_tag  @article, :cover_image, options_hash
   images_upload_tag @article, :illustrations, options_hash
   asset_upload_tag  @article, :pdf, options_hash
@@ -122,7 +128,7 @@ FormTagHelpers
 
 For resources not linked to any assetable model :
   image_upload_tag "#{current_organization.name}_logo"
-  
+
 === Resource access
 
 With generic papermill association, Papermill generates an #assets(:key, *args) named_scope
@@ -130,7 +136,7 @@ With generic papermill association, Papermill generates an #assets(:key, *args) 
   @article.assets(:illustrations, :order => "created_at DESC")
   @article.assets(:illustrations).red.first
   # etc.
-  
+
 With declarative papermill associations, Papermill also generates an #<association_key>(*args) named_scope
   @entry.mug_shot.first
   @entry.diaporama
@@ -145,7 +151,7 @@ Or for non-assetable resources :
   ColorAsset.all.red
 
 === Using PapermillAsset
-  
+
   @asset = @entry.mug_shot.first
   image_tag @asset.url              # original
   image_tag @asset.url("100x>")
@@ -155,26 +161,27 @@ Or for non-assetable resources :
   @asset.path                       # original
   @asset.path("100x>")
   # etc.
-  
+
 == Installation
 
 === Once gem is installed :
 
 Generate the migration :
   ./script/generate papermill_table PapermillMigration
+
 Edit its fields and migrate :
   rake db:migrate
 
-copy static assets to your public directory:
+Copy static assets to your public directory:
   ./script/generate papermill_assets
   
-create the option hash in config/initializers/papermill.rb
+Create the option hash in config/initializers/papermill.rb
   ./script/generate papermill_initializer
 
 Then see config/initializers/papermill.rb for the option hash.
-  
+
 === environment.rb:
-  
+
   ...
   Rails::Initializer.run do |config|
     ...
@@ -192,7 +199,7 @@ Then see config/initializers/papermill.rb for the option hash.
 
 Papermill is fully I18n-able.
 Copy config/locales/papermill.yml to your root config/locale folder to modify any wording in a any locale.
-
+  
 Copyright (c) 2009 Benoit Bénézech, released under the MIT license
-
+  
 http://rubyonrails.org/images/rails.png
