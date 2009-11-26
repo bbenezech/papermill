@@ -35,8 +35,8 @@ module ActionView::Helpers::FormTagHelper
   
   private
   def papermill_upload_tag(key, options)
-    if key.nil? && options[:assetable]
-      key = options[:assetable]
+    if key.nil? && (options[:assetable].is_a?(String) || options[:assetable].is_a?(Symbol))
+      key = options[:assetable].to_s
       options[:assetable] = nil
     end
  
@@ -45,7 +45,7 @@ module ActionView::Helpers::FormTagHelper
     
     assetable_id = assetable && (assetable.id || assetable.timestamp) || nil
     assetable_type = assetable && assetable.class.base_class.name || nil
-    id = "papermill_#{assetable_type}_#{assetable_id}_#{key ? key.to_s : 'nil'}"
+    id = "papermill_#{assetable_type}_#{assetable_id}_#{key}"
     if options[:thumbnail]
       w = options[:thumbnail][:width]  || options[:thumbnail][:height] && options[:thumbnail][:aspect_ratio] && (options[:thumbnail][:height] * options[:thumbnail][:aspect_ratio]).to_i || nil
       h = options[:thumbnail][:height] || options[:thumbnail][:width]  && options[:thumbnail][:aspect_ratio] && (options[:thumbnail][:width]  / options[:thumbnail][:aspect_ratio]).to_i || nil
@@ -107,7 +107,7 @@ module ActionView::Helpers::FormTagHelper
     collection = PapermillAsset.all(:conditions => conditions)
     
     html[:upload_button] = %{<div id="#{id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{id}" class="swf_button"></span></div>}
-    html[:container] = @template.content_tag(:div, :id => id, :class => "#{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
+    html[:container] = @template.content_tag(:div, :id => id, :class => "papermill-#{key.to_s} #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") {
       @template.render :partial => "papermill/asset", :collection => collection, :locals => { :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style] }
     }
     
