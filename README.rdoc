@@ -178,7 +178,7 @@ Copy static assets to your public directory:
 Create the option hash in config/initializers/papermill.rb
   ./script/generate papermill_initializer
 
-Then see config/initializers/papermill.rb for the option hash.
+Then see config/initializers/papermill.rb for the options.
 
 === environment.rb:
 

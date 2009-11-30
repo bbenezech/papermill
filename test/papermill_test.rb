@@ -8,18 +8,17 @@ require 'active_support'
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/info.log")
 RAILS_ROOT = File.join( File.dirname(__FILE__), "../../../.." )
 
-
-require File.join(File.dirname(__FILE__), '../init.rb') 
-
 module Papermill
-  OPTIONS = OPTIONS.merge(
+  OPTIONS = {
     :aliases => {
       'tall' => :"1000x1000",
       :small => "100x100",
       :hashed_style => {:geometry => "100x100"}
-    })
+    }
+  }
 end
 
+require File.join(File.dirname(__FILE__), '../init.rb') 
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => "test.sqlite3")
 ActiveRecord::Schema.define(:version => 1) do
@@ -34,8 +33,6 @@ ActiveRecord::Schema.define(:version => 1) do
   end
 end
 
-
-
 class MyAsset < PapermillAsset
 end
 
@@ -46,7 +43,6 @@ class Article < ActiveRecord::Base
   papermill 
   papermill :my_assets, :class_name => "MyAsset"
 end
-
 
 class PapermillTest < Test::Unit::TestCase
   @article = Article.create!

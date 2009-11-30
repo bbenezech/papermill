@@ -6,7 +6,7 @@ module Papermill
   end
   
   def self.options
-    defined?(OPTIONS) ? OPTIONS : {}
+    @options ||= BASE_OPTIONS.deep_merge(defined?(OPTIONS) ? OPTIONS : {})
   end
   
 
