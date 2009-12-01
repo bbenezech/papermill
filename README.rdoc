@@ -18,7 +18,7 @@
 
 * Formtastic          # use :as => :[image|asset](s)_upload
 * JGrowl              # for notifications (included)
-* FaceBox/Shadowbox   # for popups (included)
+* FaceBox             # for popups (included)
 * Stringex            # (or any String#to_url) for asset filename/url generation
 
 === Navigator minimal requirements: 
