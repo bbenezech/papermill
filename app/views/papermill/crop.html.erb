@@ -1,0 +1,34 @@
+<%= image_tag(@asset.url, :id => "cropbox") %>
+
+<!--
+<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post">
+  <input type="hidden" value="put" name="_method"/>
+  <input type="hidden" value="<%= params[:target] %>" name="target"/>
+  <% fields_for :papermill_asset, @asset do |f| %>
+    <% for attribute in [:crop_x, :crop_y, :crop_w, :crop_h] %>
+      <%= f.hidden_field attribute, :id => attribute %>
+    <% end %>
+    <%= submit_tag t('papermill.save') %>
+  <% end -%>
+</form>
+-->
+<div style="margin:6px"></div>
+<%= link_to_function I18n.t("papermill.back"), "popup('#{edit_papermill_path(@asset)}')" %>
+
+<script type="text/javascript" charset="utf-8">/*
+  jQuery(function() {
+    jQuery('#cropbox').Jcrop({
+      onChange: update_crop,
+      onSelect: update_crop
+      //setSelect: [0, 0, 100, 100]
+      //aspectRatio: 1
+    });
+  });
+
+  function update_crop(coords) {
+    jQuery("#crop_x").val(coords.x);
+    jQuery("#crop_y").val(coords.y);
+    jQuery("#crop_w").val(coords.w);
+    jQuery("#crop_h").val(coords.h);
+  }*/
+</script>

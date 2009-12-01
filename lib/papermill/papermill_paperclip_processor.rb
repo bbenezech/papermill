@@ -3,7 +3,7 @@ module Paperclip
   # Handles thumbnailing images that are uploaded.
   class PapermillPaperclipProcessor < Thumbnail
     
-    attr_reader :crop_h, :crop_w, :crop_x, :crop_y, :copyright
+    attr_accessor :crop_h, :crop_w, :crop_x, :crop_y, :copyright
     
     def initialize(file, options = {}, attachment = nil)
       @crop_h, @crop_w, @crop_x, @crop_y = options[:crop_h], options[:crop_w], options[:crop_x], options[:crop_y]

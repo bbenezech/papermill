@@ -67,10 +67,10 @@ module ActionView::Helpers::FormTagHelper
     
     if options[:gallery]
       html[:dashboard] = {}
-      html[:dashboard][:mass_edit] = %{<a onclick="modify_all('#{dom_id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a><select id="batch_#{dom_id}">#{options[:mass_editable_fields].map do |field|
+      html[:dashboard][:mass_edit] = %{<a onclick="Papermill.modify_all('#{dom_id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a><select id="batch_#{dom_id}">#{options[:mass_editable_fields].map do |field|
                 %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
               end.join("\n")}</select>}
-      html[:dashboard][:mass_delete] = %{<a onclick="mass_delete('#{dom_id}', '#{@template.escape_javascript I18n.t("papermill.delete-all-confirmation")}'); return false;" style="cursor:pointer">#{I18n.t("papermill.delete-all")}</a>}
+      html[:dashboard][:mass_delete] = %{<a onclick="Papermill.mass_delete('#{dom_id}', '#{@template.escape_javascript I18n.t("papermill.delete-all-confirmation")}'); return false;" style="cursor:pointer">#{I18n.t("papermill.delete-all")}</a>}
       html[:dashboard] = @template.content_tag(:ul, options[:dashboard].map{|action| @template.content_tag(:li, html[:dashboard][action], :class => action.to_s) }.join("\n"), :class => "dashboard")
     end
     
@@ -122,14 +122,14 @@ module ActionView::Helpers::FormTagHelper
           upload_url: "#{ @template.escape_javascript create_url }",
           file_types: "#{ options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : '' }",
           file_queue_limit: "#{ !options[:gallery] ? '1' : '0' }",
-          file_queued_handler: Upload.file_queued,
-          file_dialog_complete_handler: Upload.file_dialog_complete,
-          upload_start_handler: Upload.upload_start,
-          upload_progress_handler: Upload.upload_progress,
-          file_queue_error_handler: Upload.file_queue_error,
-          upload_error_handler: Upload.upload_error,
-          upload_success_handler: Upload.upload_success,
-          upload_complete_handler: Upload.upload_complete,
+          file_queued_handler: Papermill.file_queued,
+          file_dialog_complete_handler: Papermill.file_dialog_complete,
+          upload_start_handler: Papermill.upload_start,
+          upload_progress_handler: Papermill.upload_progress,
+          file_queue_error_handler: Papermill.file_queue_error,
+          upload_error_handler: Papermill.upload_error,
+          upload_success_handler: Papermill.upload_success,
+          upload_complete_handler: Papermill.upload_complete,
           button_placeholder_id: "browse_for_#{dom_id}",
           #{ options[:swfupload].map { |key, value| "#{key}: #{(value.is_a?(String) ? "\"#{@template.escape_javascript(value)}\"" : @template.escape_javascript(value.to_s))}" if value }.compact.join(",\n") }
         });

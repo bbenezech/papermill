@@ -17,6 +17,8 @@ class PapermillAsset < ActiveRecord::Base
   
   named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key.to_s] }}
   
+  attr_accessor :crop_h, :crop_w, :crop_x, :crop_y
+  
   def Filedata=(data)
     data.content_type = data.get_content_type # SWFUpload content-type fix
     self.file = data

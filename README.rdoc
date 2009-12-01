@@ -14,62 +14,50 @@
   
   rails -m http://github.com/bbenezech/papermill/raw/master/demo.txt papermill-example
 
-=== Out-of-the-box OPTIONAL compatibility with : 
+=== Out-of-the-box compatibility with : 
 
 * Formtastic          # use :as => :[image|asset](s)_upload
-* JGrowl              # instead of alert for notifications
-* FaceBox/Shadowbox   # instead of a pop_up for edit form
+* JGrowl              # for notifications (included)
+* FaceBox/Shadowbox   # for popups (included)
 * Stringex            # (or any String#to_url) for asset filename/url generation
 
 === Navigator minimal requirements: 
 
 * IE6+
 * Flash 9+
-* Javascript ON. 
+* Javascript ON
 
 Check your audience.
 
 === Server requirements:
 
 * Makes internal use of JQuery (but loaded in compatibility mode by default, compatible with Prototype/whatever... JRails not needed.)
-* Rails 2.3.4 (rail's I18n, engine. older 2.3.x have issues with CRSF or try to check for CRSF stamp against AJAX request, useless with AJAX same origin policy, fixed with 2.3.4)
-* Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed => You can require your own version of Paperclip)
+* Rails 2.3.4 min (rail's I18n, engine. older 2.3.x have issues with CRSF or try to check for CRSF stamp against AJAX request, useless with AJAX same origin policy, fixed with 2.3.4)
+* Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed => You can require your own version of Paperclip if you want to)
 * Front web server serving static assets if present, and forwarding demand to rails if not. (Usually a no-brainer on any classic installation. Works with Webrick)
-
-
-=== Windows environnement :
-
-  # Mime/Types library. Ex:
-  config.gem "mime-types", :lib => "mime/types"
  
 == Features
 
-Loads of them
-
 === Ajax uploading form helpers through SWFUpload => [image|asset](s)_upload
+
+See the demo to get an idea: 
 
 * image_upload => one image, with thumbnail preview
 * images_upload => sortable image thumbnail gallery
 * asset_upload => one asset
 * assets_upload => sortable asset list
 
-=== Choose thumbnail size for images previews : 
-
-* {:thumbnail => {:width => 100, :height => 100}}
-* {:thumbnail => {:style => "100x100>"}}
-* {:thumbnail => {:width => 100, :aspect_ratio => 4.0/3.0 }}
-
 === Asset edit form: 
 
-* double-click on any asset in any helper to access&edit his properties
-* with pop-up/shadowbox/facebox, out of the box (or use your own pop-up system, dead-easy)
+* double-click on any asset in any helper to access & edit his properties
 
 === Lazy created thumbnails
 
 * thumbnails are generated the first time they are asked-for, and only in the requested size. 
 * no need to register thumbnail size anywhere: my_asset.url("100x100>")
+* .. but you can use application-wide aliases, see below : 
 
-=== Alias handling, declaration application-wide (in config/initializers/papermill.rb, after you do a ./script/generate papermill_initializer)
+=== Alias handling, declaration application-wide (in config/initializers/papermill.rb, do a ./script/generate papermill_initializer)
 
 * :big_alias => {:geometry => "1000x>"}
 * :other_alias => "100x>"
@@ -93,7 +81,7 @@ entry.rb
     papermill :diaporama, :class_name => ColorAsset, other_options..
   end
 
-color_asset.rb  # You should add columns to papermill_assets and use STI on PapermillAsset to extend defaults capabilities (or re-open PapermillAsset and monkey-patch it..)
+color_asset.rb  # You should add columns to papermill_assets and use STI on PapermillAsset to extend defaults capabilities (or re-open PapermillAsset and monkey-patch it, or use a polymorphic association)
 
   class ColorAsset < PapermillAsset
     named_scope :red, :conditions => {:color => 'red'}
@@ -107,7 +95,7 @@ FormHelpers
     f.image_upload  :cover_image, options_hash
     f.images_upload :illustrations, options_hash
     f.asset_upload  :pdf, options_hash
-    f.image_upload  :other_ressources, options_hash
+    f.image_upload  :other_resources, options_hash
   end
   
 Or with formtastic :
@@ -116,7 +104,7 @@ Or with formtastic :
     f.input @article, :cover_image, options_hash, :as => :image_upload
     f.input @article, :illustrations, options_hash, :as => :images_upload
     f.input @article, :pdf, options_hash, :as => :asset_upload
-    f.input @article, :other_ressources, options_hash, :as => :image_upload
+    f.input @article, :other_resources, options_hash, :as => :image_upload
   end
 
 FormTagHelpers
@@ -124,14 +112,14 @@ FormTagHelpers
   image_upload_tag  @article, :cover_image, options_hash
   images_upload_tag @article, :illustrations, options_hash
   asset_upload_tag  @article, :pdf, options_hash
-  image_upload_tag  @article, :other_ressources, options_hash
+  image_upload_tag  @article, :other_resources, options_hash
 
 For resources not linked to any assetable model :
-  image_upload_tag "#{current_organization.name}_logo"
+  image_upload_tag "#{current_organization.name}_logo", options_hash
 
 === Resource access
 
-With generic papermill association, Papermill generates an #assets(:key, *args) named_scope
+Papermill generates an #assets(:key, *args) named_scope
   @article.assets(:illustrations)
   @article.assets(:illustrations, :order => "created_at DESC")
   @article.assets(:illustrations).red.first
@@ -154,11 +142,11 @@ Or for non-assetable resources :
 
   @asset = @entry.mug_shot.first
   image_tag @asset.url              # original
-  image_tag @asset.url("100x>")
+  image_tag @asset.url("100x>")     # assuming asset is an image
   image_tag @asset.url(:big)        # assuming you have a :big alias
   @asset.name
   @asset.content_type
-  @asset.path                       # original
+  @asset.path
   @asset.path("100x>")
   # etc.
 
@@ -175,10 +163,8 @@ Edit its fields and migrate :
 Copy static assets to your public directory:
   ./script/generate papermill_assets
   
-Create the option hash in config/initializers/papermill.rb
+Create the option file config/initializers/papermill.rb
   ./script/generate papermill_initializer
-
-Then see config/initializers/papermill.rb for the options.
 
 === environment.rb:
 

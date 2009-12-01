@@ -14,6 +14,17 @@
 #papermill-box .right-cell {}
 #papermill-box .left-cell {font-weight:bold; padding-right:10px; text-align:right;}
 
+
+#jGrowl.jGrowl .notice {
+background: green;
+}
+#jGrowl.jGrowl .warning {
+background: orange;
+}
+#jGrowl.jGrowl .error {
+background: red;
+}
+
 .papermill { overflow:hidden; }
 .papermill a img { border:0px; }
 .papermill .asset:hover { border-color:blue; }
