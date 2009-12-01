@@ -21,10 +21,11 @@ class PapermillController < ApplicationController
   end
   
   def edit
-    render :action => "edit"
+    render :action => "edit", :layout => false
   end
   
   def crop
+    render :action => "crop", :layout => false
   end
   
   def update

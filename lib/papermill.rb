@@ -9,7 +9,10 @@ String.send :include, StringToUrlNotFound unless String.instance_methods.include
 Formtastic::SemanticFormBuilder.send(:include, PapermillFormtasticExtensions) rescue NameError
 
 require 'papermill/papermill_options.rb'
-require File.join(RAILS_ROOT, "config/initializers/papermill.rb") rescue LoadError, MissingSourceFile
+begin
+  require File.join(RAILS_ROOT, "config/initializers/papermill.rb") 
+rescue LoadError, MissingSourceFile
+end
 require 'paperclip' unless defined?(Paperclip)
 require 'papermill/papermill_paperclip_processor'
 require 'papermill/papermill'
