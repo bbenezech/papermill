@@ -183,7 +183,7 @@ Create the option file config/initializers/papermill.rb
 
 === Translations:
 
-Papermill is fully I18n-able.
+Papermill is fully I18n-able, except for javascript error messages. (coming)
 Copy config/locales/papermill.yml to your root config/locale folder to modify any wording in a any locale.
   
 Copyright (c) 2009 Benoit Bénézech, released under the MIT license
