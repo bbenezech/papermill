@@ -10,7 +10,7 @@ module Paperclip
       
       # watermark extraction
       if options[:watermark] || options[:geometry] =~ /-wm/
-        options[:geometry].delete!("-wm")
+        options[:geometry] = options[:geometry].delete("-wm")
         @watermark_path = options[:watermark].is_a?(String) && options[:watermark] || file.instance.papermill_options[:watermark]
         @watermark_path = file.instance.papermill_options[:public_root].sub(":rails_root", RAILS_ROOT) + @watermark_path if @watermark_path.starts_with?("/")
       end
