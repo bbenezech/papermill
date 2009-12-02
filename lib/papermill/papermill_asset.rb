@@ -73,7 +73,7 @@ class PapermillAsset < ActiveRecord::Base
     file_content_type
   end
   
-  def self.assetable_papermill_options(assetable_class, assetable_key)
+  def self.papermill_options(assetable_class, assetable_key)
     if assetable_class
       assoc = assetable_class.constantize.papermill_associations
       assoc[assetable_key.try(:to_sym)] || assoc[Papermill::options[:base_association_name]]
@@ -82,8 +82,8 @@ class PapermillAsset < ActiveRecord::Base
     end
   end
   
-  def assetable_papermill_options
-    self.class.assetable_papermill_options(assetable_type, assetable_key)
+  def papermill_options
+    self.class.papermill_options(assetable_type, assetable_key)
   end
   
   def image?

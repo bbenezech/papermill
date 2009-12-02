@@ -2,7 +2,7 @@
   <input type="hidden" value="put" name="_method"/>
   <div id="error" style="display:none;"></div>
   <% fields_for :papermill_asset, @asset do |form| %>
-    <% @asset.assetable_papermill_options[:editable_fields].each do |field| %>
+    <% @asset.papermill_options[:editable_fields].each do |field| %>
     <% key = field.keys.first %>
       <p>
         <%= form.label key, field[key][:label] || t("papermill.#{key}") %><br />

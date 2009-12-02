@@ -45,7 +45,7 @@ module ActionView::Helpers::FormTagHelper
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
     assetable_id = assetable && (assetable.id || assetable.timestamp) || nil
     assetable_type = assetable && assetable.class.base_class.name || nil
-    options = PapermillAsset.assetable_papermill_options(assetable && assetable.class.name, key).deep_merge(options)
+    options = PapermillAsset.papermill_options(assetable && assetable.class.name, key).deep_merge(options)
     dom_id = "papermill_#{assetable_type}_#{assetable_id}_#{key}"
     
     if ot = options[:thumbnail]
@@ -131,7 +131,7 @@ module ActionView::Helpers::FormTagHelper
           upload_success_handler: Papermill.upload_success,
           upload_complete_handler: Papermill.upload_complete,
           button_placeholder_id: "browse_for_#{dom_id}",
-          #{ options[:swfupload].map { |key, value| "#{key}: #{(value.is_a?(String) ? "\"#{@template.escape_javascript(value)}\"" : @template.escape_javascript(value.to_s))}" if value }.compact.join(",\n") }
+          #{ options[:swfupload].map { |key, value| "#{key}: #{value}" if value }.compact.join(",\n") }
         });
       }
     end
