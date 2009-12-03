@@ -90,11 +90,21 @@ class PapermillAsset < ActiveRecord::Base
     content_type.split("/")[0] == "image"
   end
   
-  def self.cleanup
+  def destroy_thumbnails
+    Find.find(root_directory) do |f|
+      FileUtils.rm_r(f) if f != root_directory && File.directory?(f) && !f.ends_with?("original")
+    end
+  end
+  
+  def self.destroy_orphans
     self.all(:conditions => ["id < 0 AND created_at < ?", DateTime.now.yesterday]).each &:destroy
   end
   
   private
+  
+  def root_directory
+    @root_directory ||= File.dirname(path).chomp("original")
+  end
   
   def set_file_name
     return if @real_file_name.blank?
@@ -107,7 +117,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def destroy_files
-    FileUtils.rm_r(File.dirname(path).chomp("original")) rescue true
+    FileUtils.rm_r(root_directory) rescue true
   end
   
   def self.compute_style(style)
