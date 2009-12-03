@@ -120,17 +120,30 @@ module Papermill
       # Set this definition to nil if you don't want a global copyright string
       #  :copyright => "Example Copyright",
       
-      # Sanitize, clean or transform your copyright before ImageMagick treatment
-      #  :copyright_text_transform => Proc.new {|c| c.upcase},
+      # Textilize, truncate, transform.. your copyright before ImageMagick treatment.
+      #  :copyright_text_transform => Proc.new {|c| c.mb_chars.upcase.to_s },
       
       # command used to watermark images when copyright is present. %s gets interpolated with above transformed copyright string
-      #  :copyright_im_command => " -gravity south-west -fill white -annotate 0 '%s'",
+      # DO NOT change the background color!!!, change the bordercolor instead to change background color. (because background color adds to bordercolor I set it to totally transparent)
+      # For both fill (=foreground color) and bordercolor, the last two octals control alpha (transparency). FF is opaque, 00 is transparent.
+      # remove -bordercolor if you don't want any background
+      # Add +antialias to REMOVE antialiasing
+      # font-size is pointsize
+      # use -gravity and -geometry for positionning
+      # parenthesis are there to isolate the label creation from the compositing part.
+      # don't touch things you don't understand, you'll save yourself some time
       
-      # additional watermark command. Activate with "-wm" at the end of your geometry string, or alternatively with :watermark => <image_path|true> in your alias definition
-      # default image path for watermarking
+      #  :copyright_im_command => %{ \\( -font Arial-Bold -pointsize 9 -fill '#FFFFFFE0' -border 3 -bordercolor '#50550080' -background '#00000000' label:' %s ' \\) -gravity South-West -geometry +0+0 -composite },
+      
+      # additional watermark command. 
+      
+      # IMAGE WATERMARKING. Same as copyright watermarking, with an image #
+      # Activate with "-wm" at the end of your geometry string but BEFORE copyright (©), or alternatively with :watermark => <image_path|true> in your alias definition
+      # image path for watermarking, you can use a relative path from your public directory (see :public_root), a complete path, or an URI.
       #  :watermark => "/images/rails.png",
+      
       # default :watermarking command for image_magick.  %s gets interpolated with above image path
-      #  :watermark_im_command => " -dissolve 25% -gravity south-east %s",
+      #  :watermark_im_command => %{- | composite \\( %s -resize 50% \\) - -dissolve 25% -gravity south-west -geometry +0+0},
       
       #@@@@@@@@@@@@@@@@@@@@ Change these only HERE. Don't override anywhere else @@@@@@@@@@@@@@@@@@@@@@@@@
     
