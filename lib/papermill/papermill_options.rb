@@ -4,7 +4,7 @@ module Papermill
     :inline_css => true,
     :images_only => false,
     :form_helper_elements => [:upload_button, :container, :dashboard],
-    :dashboard => [:mass_edit, :mass_delete],
+    :dashboard => [:mass_edit, :mass_thumbnail_reset, :mass_delete],
     :mass_editable_fields => ["title", "copyright", "description"],
     :editable_fields => [
       {:title =>       {:type => "string"}}, 
@@ -46,7 +46,7 @@ module Papermill
     :copyright_text_transform => Proc.new {|c| c.mb_chars.upcase.to_s },
     :copyright_im_command => %{\\( -font Arial-Bold -pointsize 9 -fill '#FFFFFFE0' -border 3 -bordercolor '#50550080' -background '#00000000' label:' %s ' \\) -gravity South-West -geometry +0+0 -composite},
     :watermark => "/images/rails.png",
-    :watermark_im_command => %{- | composite %s - -dissolve 20% -gravity center -geometry +0+0 },
+    :watermark_im_command => %{- | composite \\( %s -resize 50% \\) - -dissolve 20% -gravity center -geometry +0+0 },
     :base_association_name => :assets,
     :alias_only => false,
     :aliases => {},

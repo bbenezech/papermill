@@ -71,6 +71,7 @@ module ActionView::Helpers::FormTagHelper
                 %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
               end.join("\n")}</select>}
       html[:dashboard][:mass_delete] = %{<a onclick="Papermill.mass_delete('#{dom_id}', '#{@template.escape_javascript I18n.t("papermill.delete-all-confirmation")}'); return false;" style="cursor:pointer">#{I18n.t("papermill.delete-all")}</a>}
+      html[:dashboard][:mass_thumbnail_reset] = %{<a onclick="Papermill.mass_thumbnail_reset('#{dom_id}', '#{@template.escape_javascript I18n.t("papermill.mass-thumbnail-reset-confirmation")}'); return false;" style="cursor:pointer">#{I18n.t("papermill.mass-thumbnail-reset")}</a>}
       html[:dashboard] = @template.content_tag(:ul, options[:dashboard].map{|action| @template.content_tag(:li, html[:dashboard][action], :class => action.to_s) }.join("\n"), :class => "dashboard")
     end
     

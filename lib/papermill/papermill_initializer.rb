@@ -42,7 +42,7 @@ module Papermill
     
       # Dashboard elements
       # You can remove/change order of HTML elements.
-      # :dashboard => [:mass_edit, :mass_delete],
+      # :dashboard => [:mass_edit, :mass_thumbnail_reset, :mass_delete ],
     
       # Attributes editable at once for all assets in a gallery
       # :mass_editable_fields => ["title", "copyright", "description"],
@@ -138,12 +138,13 @@ module Papermill
       # additional watermark command. 
       
       # IMAGE WATERMARKING. Same as copyright watermarking, with an image #
-      # Activate with "-wm" at the end of your geometry string but BEFORE copyright (©), or alternatively with :watermark => <image_path|true> in your alias definition
-      # image path for watermarking, you can use a relative path from your public directory (see :public_root), a complete path, or an URI.
+      # Activate with "-wm" at the end of your geometry string BEFORE copyright ('©'), or alternatively with :watermark => <image_path|true> in your alias definition
+      
+      # you can use a relative path from your public directory (see :public_root), a complete path, or an URI that will be used if image_path is not supplied in alias.
       #  :watermark => "/images/rails.png",
       
       # default :watermarking command for image_magick.  %s gets interpolated with above image path
-      #  :watermark_im_command => %{- | composite \\( %s -resize 50% \\) - -dissolve 25% -gravity south-west -geometry +0+0},
+      #  :watermark_im_command => %{- | composite \\( %s -resize 50% \\) - -dissolve 20% -gravity center -geometry +0+0 },
       
       #@@@@@@@@@@@@@@@@@@@@ Change these only HERE. Don't override anywhere else @@@@@@@@@@@@@@@@@@@@@@@@@
     

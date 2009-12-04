@@ -36,8 +36,8 @@ module Papermill
           scope
         end
       end
-      ActionController::Dispatcher.middleware.delete(FlashSessionCookieMiddleware) rescue nil
-      ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key]) rescue nil
+      ActionController::Dispatcher.middleware.delete(FlashSessionCookieMiddleware) rescue true
+      ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key]) rescue true
     end
     
     def inherited(subclass)

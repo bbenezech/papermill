@@ -138,6 +138,12 @@ var Papermill = {
 		if(confirm(wording)){ 
 	    jQuery.ajax({async:true, data:jQuery('#' + papermill_id).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/mass_delete'})
 	  }
+	},
+	
+	mass_thumbnail_reset: function(papermill_id, wording) {
+		if(confirm(wording)){ 
+	    jQuery.ajax({async:true, data:jQuery('#' + papermill_id).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/mass_thumbnail_reset'})
+	  }
 	}
 }
 

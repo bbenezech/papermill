@@ -1,6 +1,6 @@
 class PapermillController < ApplicationController
   prepend_before_filter :load_asset, :only => [ "show", "destroy", "update", "edit", "crop" ]
-  prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit" ]
+  prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
   
   def show
     style = params[:style]
@@ -63,6 +63,13 @@ class PapermillController < ApplicationController
   
   def mass_edit
     @assets.each { |asset| asset.update_attribute(params[:attribute], params[:value]) }
+    render :update do |page|
+      page << %{ notify("", "#{ escape_javascript  t("papermill.updated", :resource => @assets.map(&:name).to_sentence)  }", "notice"); } unless @assets.blank? 
+    end
+  end
+  
+  def mass_thumbnail_reset
+    @assets.each &:destroy_thumbnails
     render :update do |page|
       page << %{ notify("", "#{ escape_javascript  t("papermill.updated", :resource => @assets.map(&:name).to_sentence)  }", "notice"); } unless @assets.blank? 
     end

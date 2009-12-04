@@ -30,6 +30,8 @@ en:
     modify-all: "Modify all: "
     delete-all: "Delete all"
     delete-all-confirmation: "Are you sure?"
+    mass-thumbnail-reset: "Delete all thumbnails"
+    mass-thumbnail-reset-confirmation: "Are you sure?"
 fr:
   papermill:
     not-processed: "Erreur/resource non trouvée"
@@ -62,3 +64,5 @@ fr:
     modify-all: "Modifier tout : "
     delete-all: "Supprimer tout"
     delete-all-confirmation: "Êtes-vous sûr ?"
+    mass-thumbnail-reset: "Supprimer tous les thumbnails"
+    mass-thumbnail-reset-confirmation: "Êtes-vous sûr ?"
