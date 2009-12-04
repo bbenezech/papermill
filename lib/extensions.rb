@@ -56,3 +56,27 @@ module StringToUrlNotFound
     gsub(/[^a-zA-Z0-9]/, "-").gsub(/-+/, "-").gsub(/^-|-$/, "").downcase
   end
 end
+
+
+require "digest/sha2"
+
+module Authlogic
+  module CryptoProviders
+    class Sha512
+      class << self
+        attr_accessor :join_token
+        def stretches
+          @stretches ||= 20
+        end
+        attr_writer :stretches
+        def encrypt(digest)
+          stretches.times { digest = Digest::SHA512.hexdigest(digest) }
+          digest
+        end
+        def matches?(crypted, digest)
+          encrypt(digest) == crypted
+        end
+      end
+    end
+  end
+end

@@ -1,5 +1,4 @@
 module Papermill
-  PAPERCLIP_INTERPOLATION_STRING = ":id_partition/:style/:basename.:extension"
   
   def self.included(base)
     base.extend(ClassMethods)
@@ -8,7 +7,6 @@ module Papermill
   def self.options
     @options ||= BASE_OPTIONS.deep_merge(defined?(OPTIONS) ? OPTIONS : {})
   end
-  
 
   module ClassMethods
     attr_reader :papermill_associations

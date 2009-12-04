@@ -5,8 +5,8 @@ class PapermillAsset < ActiveRecord::Base
   
   has_attached_file :file, 
     :processors => [:papermill_paperclip_processor],
-    :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}",
-    :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::PAPERCLIP_INTERPOLATION_STRING}"
+    :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::options[:path]}",
+    :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::options[:path]}"
   
   before_post_process :set_file_name
   
@@ -16,6 +16,14 @@ class PapermillAsset < ActiveRecord::Base
   default_scope :order => 'assetable_type, assetable_id, assetable_key, position'
   
   named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key.to_s] }}
+  
+  Paperclip.interpolates :url_key do |attachment, style|
+    attachment.instance.compute_url_key(style)
+  end
+  
+  Paperclip.interpolates :escaped_style do |attachment, style|
+    CGI::escape(style.to_s.nie || "original")
+  end
   
   attr_accessor :crop_h, :crop_w, :crop_x, :crop_y
   
@@ -62,7 +70,7 @@ class PapermillAsset < ActiveRecord::Base
   end
 
   def url(style = nil)
-    file.url(style && CGI::escape(style.to_s))
+    file.url(style)
   end
   
   def path(style = nil)
@@ -100,8 +108,16 @@ class PapermillAsset < ActiveRecord::Base
     self.all(:conditions => ["id < 0 AND created_at < ?", DateTime.now.yesterday]).each &:destroy
   end
   
-  private
+  def compute_url_key(style)
+    Digest::SHA512.hexdigest((style || "original").to_s + Papermill::options[:url_key_salt] + self.id.to_s)[0..5]
+  end
   
+  def has_valid_url_key?(key, style)
+    !Papermill::options[:use_url_key] || compute_url_key(style) == key
+  end
+  
+  private
+    
   def root_directory
     @root_directory ||= File.dirname(path).chomp("original")
   end

@@ -3,9 +3,8 @@ class PapermillController < ApplicationController
   prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
   
   def show
-    style = params[:style]
-    if @asset.create_thumb_file(style)
-      redirect_to @asset.url(style)
+    if @asset.has_valid_url_key?(params[:url_key], params[:style]) && @asset.create_thumb_file(params[:style])
+      redirect_to @asset.url(params[:style])
     else
       render :nothing => true, :status => 500
     end

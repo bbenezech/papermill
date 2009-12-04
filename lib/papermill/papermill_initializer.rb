@@ -161,12 +161,25 @@ module Papermill
       #  'example2' => {:geometry => "100x100#"}
       },
       
+      # To prevent generation of thumbnails through URL hacking, an encrypted hash can be generated for each geometry string/hash and added to path/url.
+      # Please note that all previouses assets paths will be lost. This is a STRONG design choice.
+      #  :use_url_key => false,
+      #  :url_key_salt => "change-me-please",
       
+      # path
+      # if you don't want url_key : (default)
+      #  :path => ":id_partition/:escaped_style/:basename.:extension",
+      # if you want url_key : 
+      #  :path => ":id_partition/url_key/:escaped_style/:basename.:extension",
+
       # path to the root of your public directory (from NGINX/Apache pov)
       #  :public_root => ":rails_root/public",
 
       # added to :public_root as the root folder for all papermill assets
       #  :papermill_prefix => "system/papermill"
+      
+      # If you use those 3 defaults, the first asset will end-up in RAILS_ROOT/public/system/papermill/000/000/001/original/my_first_asset.jpg
+      # You'll access it with my_domain.com/system/papermill/000/000/001/original/my_first_asset.jpg
     }
   end
 end

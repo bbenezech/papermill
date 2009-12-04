@@ -50,6 +50,9 @@ module Papermill
     :base_association_name => :assets,
     :alias_only => false,
     :aliases => {},
+    :use_url_key => false,
+    :url_key_salt => "change-me-please",
+    :path => ":id_partition/:escaped_style/:basename.:extension",
     :public_root => ":rails_root/public",
     :papermill_prefix => "system/papermill"
   }
