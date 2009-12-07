@@ -5,7 +5,7 @@ class PapermillAsset < ActiveRecord::Base
   
   has_attached_file :file, 
     :processors => [:papermill_paperclip_processor],
-    :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::options[:path]}",
+    :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::options[:path].gsub(":style", ":escaped_style")}",
     :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::options[:path]}"
   
   before_post_process :set_file_name
@@ -18,11 +18,11 @@ class PapermillAsset < ActiveRecord::Base
   named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key.to_s] }}
   
   Paperclip.interpolates :url_key do |attachment, style|
-    attachment.instance.compute_url_key(style)
+    attachment.instance.compute_url_key((style || "original").to_s)
   end
-  
+
   Paperclip.interpolates :escaped_style do |attachment, style|
-    CGI::escape(style.to_s.nie || "original")
+    CGI::escape((style || "original").to_s)
   end
   
   attr_accessor :crop_h, :crop_w, :crop_x, :crop_y
@@ -36,9 +36,11 @@ class PapermillAsset < ActiveRecord::Base
     @real_file_name = name
   end
   
-  def create_thumb_file(style_name)
+  def create_thumb_file(style_name, style = nil)
+    return if File.exists?(self.path(style_name))
+    style = self.class.compute_style(style_name) unless style.is_a?(Hash)
     FileUtils.mkdir_p File.dirname(file.path(style_name))
-    FileUtils.mv(Paperclip::PapermillPaperclipProcessor.make(file, self.class.compute_style(style_name)).path, file.path(style_name))
+    FileUtils.mv(Paperclip::PapermillPaperclipProcessor.make(file, style).path, file.path(style_name))
   end
   
   def id_partition
@@ -58,11 +60,11 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def width
-    Paperclip::Geometry.from_file(file).width
+    @width ||= Paperclip::Geometry.from_file(file).width
   end
   
   def height
-    Paperclip::Geometry.from_file(file).height
+    @height ||= Paperclip::Geometry.from_file(file).height
   end
   
   def size
@@ -70,15 +72,30 @@ class PapermillAsset < ActiveRecord::Base
   end
 
   def url(style = nil)
-    file.url(style)
+    file.url(style_name(style))
   end
   
   def path(style = nil)
-    file.path(style)
+    file.path(style_name(style))
+  end
+  
+  def url!(style = nil)
+    create_thumb_file(style_name(style), style)
+    file.url(style_name(style))
+  end
+
+  def path!(style = nil)
+    create_thumb_file(style_name(style), style)
+    file.path(style_name(style))
   end
   
   def content_type
     file_content_type
+  end
+  
+  def style_name(style)
+    @@style_names ||= {}
+    @@style_names[style.hash] ||= style.is_a?(Hash) ? (style[:name] || style.hash).to_s : (style || "original").to_s
   end
   
   def self.papermill_options(assetable_class, assetable_key)
@@ -99,8 +116,12 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def destroy_thumbnails
-    Find.find(root_directory) do |f|
-      FileUtils.rm_r(f) if f != root_directory && File.directory?(f) && !f.ends_with?("original")
+    original_folder = "#{File.dirname(file.path)}/"
+    Dir.glob("#{root_directory}/*/*/").each do |f| 
+      FileUtils.rm_r(f) unless f == original_folder
+    end
+    Dir.glob("#{root_directory}/*/").each do |f|
+      FileUtils.rm_r(f) if Dir.entries(f) == [".", ".."]
     end
   end
   
@@ -109,7 +130,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def compute_url_key(style)
-    Digest::SHA512.hexdigest((style || "original").to_s + Papermill::options[:url_key_salt] + self.id.to_s)[0..5]
+    Digest::SHA512.hexdigest(style.to_s + Papermill::options[:url_key_salt] + self.id.to_s)[0..5]
   end
   
   def has_valid_url_key?(key, style)
@@ -119,7 +140,7 @@ class PapermillAsset < ActiveRecord::Base
   private
     
   def root_directory
-    @root_directory ||= File.dirname(path).chomp("original")
+    @root_directory ||= File.dirname(path).split('/')[0..-3].join('/')
   end
   
   def set_file_name

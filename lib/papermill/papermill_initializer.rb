@@ -168,9 +168,9 @@ module Papermill
       
       # path
       # if you don't want url_key : (default)
-      #  :path => ":id_partition/:escaped_style/:basename.:extension",
+      #  :path => ":id_partition/:style/:basename.:extension",
       # if you want url_key : 
-      #  :path => ":id_partition/url_key/:escaped_style/:basename.:extension",
+      #  :path => ":id_partition/url_key/:style/:basename.:extension",
 
       # path to the root of your public directory (from NGINX/Apache pov)
       #  :public_root => ":rails_root/public",

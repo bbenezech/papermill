@@ -91,7 +91,7 @@ class PapermillTest < Test::Unit::TestCase
     assert_equal @article.papermill_assets.key(:asset1).all(:order => "position DESC").map(&:id), [1,2]
     assert_equal @article.papermill_assets.key(:asset1).all(:order => "position DESC", :limit => 1).map(&:id), [1]
   end
-  
+
   def test_id_partition
     assert_equal @asset1.id_partition, "000/000/001"
   end
@@ -111,17 +111,7 @@ class PapermillTest < Test::Unit::TestCase
   def test_size
     assert_equal @asset1.size, 4456
   end
-  
-  def test_url
-    assert_equal @asset1.url, "/system/papermill/000/000/001/original/5k.png"
-    assert_equal @asset1.url("400x300#"), "/system/papermill/000/000/001/400x300%23/5k.png"
-  end
-  
-  def test_path
-    assert_equal @asset1.path, "./test/../../../../public/system/papermill/000/000/001/original/5k.png"
-    assert_equal @asset1.path("400x300#"), "./test/../../../../public/system/papermill/000/000/001/400x300#/5k.png"
-  end
-  
+    
   def test_content_type
     assert_equal @file.get_content_type, "image/png"
     assert_equal @asset1.content_type, "image/png"
@@ -143,3 +133,21 @@ class PapermillTest < Test::Unit::TestCase
     assert_equal PapermillAsset.compute_style("100x100"), false
   end
 end
+
+#  Filedata=(data)
+#  Filename=(name)
+#  create_thumb_file(style_name)
+#  basename
+#  extension
+#  url(style = nil)
+#  path(style = nil)
+#  self.papermill_options(assetable_class, assetable_key)
+#  papermill_options
+#  destroy_thumbnails
+#  self.destroy_orphans
+#  compute_url_key(style)
+#  has_valid_url_key?(key, style)
+#  root_directory
+#  set_file_name
+#  set_position
+#  destroy_files
