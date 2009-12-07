@@ -7,6 +7,15 @@ module Papermill
   def self.options
     @options ||= BASE_OPTIONS.deep_merge(defined?(OPTIONS) ? OPTIONS : {})
   end
+  
+  def self.compute_paperclip_path(escape_style = false)
+    path = []
+    path << (options[:use_id_partition] ? ":id_partition" : ":id")
+    path << (":url_key" if options[:use_url_key])
+    path << (escape_style ? ":escaped_style" : ":style")
+    path << ":basename.:extension"
+    path.compact.join("/")
+  end
 
   module ClassMethods
     attr_reader :papermill_associations

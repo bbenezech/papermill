@@ -5,8 +5,8 @@ class PapermillAsset < ActiveRecord::Base
   
   has_attached_file :file, 
     :processors => [:papermill_paperclip_processor],
-    :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::options[:path].gsub(":style", ":escaped_style")}",
-    :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::options[:path]}"
+    :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::compute_paperclip_path(true)}",
+    :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::compute_paperclip_path}"
   
   before_post_process :set_file_name
   
@@ -72,11 +72,13 @@ class PapermillAsset < ActiveRecord::Base
   end
 
   def url(style = nil)
-    file.url(style_name(style))
+    return url!(style) if style.is_a?(Hash)
+    file.url(style)
   end
   
   def path(style = nil)
-    file.path(style_name(style))
+    return path!(style) if style.is_a?(Hash)
+    file.path(style)
   end
   
   def url!(style = nil)
@@ -94,8 +96,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def style_name(style)
-    @@style_names ||= {}
-    @@style_names[style.hash] ||= style.is_a?(Hash) ? (style[:name] || style.hash).to_s : (style || "original").to_s
+    style.is_a?(Hash) ? (style[:name] || style.hash).to_s : (style || "original").to_s
   end
   
   def self.papermill_options(assetable_class, assetable_key)
@@ -116,8 +117,9 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def destroy_thumbnails
+    thumbnail_folder_mask = Papermill::options[:use_url_key] ? "*/*/" : "*/"
     original_folder = "#{File.dirname(file.path)}/"
-    Dir.glob("#{root_directory}/*/*/").each do |f| 
+    Dir.glob("#{root_directory}/#{thumbnail_folder_mask}").each do |f| 
       FileUtils.rm_r(f) unless f == original_folder
     end
     Dir.glob("#{root_directory}/*/").each do |f|
@@ -140,7 +142,8 @@ class PapermillAsset < ActiveRecord::Base
   private
     
   def root_directory
-    @root_directory ||= File.dirname(path).split('/')[0..-3].join('/')
+    deepness_to_root = Papermill::options[:use_url_key] ? -3 : -2
+    @root_directory ||= File.dirname(path).split('/')[0..deepness_to_root].join('/')
   end
   
   def set_file_name

@@ -51,8 +51,8 @@ module Papermill
     :alias_only => false,
     :aliases => {},
     :use_url_key => false,
+    :use_id_partition => true,
     :url_key_salt => "change-me-please",
-    :path => ":id_partition/:url_key/:style/:basename.:extension",
     :public_root => ":rails_root/public",
     :papermill_prefix => "system/papermill"
   }
