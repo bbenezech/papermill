@@ -29,6 +29,10 @@ class PapermillController < ApplicationController
   end
   
   def update
+    if params[:target]
+      @asset.create_thumb_file(params[:target], params[:papermill_asset].merge({ :geometry => "original#" }))
+    end
+    
     render :update do |page|
       if @asset.update_attributes(params[:papermill_asset])
         page << %{ notify("#{@asset.name}", "#{ escape_javascript t("papermill.updated", :resource => @asset.name)}", "notice"); close_popup(self);  }

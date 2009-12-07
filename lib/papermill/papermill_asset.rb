@@ -35,14 +35,7 @@ class PapermillAsset < ActiveRecord::Base
   def Filename=(name)
     @real_file_name = name
   end
-  
-  def create_thumb_file(style_name, style = nil)
-    return if File.exists?(self.path(style_name))
-    style = self.class.compute_style(style_name) unless style.is_a?(Hash)
-    FileUtils.mkdir_p File.dirname(file.path(style_name))
-    FileUtils.mv(Paperclip::PapermillPaperclipProcessor.make(file, style).path, file.path(style_name))
-  end
-  
+    
   def id_partition
     ("%09d" % self.id).scan(/\d{3}/).join("/")
   end
@@ -82,13 +75,13 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def url!(style = nil)
-    create_thumb_file(style_name(style), style)
-    file.url(style_name(style))
+    create_thumb_file(style_name = style_name(style), style) unless File.exists?(self.path(style_name))
+    file.url(style_name)
   end
 
   def path!(style = nil)
-    create_thumb_file(style_name(style), style)
-    file.path(style_name(style))
+    create_thumb_file(style_name = style_name(style), style) unless File.exists?(self.path(style_name))
+    file.path(style_name)
   end
   
   def content_type
@@ -114,6 +107,13 @@ class PapermillAsset < ActiveRecord::Base
   
   def image?
     content_type.split("/")[0] == "image"
+  end
+  
+  def create_thumb_file(style_name, style = nil)
+    destroy_thumbnails if style_name.to_s == "original"
+    style = self.class.compute_style(style_name) unless style.is_a?(Hash)
+    FileUtils.mkdir_p File.dirname(file.path(style_name))
+    FileUtils.mv(Paperclip::PapermillPaperclipProcessor.make(file, style).path, file.path(style_name))
   end
   
   def destroy_thumbnails
