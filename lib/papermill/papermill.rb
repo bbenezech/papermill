@@ -8,11 +8,11 @@ module Papermill
     @options ||= BASE_OPTIONS.deep_merge(defined?(OPTIONS) ? OPTIONS : {})
   end
   
-  def self.compute_paperclip_path(escape_style = false)
+  def self.compute_paperclip_path
     path = []
     path << (options[:use_id_partition] ? ":id_partition" : ":id")
     path << (":url_key" if options[:use_url_key])
-    path << (escape_style ? ":escaped_style" : ":style")
+    path << ":style"
     path << ":basename.:extension"
     path.compact.join("/")
   end

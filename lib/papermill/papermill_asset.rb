@@ -5,8 +5,8 @@ class PapermillAsset < ActiveRecord::Base
   
   has_attached_file :file, 
     :processors => [:papermill_paperclip_processor],
-    :url => "/#{Papermill::options[:papermill_prefix]}/#{Papermill::compute_paperclip_path(true)}",
-    :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_prefix]}/#{Papermill::compute_paperclip_path}"
+    :url => "/#{Papermill::options[:papermill_url_prefix]}/#{Papermill::compute_paperclip_path.gsub(':style', ':escaped_style')}",
+    :path => "#{Papermill::options[:public_root]}/#{Papermill::options[:papermill_path_prefix]}/#{Papermill::compute_paperclip_path}"
   
   before_post_process :set_file_name
   
@@ -132,7 +132,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def compute_url_key(style)
-    Digest::SHA512.hexdigest(style.to_s + Papermill::options[:url_key_salt] + self.id.to_s)[0..5]
+    Papermill::options[:url_key_generator].call(style, self)
   end
   
   def has_valid_url_key?(key, style)
