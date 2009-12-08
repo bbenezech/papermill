@@ -1,7 +1,5 @@
 = Papermill 
 
-
-
 * Asset management made easy, 10 minutes integration.
 * All-you-can-eat glue around Polymorphic Paperclip table, SWFUpload & JQuery. 
 * Associate any image or list of images with any model and any key. 
@@ -165,6 +163,8 @@ Copy static assets to your public directory:
   
 Create the option file config/initializers/papermill.rb
   ./script/generate papermill_initializer
+  
+Go have a look to config/initializers/papermill.rb, lots of info there.
 
 === environment.rb:
 
@@ -172,7 +172,7 @@ Create the option file config/initializers/papermill.rb
   Rails::Initializer.run do |config|
     ...
     config.gem papermill
-    config.gem "mime-types", :lib => "mime/types"  # required for windows OS
+    config.gem "mime-types", :lib => "mime/types"  # required for windows
   end
 
 === In your layout:
