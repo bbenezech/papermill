@@ -1,6 +1,6 @@
 class PapermillController < ApplicationController
-  prepend_before_filter :load_asset, :only => [ "show", "destroy", "update", "edit", "crop" ]
- prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
+  prepend_before_filter :load_asset,  :only => [ "show", "destroy", "update", "edit", "crop" ]
+  prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
   
   def show
     if @asset.has_valid_url_key?(params[:url_key], params[:style]) && @asset.create_thumb_file(params[:style])
