@@ -2,7 +2,7 @@ en:
   papermill: 
     not-processed: "Error/resource not processed"
     updated: "'{{resource}}' updated"
-    not-found: "Asset #{{resource}} not found"
+    not-found: "'#{{resource}}' not found"
     edit-title: "Click to edit '{{resource}}'"
     thumbnail-edit-title: "Double-click to edit '{{resource}}'"
     upload-button-wording: "Upload..."
@@ -25,7 +25,6 @@ en:
     height: "Height"
     save: "Save"
     back: "Back"
-    location: "File : "
     url: "URL : "
     modify-all: "Modify all: "
     delete-all: "Delete all"
@@ -35,8 +34,8 @@ en:
 fr:
   papermill:
     not-processed: "Erreur/resource non trouvée"
-    updated: "{{resource}} modifiés(s)"
-    not-found: "Asset #{{resource}} non trouvé"
+    updated: "'{{resource}}' modifiés(s)"
+    not-found: "'{{resource}}' non trouvé"
     edit-title: "Cliquer pour éditer '{{resource}}'"
     thumbnail-edit-title: "Double-cliquer pour éditer '{{resource}}'"
     upload-button-wording: "Charger.."
@@ -59,7 +58,6 @@ fr:
     height: "Hauteur"
     save: "Modifier"
     back: "Retour"
-    location: "Fichier : "
     url: "Lien : "
     modify-all: "Modifier tout : "
     delete-all: "Supprimer tout"
