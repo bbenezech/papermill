@@ -115,7 +115,7 @@ module Papermill
       #  :copyright => "Example Copyright",
       
       # Textilize, truncate, transform... your copyright before integration
-      #  :copyright_text_transform => Proc.new {|c| c.mb_chars.upcase.to_s },
+      #  :copyright_text_transform => Proc.new {|c| c },
       
       # Watermark ImageMagick command string.
       #  * %s gets interpolated with above transformed copyright string
@@ -174,7 +174,7 @@ module Papermill
       #  :papermill_url_prefix => "system/papermill",
       #  :papermill_path_prefix => ":rails_root/public/system/papermill",
       
-      # set to false if you don't plan to have too many assets. (dangerous, don't change unless you have a good reason to)
+      # you can set it to false if you don't plan to have too many assets. (dangerous)
       #  :use_id_partition => true,
       
       # If you use those defaults, the first asset will end-up in RAILS_ROOT/public/system/papermill/000/000/001/original/my_first_asset_name.ext
