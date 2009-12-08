@@ -15,8 +15,8 @@
         <tr><td class="left-cell"><%= t("papermill.content_type") %></td><td><%= @asset.content_type %></td></tr>
         <tr><td class="left-cell"><%= t("papermill.size") %>        </td><td><%= number_to_human_size(@asset.size.to_i) %></td></tr>
         <% if @asset.image? %>
-          <tr><td class="left-cell"><%= t("papermill.width") %>       </td><td><%= @asset.width.to_i %>px</td></tr>
-          <tr><td class="left-cell"><%= t("papermill.height") %>      </td><td><%= @asset.height.to_i %>px</td></tr>
+          <tr><td class="left-cell"><%= t("papermill.width") %>     </td><td><%= @asset.width.to_i %>px</td></tr>
+          <tr><td class="left-cell"><%= t("papermill.height") %>    </td><td><%= @asset.height.to_i %>px</td></tr>
         <% end %>
         <tr><td class="left-cell"><%= t("papermill.created_at") %>  </td><td><%= I18n.l(@asset.created_at) %></td></tr>
         <tr><td class="left-cell"><%= t("papermill.updated_at") %>  </td><td><%= I18n.l(@asset.updated_at) %></td></tr>
@@ -29,7 +29,6 @@
   
   <div style="clear:both;"></div>
   <p id="footer">
-    <%= t("papermill.location") +  @asset.file.path %><br />
-    <%= t("papermill.url") +  @asset.url %>
+    <%= t("papermill.url") + link_to(@asset.url) %>
   </p>
 </div>
