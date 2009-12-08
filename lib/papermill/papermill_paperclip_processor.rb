@@ -54,7 +54,7 @@ module Paperclip
     end
     
     def copyright_command
-      (options[:copyright_im_command] || @file.instance.papermill_options[:copyright_im_command]).gsub(/%s/, @copyright.gsub(/'/, %{'"'"'}).sub("-slash-", "/").sub("-backslash-", %{\\\\})) if @copyright
+      (options[:copyright_im_command] || @file.instance.papermill_options[:copyright_im_command]).gsub(/%s/, @copyright.gsub(/'/, %{'"'"'}).sub("-slash-", "/").sub("-backslash-", %{\\\\\\})) if @copyright
     end
     
     def watermark_command
