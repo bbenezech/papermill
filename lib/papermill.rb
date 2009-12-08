@@ -1,7 +1,6 @@
-require 'find'
-require "digest/sha2"
+#require "digest/sha2"
 I18n.load_path = [File.join(File.dirname(__FILE__), "../config/locales/papermill.yml")] + I18n.load_path
-require 'extensions'
+require 'papermill/extensions'
 require 'papermill/flash_session_cookie_middleware.rb'
 
 Object.send :include, PapermillObjectExtensions
