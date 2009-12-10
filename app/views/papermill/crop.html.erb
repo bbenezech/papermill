@@ -35,6 +35,5 @@
   jQuery(document).bind('reveal.facebox', function() { 
       jQuery(document).unbind('reveal.facebox'); /* clear binding */
       jQuery('#facebox').css('left', jQuery(window).width() / 2 - (<%= @asset.width %> / 2));
-      console.log("RESIZING TO", jQuery(window).width() / 2 - (<%= @asset.width %> / 2))
   });
 </script>
