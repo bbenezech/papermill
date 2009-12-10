@@ -21,16 +21,6 @@ module PapermillObjectExtensions
   end
 end
 
-module PapermillFileExtensions
-  def get_content_type
-    begin
-      MIME::Types.type_for(self.original_filename).to_s
-    rescue NameError
-      `file --mime -br #{self.path}`.strip.split(";").first
-    end
-  end
-end
-
 module PapermillFormtasticExtensions
   def image_upload_input(method, options)
     self.label(method, options_for_label(options)) +

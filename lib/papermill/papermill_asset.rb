@@ -28,7 +28,7 @@ class PapermillAsset < ActiveRecord::Base
   attr_accessor :crop_h, :crop_w, :crop_x, :crop_y
   
   def Filedata=(data)
-    data.content_type = data.get_content_type # SWFUpload content-type fix
+    data.content_type = MIME::Types.type_for(self.original_filename).to_s # SWFUpload content-type fix
     self.file = data
   end
   

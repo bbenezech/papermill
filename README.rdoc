@@ -172,7 +172,6 @@ Go have a look to config/initializers/papermill.rb, lots of info there.
   Rails::Initializer.run do |config|
     ...
     config.gem papermill
-    config.gem "mime-types", :lib => "mime/types"  # required for windows
   end
 
 === In your layout:

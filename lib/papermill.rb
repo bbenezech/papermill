@@ -1,11 +1,10 @@
-#require "digest/sha2"
+require "mime/types"
 I18n.load_path = [File.join(File.dirname(__FILE__), "../config/locales/papermill.yml")] + I18n.load_path
 require 'papermill/extensions'
 require 'papermill/flash_session_cookie_middleware.rb'
 
 Object.send :include, PapermillObjectExtensions
 Hash.send :include, PapermillHashExtensions
-File.send :include, PapermillFileExtensions
 String.send :include, StringToUrlNotFound unless String.instance_methods.include? "to_url"
 Formtastic::SemanticFormBuilder.send(:include, PapermillFormtasticExtensions) rescue NameError
 
