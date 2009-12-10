@@ -1,18 +1,44 @@
 <%= image_tag(@asset.url, :id => "cropbox") %>
 
-<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post">
-  <input type="hidden" value="put" name="_method"/>
-  <input type="hidden" value="<%= params[:target] %>" name="target"/>
-  <% fields_for :papermill_asset, @asset do |f| %>
-    <% for attribute in [:crop_x, :crop_y, :crop_w, :crop_h] %>
-      <%= f.hidden_field attribute, :id => attribute %>
-    <% end %>
-    <%= submit_tag I18n.t('papermill.save') %>
-  <% end -%>
-</form>
+<style type="text/css">
+  .jc_coords form {
+    -moz-background-clip:border;
+    -moz-background-inline-policy:continuous;
+    -moz-background-origin:padding;
+    background:#CCCCCC none repeat scroll 0 0;
+    border-color:#C3C3C3 #8B8B8B #8B8B8B #C3C3C3;
+    border-style:solid;
+    border-width:1px;
+    margin:0.5em 0;
+    padding:0.5em;
+  }
+  .jc_coords label {
+    font-size:12px;
+    font-weight:bold;
+    margin-right:0.5em;
+  }
+  .jc_coords .submit, .jc_coords a {
+    margin-right: 0.5em;
+  }
+</style>
+
+<div class="jc_coords">
+  <form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post">
+    <input type="hidden" value="put" name="_method"/>
+    <input type="hidden" value="<%= params[:target] %>" name="target"/>
+    <% fields_for :papermill_asset, @asset do |f| %>
+      <label>W <%= f.text_field :crop_w, :id => :crop_w, :size => 4, :readonly => "readonly" %></label>
+      <label>H <%= f.text_field :crop_h, :id => :crop_h, :size => 4, :readonly => "readonly" %></label>
+      <%= f.hidden_field :crop_x, :id => :crop_x %>
+      <%= f.hidden_field :crop_y, :id => :crop_y %>
+      <%= f.submit I18n.t('papermill.save'), :class => "submit" %>
+      <%= link_to_function I18n.t("papermill.back"), "popup('#{edit_papermill_path(@asset)}')" %>
+    <% end -%>
+  </form>
+</div>
 
 <div style="margin:6px"></div>
-<%= link_to_function I18n.t("papermill.back"), "popup('#{edit_papermill_path(@asset)}')" %>
+
 
 <script type="text/javascript" charset="utf-8">
   jQuery(function() {
@@ -29,11 +55,13 @@
     jQuery("#crop_y").val(coords.y);
     jQuery("#crop_w").val(coords.w);
     jQuery("#crop_h").val(coords.h);
-  }
+    
+  };
   
-  /* Fix the window position with real image size */
+  /* browser don't know about windows content size when loading facebox if image not in cache, fixing facebox left */
   jQuery(document).bind('reveal.facebox', function() { 
-      jQuery(document).unbind('reveal.facebox'); /* clear binding */
-      jQuery('#facebox').css('left', jQuery(window).width() / 2 - (<%= @asset.width %> / 2));
+    jQuery(document).unbind('reveal.facebox'); /* clear self (one-shot binding) */
+    jQuery('#facebox').css('left', jQuery(window).width() / 2 - (<%= @asset.width %> / 2)); 
   });
+  
 </script>
