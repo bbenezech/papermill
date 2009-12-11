@@ -113,7 +113,6 @@ class PapermillTest < Test::Unit::TestCase
   end
     
   def test_content_type
-    assert_equal @file.get_content_type, "image/png"
     assert_equal @asset1.content_type, "image/png"
   end
   
