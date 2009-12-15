@@ -54,7 +54,7 @@ module Papermill
     :url_key_salt => "change-me-please",
     :url_key_generator => Proc.new { |style, asset| Digest::SHA512.hexdigest("#{style}#{asset.id}#{Papermill::options[:url_key_salt]}")[0..10] },
     :use_id_partition => true,
-    :papermill_url_prefix => "system/papermill",
+    :papermill_url_prefix => "/system/papermill",
     :papermill_path_prefix => ":rails_root/public/system/papermill",
   }
 end

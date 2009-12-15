@@ -5,7 +5,7 @@ class PapermillAsset < ActiveRecord::Base
   
   has_attached_file :file, 
     :processors => [:papermill_paperclip_processor],
-    :url => "/#{Papermill::options[:papermill_url_prefix]}/#{Papermill::compute_paperclip_path.gsub(':style', ':escape_style_in_url')}",
+    :url => "#{Papermill::options[:papermill_url_prefix]}/#{Papermill::compute_paperclip_path.gsub(':style', ':escape_style_in_url')}",
     :path => "#{Papermill::options[:papermill_path_prefix]}/#{Papermill::compute_paperclip_path.gsub(':style', ':escape_style_in_path')}"
   
   before_post_process :set_file_name

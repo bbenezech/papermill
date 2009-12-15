@@ -170,9 +170,9 @@ module Papermill
       #  :url_key_salt => "change-me-to-your-favorite-pet-name",
       #  :url_key_generator => Proc.new { |style, asset| Digest::SHA512.hexdigest("#{style}#{asset.id}#{Papermill::options[:url_key_salt]}")[0..10] },
 
-      # added to :public_root as the root folder for all papermill assets (system is a default for static assets with capistrano)
-      #  :papermill_url_prefix => "system/papermill",
+      # added before path/url. Your front webserver will need to be able to find your assets
       #  :papermill_path_prefix => ":rails_root/public/system/papermill",
+      #  :papermill_url_prefix => "/system/papermill",
       
       # you can set it to false if you don't plan to have too many assets. (dangerous)
       #  :use_id_partition => true,
