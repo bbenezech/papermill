@@ -1,5 +1,6 @@
 Edit views :
-* use Jcrop
 * try Picnic API
 * trad errors
 * migration with/whithout url_key
+
+Errors on asset #create (to handle Paperclip validation)
