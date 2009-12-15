@@ -1,4 +1,11 @@
-require "mime/types"
+require "rbconfig"
+begin
+  require "mime/types"
+  MIME_TYPE_LOADED = true
+rescue
+  MIME_TYPE_LOADED = false
+end
+
 I18n.load_path = [File.join(File.dirname(__FILE__), "../config/locales/papermill.yml")] + I18n.load_path
 require 'papermill/extensions'
 require 'papermill/flash_session_cookie_middleware.rb'

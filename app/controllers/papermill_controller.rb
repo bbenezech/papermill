@@ -3,6 +3,8 @@ class PapermillController < ApplicationController
   prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
   
   def show
+    # first escaping is done by rails prior to route recognition, need to do a second one on MSWIN systems to get original one.
+    params[:style] = CGI::unescape(params[:style]) if RUBY_PLATFORM =~ /win/
     if @asset.has_valid_url_key?(params[:url_key], params[:style]) && @asset.create_thumb_file(params[:style])
       redirect_to @asset.url(params[:style])
     else
@@ -29,10 +31,7 @@ class PapermillController < ApplicationController
   end
   
   def update
-    if params[:target]
-      @asset.create_thumb_file(params[:target], params[:papermill_asset].merge({ :geometry => "original#" }))
-    end
-    
+    @asset.create_thumb_file(params[:target], params[:papermill_asset].merge({ :geometry => "#{params[:target]}#" })) if params[:target]
     render :update do |page|
       if @asset.update_attributes(params[:papermill_asset])
         page << %{ notify("#{@asset.name}", "#{ escape_javascript t("papermill.updated", :resource => @asset.name)}", "notice"); close_popup(self);  }

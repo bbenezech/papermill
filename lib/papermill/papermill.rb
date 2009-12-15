@@ -8,6 +8,8 @@ module Papermill
     @options ||= BASE_OPTIONS.deep_merge(defined?(OPTIONS) ? OPTIONS : {})
   end
   
+  MSWIN = (Config::CONFIG['host_os'] =~ /mswin|mingw/)
+  
   def self.compute_paperclip_path
     path = []
     path << (options[:use_id_partition] ? ":id_partition" : ":id")

@@ -5,8 +5,8 @@ class PapermillAsset < ActiveRecord::Base
   
   has_attached_file :file, 
     :processors => [:papermill_paperclip_processor],
-    :url => "/#{Papermill::options[:papermill_url_prefix]}/#{Papermill::compute_paperclip_path.gsub(':style', ':escaped_style')}",
-    :path => "#{Papermill::options[:papermill_path_prefix]}/#{Papermill::compute_paperclip_path}"
+    :url => "/#{Papermill::options[:papermill_url_prefix]}/#{Papermill::compute_paperclip_path.gsub(':style', ':escape_style_in_url')}",
+    :path => "#{Papermill::options[:papermill_path_prefix]}/#{Papermill::compute_paperclip_path.gsub(':style', ':escape_style_in_path')}"
   
   before_post_process :set_file_name
   
@@ -21,14 +21,25 @@ class PapermillAsset < ActiveRecord::Base
     attachment.instance.compute_url_key((style || "original").to_s)
   end
 
-  Paperclip.interpolates :escaped_style do |attachment, style|
-    CGI::escape((style || "original").to_s)
+  Paperclip.interpolates :escape_style_in_url do |attachment, style|
+    # double escaping needed for windows (complains about '< > " | / \' ), to match escaped filesystem from front webserver pov
+    s = (style || "original").to_s
+    Papermill::MSWIN ? CGI::escape(CGI::escape(s)) : CGI::escape(s)
   end
   
+  Paperclip.interpolates :escape_style_in_path do |attachment, style|
+    s = (style || "original").to_s
+    Papermill::MSWIN ? CGI::escape(s) : s
+  end
+
   attr_accessor :crop_h, :crop_w, :crop_x, :crop_y
   
   def Filedata=(data)
-    data.content_type = MIME::Types.type_for(data.original_filename).try(:first).try(:simplified) || "text/plain"  # SWFUpload content-type fix
+    if !Papermill::MSWIN && !(mime = `file --mime -br #{File.new(data).path}`).blank? && !mime.starts_with?("cannot open")
+      data.content_type = mime.strip.split(";").first
+    elsif MIME_TYPE_LOADED && (mime = MIME::Types.type_for(data.original_filename))
+      data.content_type = mime.first.simplified
+    end
     self.file = data
   end
   

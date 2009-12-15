@@ -4,7 +4,7 @@ module Papermill
     :inline_css => true,
     :images_only => false,
     :form_helper_elements => [:upload_button, :container, :dashboard],
-    :dashboard => [:mass_edit, :mass_thumbnail_reset, :mass_delete],
+    :dashboard => [:mass_edit, :mass_delete],
     :mass_editable_fields => ["title", "copyright", "description"],
     :editable_fields => [
       {:title =>       {:type => "string"}}, 

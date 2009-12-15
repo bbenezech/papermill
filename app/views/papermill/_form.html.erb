@@ -5,7 +5,7 @@
     <% @asset.papermill_options[:editable_fields].each do |field| %>
     <% key = field.keys.first %>
       <p>
-        <%= form.label(key, field[key][:label] || t("papermill.#{key}")) %><br />
+        <%= form.label(key, (field[key][:label] || t("papermill.#{key}")).to_s) %><br />
         <% case field[key][:type] 
            when "text" %>
           <%= form.text_area key %>
