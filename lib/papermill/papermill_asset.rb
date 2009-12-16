@@ -124,7 +124,8 @@ class PapermillAsset < ActiveRecord::Base
     destroy_thumbnails if style_name.to_s == "original"
     style = self.class.compute_style(style_name) unless style.is_a?(Hash)
     FileUtils.mkdir_p File.dirname(file.path(style_name))
-    FileUtils.mv(Paperclip::PapermillPaperclipProcessor.make(file, style).path, file.path(style_name))
+    FileUtils.cp((tmp_path = Paperclip::PapermillPaperclipProcessor.make(file, style).path), file.path(style_name))
+    File.delete(tmp_path)
   end
   
   def destroy_thumbnails
