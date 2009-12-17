@@ -35,7 +35,7 @@ class PapermillAsset < ActiveRecord::Base
   attr_accessor :crop_h, :crop_w, :crop_x, :crop_y
   
   def Filedata=(data)
-    if !Papermill::MSWIN && !(mime = `file --mime -br #{File.new(data).path}`).blank? && !mime.starts_with?("cannot open")
+    if !Papermill::MSWIN && !(mime = `file --mime -br #{data.path}`).blank? && !mime.starts_with?("cannot open")
       data.content_type = mime.strip.split(";").first
     elsif MIME_TYPE_LOADED && (mime = MIME::Types.type_for(data.original_filename))
       data.content_type = mime.first.simplified
