@@ -43,8 +43,12 @@ module ActionView::Helpers::FormTagHelper
     end
     
     assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
+    
+    raise PapermillException.new("Your form instance object is not @#{@object_name}, and therefor cannot be found. \nPlease provide your object name in your form_for initialization. \nform_for :my_object_name, @my_object_name, :url => { :action => 'create'/'update'}") if @object_name && !assetable
+    
     assetable_id = assetable && (assetable.id || assetable.timestamp) || nil
     assetable_type = assetable && assetable.class.base_class.name || nil
+    
     options = PapermillAsset.papermill_options(assetable && assetable.class.name, key).deep_merge(options)
     dom_id = "papermill_#{assetable_type}_#{assetable_id}_#{key}"
     
@@ -116,8 +120,7 @@ module ActionView::Helpers::FormTagHelper
       %{
         new SWFUpload({
           post_params: {
-            "#{ ActionController::Base.session_options[:key] }": "#{ @template.cookies[ActionController::Base.session_options[:key]] }",
-            "authenticity_token": "#{ @template.form_authenticity_token }"
+            "#{ ActionController::Base.session_options[:key] }": "#{ @template.cookies[ActionController::Base.session_options[:key]] }"
           },
           upload_id: "#{ dom_id }",
           upload_url: "#{ @template.escape_javascript create_url }",
