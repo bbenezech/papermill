@@ -2,11 +2,17 @@
   <div id="left">
     <% if @asset.image? %>
       <%# link_to image_tag(@asset.url("400x400>")), @asset.url, :popup => true %>
-      <%= image_tag(@asset.url("400x400>"), :onDblClick => "popup('#{crop_papermill_path(@asset, :target => "original")}'); return false;", :title => I18n.t("papermill.thumbnail-edit-title", :resource => @asset.name)) %>
+      <%= image_tag(@asset.url("400x400>"), :onDblClick => "popup('#{crop_papermill_path(@asset, :target => "original", :init => params[:jcrop_init])}'); return false;", :title => I18n.t("papermill.crop", :resource => @asset.name)) %>
+      
+      
+      <%# @test = "webonrails.com/wp-content/uploads/2008/11/hosting-rails-app-and-wordpress-on-same-domainas-folder-instead-of-subdomain-webonrails_1225783508773.png" %>
+      <%# link_to I18n.t("papermill.edit-with-pixlr", :resource => @asset.name), "http://www.pixlr.com/editor/?image=http://#{@test || request.env["HTTP_HOST"] + @asset.url}&target=http://#{receive_from_pixlr_papermill_path(@asset)}&method=POST", :target => "_blank" %>
       <div style="clear:both;"></div>
     <% else %>
       <%= link_to t("file_type", :type => @asset.content_type, :scope => 'papermill'), @asset.url, :popup => true %>
     <% end -%>
+    
+    
   </div>
   <div id="right">
     <div id="read-only">

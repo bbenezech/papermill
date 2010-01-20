@@ -1,12 +1,12 @@
 class PapermillController < ApplicationController
-  prepend_before_filter :load_asset,  :only => [ "show", "destroy", "update", "edit", "crop" ]
+  prepend_before_filter :load_asset,  :only => [ "show", "destroy", "update", "edit", "crop", "receive_from_pixlr" ]
   prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
   
   skip_before_filter :verify_authenticity_token, :only => [:create] # not needed (Flash same origin policy)
   
   def show
     # first escaping is done by rails prior to route recognition, need to do a second one on MSWIN systems to get original one.
-    params[:style] = CGI::unescape(params[:style]) if RUBY_PLATFORM =~ /win/
+    params[:style] = CGI::unescape(params[:style]) if Papermill::MSWIN
     if @asset.has_valid_url_key?(params[:url_key], params[:style]) && @asset.create_thumb_file(params[:style])
       redirect_to @asset.url(params[:style])
     else
@@ -20,7 +20,7 @@ class PapermillController < ApplicationController
       PapermillAsset.find(:all, :conditions => { :assetable_id => @asset.assetable_id, :assetable_type => @asset.assetable_type, :assetable_key => @asset.assetable_key }).each do |asset|
         asset.destroy unless asset == @asset
       end if !params[:gallery]
-      render :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style] }
+      render :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :jcrop_init => params[:jcrop_init] }
     end
   end
   
@@ -30,6 +30,12 @@ class PapermillController < ApplicationController
   
   def crop
     render :action => "crop", :layout => false
+  end
+  
+  def receive_from_pixlr
+    @asset.file = params[:image]
+    @asset.destroy_thumbnails
+    render :nothing => true
   end
   
   def update

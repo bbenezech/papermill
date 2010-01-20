@@ -66,7 +66,7 @@ module ActionView::Helpers::FormTagHelper
     html[:container] = @template.content_tag(:div, :id => dom_id, :class => "papermill-#{key.to_s} #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") do
       conditions = {:assetable_type => assetable_type, :assetable_id => assetable_id}
       conditions.merge!({:assetable_key => key.to_s}) if key
-      @template.render :partial => "papermill/asset", :collection => PapermillAsset.all(:conditions => conditions), :locals => { :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style] }
+      @template.render :partial => "papermill/asset", :collection => PapermillAsset.all(:conditions => conditions), :locals => { :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style], :jcrop_init => options[:jcrop_init] }
     end
     
     if options[:gallery]
@@ -92,7 +92,7 @@ module ActionView::Helpers::FormTagHelper
     create_url_options = { 
       :escape => false, :controller => "/papermill", :action => "create", 
       :asset_class => (options[:class_name] || PapermillAsset).to_s,
-      :gallery => !!options[:gallery], :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style]
+      :gallery => !!options[:gallery], :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style], :jcrop_init => options[:jcrop_init]
     }
     create_url_options.merge!({ :assetable_id => assetable_id, :assetable_type => assetable_type }) if assetable_id
     create_url_options.merge!({ :assetable_key => key }) if key

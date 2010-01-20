@@ -49,7 +49,9 @@
       //aspectRatio: 1
     });
   });
-
+  
+  <%= params[:init] %>
+  
   function update_crop(coords) {
     jQuery("#crop_x").val(coords.x);
     jQuery("#crop_y").val(coords.y);

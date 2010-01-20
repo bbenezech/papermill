@@ -12,6 +12,7 @@ module Papermill
       {:copyright =>   {:type => "string"}},
       {:description => {:type => "text"  }}
     ],
+    :jcrop_init => "",
     :gallery => { 
       :width => nil,
       :height => nil,
