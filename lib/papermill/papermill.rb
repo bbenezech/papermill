@@ -29,9 +29,8 @@ module Papermill
       (@papermill_associations ||= {}).merge!( assoc_name => Papermill::options.deep_merge(local_options) )
       
       include Papermill::InstanceMethods
-      before_destroy :destroy_assets
       after_create :rebase_assets
-      has_many :papermill_assets, :as => "Assetable", :dependent => :destroy
+      has_many :papermill_assets, :as => "assetable", :dependent => :destroy
 
       [assoc_name, Papermill::options[:base_association_name].to_sym].uniq.each do |assoc|
         define_method assoc do |*options|
@@ -62,10 +61,6 @@ module Papermill
     end
     
     private
-    
-    def destroy_assets
-      papermill_assets.each &:destroy
-    end
     
     def rebase_assets
       PapermillAsset.all(:conditions => { :assetable_id => self.timestamp, :assetable_type => self.class.base_class.name }).each do |asset|
