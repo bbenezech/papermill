@@ -1,8 +1,11 @@
 <div id="papermill-box">
   <div id="left">
     <% if @asset.image? %>
-      <%# link_to image_tag(@asset.url("400x400>")), @asset.url, :popup => true %>
-      <%= image_tag(@asset.url("400x400>"), :onDblClick => "popup('#{crop_papermill_path(@asset, :target => "original", :init => params[:jcrop_init])}'); return false;", :title => I18n.t("papermill.crop", :resource => @asset.name)) %>
+    
+    <%# image_tag(@asset.url("400x400>"), :onDblClick => %{$.facebox( $('<iframe src="#{crop_papermill_path(@asset, :target => "original", :targetted_geometry => params[:targetted_geometry])}" />')); return false;}, :title => I18n.t("papermill.crop", :resource => @asset.name)) %>
+    
+    
+      <%= image_tag(@asset.url("400x400>"), :onDblClick => "popup('#{crop_papermill_path(@asset, :target => "original", :targetted_geometry => params[:targetted_geometry])}'); return false;", :title => I18n.t("papermill.crop", :resource => @asset.name)) %>
       
       
       <%# @test = "webonrails.com/wp-content/uploads/2008/11/hosting-rails-app-and-wordpress-on-same-domainas-folder-instead-of-subdomain-webonrails_1225783508773.png" %>

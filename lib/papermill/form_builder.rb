@@ -50,23 +50,25 @@ module ActionView::Helpers::FormTagHelper
     assetable_type = assetable && assetable.class.base_class.name || nil
     
     options = PapermillAsset.papermill_options(assetable && assetable.class.name, key).deep_merge(options)
+    
     dom_id = "papermill_#{assetable_type}_#{assetable_id}_#{key}"
     
     if ot = options[:thumbnail]
       w = ot[:width]  || ot[:height] && ot[:aspect_ratio] && (ot[:height] * ot[:aspect_ratio]).to_i || nil
       h = ot[:height] || ot[:width]  && ot[:aspect_ratio] && (ot[:width]  / ot[:aspect_ratio]).to_i || nil
-      ot[:style] ||= (w || h) && "#{w}x#{h}>" || "original"
+      
+      computed_style = ot[:style] || (w || h) && "#{w}x#{h}>" || "original"
       set_papermill_inline_css(dom_id, w, h, options)
     end
 
-    set_papermill_inline_js(dom_id, compute_papermill_create_url(assetable_id, assetable_type, key, options), options)
+    set_papermill_inline_js(dom_id, compute_papermill_create_url(assetable_id, assetable_type, key, computed_style, options), options)
 
     html = {}
     html[:upload_button] = %{<div id="#{dom_id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{dom_id}" class="swf_button"></span></div>}
     html[:container] = @template.content_tag(:div, :id => dom_id, :class => "papermill-#{key.to_s} #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") do
       conditions = {:assetable_type => assetable_type, :assetable_id => assetable_id}
       conditions.merge!({:assetable_key => key.to_s}) if key
-      @template.render :partial => "papermill/asset", :collection => PapermillAsset.all(:conditions => conditions), :locals => { :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style], :jcrop_init => options[:jcrop_init] }
+      @template.render :partial => "papermill/asset", :collection => PapermillAsset.all(:conditions => conditions), :locals => { :thumbnail_style => computed_style, :targetted_geometry => options[:targetted_geometry] }
     end
     
     if options[:gallery]
@@ -88,11 +90,11 @@ module ActionView::Helpers::FormTagHelper
   end
   
   
-  def compute_papermill_create_url(assetable_id, assetable_type, key, options)
+  def compute_papermill_create_url(assetable_id, assetable_type, key, computed_style, options)
     create_url_options = { 
       :escape => false, :controller => "/papermill", :action => "create", 
       :asset_class => (options[:class_name] || PapermillAsset).to_s,
-      :gallery => !!options[:gallery], :thumbnail_style => options[:thumbnail] && options[:thumbnail][:style], :jcrop_init => options[:jcrop_init]
+      :gallery => !!options[:gallery], :thumbnail_style => computed_style, :targetted_geometry => options[:targetted_geometry]
     }
     create_url_options.merge!({ :assetable_id => assetable_id, :assetable_type => assetable_type }) if assetable_id
     create_url_options.merge!({ :assetable_key => key }) if key

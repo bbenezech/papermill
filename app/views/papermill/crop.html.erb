@@ -22,17 +22,26 @@
   }
 </style>
 
+<% 
+  unless (@size = params[:targetted_geometry]).blank?
+    @target_w, @target_h = @size.split("x").map(&:to_i)
+    @init_x = (@asset.width - @target_w.to_i) / 2
+    @init_y = (@asset.height - @target_h.to_i) / 2
+  end
+%>
+
+
 <div class="jc_coords">
   <form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'/papermill/<%= @asset.id %>'}); return false;" method="post">
     <input type="hidden" value="put" name="_method"/>
     <input type="hidden" value="<%= params[:target] %>" name="target"/>
     <% fields_for :papermill_asset, @asset do |f| %>
-      <label>W <%= f.text_field :crop_w, :id => :crop_w, :size => 4, :readonly => "readonly" %></label>
-      <label>H <%= f.text_field :crop_h, :id => :crop_h, :size => 4, :readonly => "readonly" %></label>
+      <label>W: <%= f.text_field :crop_w, :id => :crop_w, :size => 4, :readonly => "readonly" %><%= " /" + @target_w.to_s if @size %></label>
+      <label>H: <%= f.text_field :crop_h, :id => :crop_h, :size => 4, :readonly => "readonly" %><%= " /" + @target_h.to_s if @size %></label>
       <%= f.hidden_field :crop_x, :id => :crop_x %>
       <%= f.hidden_field :crop_y, :id => :crop_y %>
       <%= f.submit I18n.t('papermill.save'), :class => "submit" %>
-      <%= link_to_function I18n.t("papermill.back"), "popup('#{edit_papermill_path(@asset)}')" %>
+      <%= link_to_function I18n.t("papermill.back"), "popup('#{edit_papermill_path(@asset, :targetted_geometry => params[:targetted_geometry])}')" %>
     <% end -%>
   </form>
 </div>
@@ -41,29 +50,31 @@
 
 
 <script type="text/javascript" charset="utf-8">
+
   jQuery(function() {
     jQuery('#cropbox').Jcrop({
-      onChange: update_crop,
-      onSelect: update_crop
-      //setSelect: [0, 0, 100, 100]
-      //aspectRatio: 1
+      <% unless @size %>
+        setSelect: [0,0,100,100]
+      <% else %>
+        setSelect: <%= %{[#{@init_x}, #{@init_y}, #{@target_w + @init_x}, #{@target_h + @init_y}]} %>
+      <% end -%>
+      ,onChange: update_crop
+      ,onSelect: update_crop
+     <%= ",aspectRatio: #{@target_w} / #{@target_h}" unless @size.blank?  %>
     });
   });
-  
-  <%= params[:init] %>
   
   function update_crop(coords) {
     jQuery("#crop_x").val(coords.x);
     jQuery("#crop_y").val(coords.y);
     jQuery("#crop_w").val(coords.w);
     jQuery("#crop_h").val(coords.h);
-    
   };
   
   /* browser don't know about windows content size when loading facebox if image not in cache, fixing facebox left */
   jQuery(document).bind('reveal.facebox', function() { 
     jQuery(document).unbind('reveal.facebox'); /* clear self (one-shot binding) */
-    jQuery('#facebox').css('left', jQuery(window).width() / 2 - (<%= @asset.width %> / 2)); 
+    jQuery('#facebox').css('left', (jQuery(window).width() - <%= @asset.width %>) / 2); 
   });
   
 </script>

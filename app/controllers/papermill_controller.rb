@@ -20,7 +20,7 @@ class PapermillController < ApplicationController
       PapermillAsset.find(:all, :conditions => { :assetable_id => @asset.assetable_id, :assetable_type => @asset.assetable_type, :assetable_key => @asset.assetable_key }).each do |asset|
         asset.destroy unless asset == @asset
       end if !params[:gallery]
-      render :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :jcrop_init => params[:jcrop_init] }
+      render :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_geometry => params[:targetted_geometry] }
     end
   end
   

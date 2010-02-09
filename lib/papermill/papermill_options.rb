@@ -12,7 +12,7 @@ module Papermill
       {:copyright =>   {:type => "string"}},
       {:description => {:type => "text"  }}
     ],
-    :jcrop_init => "",
+    :targetted_geometry => nil,
     :gallery => { 
       :width => nil,
       :height => nil,
@@ -43,7 +43,7 @@ module Papermill
       :prevent_swf_caching => true,
       :file_size_limit => "'10 MB'"
     },
-    :copyright => "Example Copyright",
+    :copyright => nil,
     :copyright_text_transform => Proc.new {|c| c },
     :copyright_im_command => %{\\( -font Arial-Bold -pointsize 9 -fill '#FFFFFFE0' -border 3 -bordercolor '#50550080' -background '#00000000' label:' %s ' \\) -gravity South-West -geometry +0+0 -composite},
     :watermark => "/images/rails.png",

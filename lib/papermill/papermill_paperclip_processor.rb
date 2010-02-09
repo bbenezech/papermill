@@ -13,8 +13,16 @@ module Paperclip
       # copyright extraction
       if options[:geometry] =~ /©/ || options[:copyright]
         options[:geometry], *@copyright = options[:geometry].split("©", -1)
-        @copyright = options[:copyright] || @copyright.join("©").nie || file.instance.respond_to?(:copyright) && file.instance.copyright.nie || file.instance.papermill_options[:copyright].nie
-        @copyright = (options[:copyright_text_transform] || file.instance.papermill_options[:copyright_text_transform]).try(:call, @copyright) || @copyright if @copyright
+        
+        @copyright = (
+          (options[:copyright] != true && options[:copyright]) || 
+          @copyright.join("©").nie || 
+          file.instance.respond_to?(:copyright) && file.instance.copyright.nie || 
+          file.instance.papermill_options[:copyright].nie)
+        
+        if @copyright
+          @copyright = (options[:copyright_text_transform] || file.instance.papermill_options[:copyright_text_transform]).try(:call, @copyright) || @copyright
+        end
       end
       
       # watermark extraction
