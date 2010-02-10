@@ -180,6 +180,10 @@ module Papermill
       # Default named_scope name for catch-all :papermill declaration
       
       #  :base_association_name => :assets,
+      
+      # Do you want papermill_assets to touch your assetable when CRUDed? (true|false|updated_at_field_name)
+      
+      #  :touch => false,
     
       # Set to true to require aliases in all url/path, disabling the 
       # Don't forget to give an alias value to options[:thumbnail][:style] if true!

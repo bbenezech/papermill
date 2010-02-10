@@ -6,7 +6,7 @@ class PapermillInitializerGenerator < Rails::Generator::Base
     puts "Copying papermill initializer to config/initializers/..."
     FileUtils.rm_rf("#{RAILS_ROOT}/config/initializers/papermill.rb")
     FileUtils.cp_r(
-      File.join(File.dirname(__FILE__), '../..', 'lib', 'papermill', 'papermill_initializer.rb'),
+      File.join(File.dirname(__FILE__), 'papermill_initializer.rb'),
       "#{RAILS_ROOT}/config/initializers/papermill.rb"
       )
     puts "Done! Check config/initializer/papermill.rb for result."

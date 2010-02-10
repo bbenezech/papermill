@@ -49,6 +49,7 @@ module Papermill
     :watermark => "/images/rails.png",
     :watermark_im_command => %{- | composite \\( %s -resize 100% \\) - -dissolve 20% -gravity center -geometry +0+0 },
     :base_association_name => :assets,
+    :touch => false,
     :alias_only => false,
     :aliases => {},
     :use_url_key => false,

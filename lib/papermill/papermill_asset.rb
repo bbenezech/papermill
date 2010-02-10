@@ -12,7 +12,7 @@ class PapermillAsset < ActiveRecord::Base
   
   validates_attachment_presence :file
   
-  belongs_to :assetable, :polymorphic => true
+  belongs_to :assetable, :polymorphic => true, :touch => Papermill::options[:touch]
   default_scope :order => 'position'
   
   named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key.to_s] }}

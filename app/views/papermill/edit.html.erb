@@ -8,7 +8,6 @@
       <%= image_tag(@asset.url("400x400>"), :onDblClick => "popup('#{crop_papermill_path(@asset, :target => "original", :targetted_geometry => params[:targetted_geometry])}'); return false;", :title => I18n.t("papermill.crop", :resource => @asset.name)) %>
       
       
-      <%# @test = "webonrails.com/wp-content/uploads/2008/11/hosting-rails-app-and-wordpress-on-same-domainas-folder-instead-of-subdomain-webonrails_1225783508773.png" %>
       <%# link_to I18n.t("papermill.edit-with-pixlr", :resource => @asset.name), "http://www.pixlr.com/editor/?image=http://#{@test || request.env["HTTP_HOST"] + @asset.url}&target=http://#{receive_from_pixlr_papermill_path(@asset)}&method=POST", :target => "_blank" %>
       <div style="clear:both;"></div>
     <% else %>
