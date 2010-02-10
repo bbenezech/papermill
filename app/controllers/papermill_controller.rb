@@ -1,8 +1,26 @@
 class PapermillController < ApplicationController
+  unloadable
   prepend_before_filter :load_asset,  :only => [ "show", "destroy", "update", "edit", "crop" ]
   prepend_before_filter :load_old_asset_and_assetable, :only => ["create"]
   prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
   skip_before_filter :verify_authenticity_token, :only => [:create] # not needed (Flash same origin policy)
+  
+  before_filter :authorize_create, :only => [:create]
+  before_filter :authorize_update_and_destroy, :only => [:update, :destroy]
+  before_filter :authorize_multiple_modification, :only => [:sort, :mass_delete, :mass_edit, :mass_thumbnail_reset]
+  
+  def authorize_create
+    eval(Papermill::options[:authorize_create])
+  end
+  
+  def authorize_update_and_destroy
+    eval(Papermill::options[:authorize_update_and_destroy])
+  end
+
+  def authorize_multiple_modification
+    eval(Papermill::options[:authorize_multiple_modification])
+  end
+  
   
   def show
     # first escaping is done by rails prior to route recognition, need to do a second one on MSWIN systems to get original one.

@@ -222,6 +222,47 @@ module Papermill
       
       # If you use those defaults, the first asset will end-up in RAILS_ROOT/public/system/papermill/000/000/001/original/my_first_asset_name.ext
       # You'll access it with my_domain.com/system/papermill/000/000/001/original/my_first_asset_name.ext
+      
+      # You can add authorization support. The code is eval'ed directly in the controller (don't ask why, the answer is full of 'unloadable', 'ApplicationController has been removed from the module tree but is still active', etc.)
+      
+      # :authorize_create => "true",
+      # :authorize_multiple_modification => "true",
+      # :authorize_update_and_destroy => "true",
+      
+      # For example, this is my own setup.
+      # You'll need a public ApplicationController#current_user, 
+      # adapt the authorization part (can_edit(Assetable)) to your own needs : 
+      
+      # :authorize_create => %{
+      #   unless @assetable.nil? || current_user.can_edit?(@assetable)
+      #     render :update do |page|
+      #       page << %{notify("Wrong credentials", "You can't create an asset here", "error");}
+      #       page.remove params[:Fileid]
+      #       page.show "papermill_asset_" + @old_asset.id.to_s if @old_asset
+      #     end
+      #     false
+      #   end
+      # }, 
+      # :authorize_update_and_destroy => %{
+      #   unless @asset.try(:assetable).nil? || current_user.can_edit?(@asset.assetable)
+      #     render :update do |page|
+      #       page << %{notify("Wrong credentials", "You can't edit or destroy assets here", "error");}
+      #     end
+      #     false
+      #   end
+      # }, 
+      # :authorize_multiple_modification => %{
+      #   authorized = true
+      #   @assets && @assets.each do |asset| 
+      #     authorized = authorized && current_user.can_edit?(asset.assetable)
+      #   end
+      #   unless authorized
+      #     render :update do |page|
+      #       page << %{notify("Wrong credentials", "You can't do edit or destroy assets here", "error");}
+      #     end
+      #     false
+      #   end
+      # }
     }
   end
 end
