@@ -1,7 +1,7 @@
 class PapermillController < ApplicationController
-  prepend_before_filter :load_asset,  :only => [ "show", "destroy", "update", "edit", "crop", "receive_from_pixlr" ]
+  prepend_before_filter :load_asset,  :only => [ "show", "destroy", "update", "edit", "crop" ]
+  prepend_before_filter :load_old_asset_and_assetable, :only => ["create"]
   prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
-  
   skip_before_filter :verify_authenticity_token, :only => [:create] # not needed (Flash same origin policy)
   
   def show
@@ -17,10 +17,15 @@ class PapermillController < ApplicationController
   def create
     @asset = params[:asset_class].constantize.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["Filedata", "Filename"]).include?(k)})
     if @asset.save
-      PapermillAsset.find(:all, :conditions => { :assetable_id => @asset.assetable_id, :assetable_type => @asset.assetable_type, :assetable_key => @asset.assetable_key }).each do |asset|
-        asset.destroy unless asset == @asset
-      end if !params[:gallery]
-      render :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_geometry => params[:targetted_geometry] }
+      @old_asset.destroy if @old_asset
+      render :update do |page|
+        page.replace params[:Fileid], :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_geometry => params[:targetted_geometry] }
+        page.remove "papermill_asset_#{@old_asset.id}" if @old_asset
+      end
+    else
+      page << %{ notify("#{@asset.name}", @asset.errors.full_messages.join('<br />'), "error"); }
+      page.remove params[:Fileid]
+      page.show "papermill_asset_#{@old_asset.id}" if @old_asset
     end
   end
   
@@ -31,13 +36,7 @@ class PapermillController < ApplicationController
   def crop
     render :action => "crop", :layout => false
   end
-  
-  def receive_from_pixlr
-    @asset.file = params[:image]
-    @asset.destroy_thumbnails
-    render :nothing => true
-  end
-  
+
   def update
     @asset.create_thumb_file(params[:target], params[:papermill_asset].merge({ :geometry => "#{params[:target]}#" })) if params[:target]
     render :update do |page|
@@ -86,11 +85,20 @@ class PapermillController < ApplicationController
   end
   
   private
+  
+  def load_old_asset_and_assetable
+    unless params[:gallery]
+      @old_asset = PapermillAsset.find(:first, :conditions => {:assetable_type => params[:assetable_type], :assetable_id => params[:assetable_id], :assetable_key => params[:assetable_key]})
+    end
+    @assetable = params[:assetable_type].constantize.find_by_id(params[:assetable_id])
+  end
+  
   def load_asset
-    @asset = PapermillAsset.find(params[:id] || (params[:id0] + params[:id1] + params[:id2]).to_i)
+    @asset = PapermillAsset.find(params[:id] || (params[:id0] + params[:id1] + params[:id2]).to_i, :include => "assetable")
+    @assetable = @asset.assetable
   end
   
   def load_assets
-    @assets = (params[:papermill_asset] || []).map{ |id| PapermillAsset.find(id) }
+    @assets = (params[:papermill_asset] || []).map{ |id| PapermillAsset.find(id, :include => "assetable") }
   end
 end

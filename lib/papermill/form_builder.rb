@@ -148,8 +148,8 @@ module ActionView::Helpers::FormTagHelper
     size = [width && "width:#{width}px", height && "height:#{height}px"].compact.join("; ")
     if og = options[:gallery]
       vp, hp, vm, hm, b = [og[:vpadding], og[:hpadding], og[:vmargin], og[:hmargin], og[:border_thickness]].map &:to_i
-      gallery_width = (og[:width] || width) && "width:#{og[:width] || og[:columns]*(width+(hp+hm+b)*2)}px;" || ""
-      gallery_height = (og[:height] || height) && "min-height:#{og[:height] || og[:lines]*(height+(vp+vm+b)*2)}px;" || ""
+      gallery_width = (og[:width] || width) && "width:#{og[:width] || og[:columns]*(width.to_i+(hp+hm+b)*2)}px;" || ""
+      gallery_height = (og[:height] || height) && "min-height:#{og[:height] || og[:lines]*(height.to_i+(vp+vm+b)*2)}px;" || ""
       html << %{##{dom_id} { #{gallery_width} #{gallery_height} }}
       html << %{##{dom_id} .asset { margin:#{vm}px #{hm}px; border-width:#{b}px; padding:#{vp}px #{hp}px; #{size}; }}
     else

@@ -41,8 +41,6 @@ notify = function(title, message, type) {
 	if(type == "warning") {	jQuery.jGrowl(message, { header: title, life: 15000, theme: type }) }
 	if(type == "error") {	jQuery.jGrowl(message, { header: title, sticky: true, theme: type }) }
 }
-
-
 var Papermill = {
 	files_queued: 0,
 	file_dialog_complete: function(num_selected, num_queued)
@@ -71,12 +69,13 @@ var Papermill = {
 				div.append(jQuery('<span></span>').attr('class', 'name').html(file.name.substring(0, 10) + '...'));
 				div.append(jQuery('<span></span>').attr('class', 'status').html(SWFUPLOAD_PENDING));
 				div.append(jQuery('<span></span>').attr('class', 'progress').append('<span></span>'));
-
 				if(self.settings.file_queue_limit == 1) {
-					jQuery("#" + self.settings.upload_id).html(div);
-				} else {
-					jQuery("#" + self.settings.upload_id).append(div);
+					old_asset = jQuery("#" + self.settings.upload_id).children()[0];
+					if(old_asset) {
+						jQuery(old_asset).hide();
+					}
 				}
+				jQuery("#" + self.settings.upload_id).append(div);
 			})
 			this.startUpload(this.sorted_queue[this.index++].id);
 		}
@@ -84,6 +83,7 @@ var Papermill = {
 	upload_start: function(file)
 	{
 		jQuery('#' + file.id + ' .status').html(SWFUPLOAD_LOADING);
+		this.addFileParam(file.id, "Fileid", file.id);
 	},
 	upload_progress: function(file, bytes, total)
 	{
@@ -101,7 +101,7 @@ var Papermill = {
 	}, 
 	upload_success: function(file, data)
 	{
-		jQuery('#' + file.id).replaceWith(jQuery(data));
+		eval(data);
 	},
 	upload_complete: function(file)
 	{
