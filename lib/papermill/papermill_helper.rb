@@ -17,7 +17,7 @@ module PapermillHelper
     end
     html << %{jQuery.noConflict();} if options[:with_jquery].to_s == "no_conflict"
     html << %{</script>}
-    html << javascript_include_tag("/facebox/facebox.js", "/jgrowl/jquery.jgrowl_minimized.js", "/papermill/jquery.Jcrop.min.js", "/swfupload/swfupload.js", "/papermill/papermill.js", :cache => "papermill")
+    html << javascript_include_tag("/facebox/facebox.js", "/jgrowl/jquery.jgrowl_minimized.js", "/Jcrop/jquery.Jcrop.min.js", "/swfupload/swfupload.js", "/papermill/papermill.js", :cache => "papermill")
     unless @content_for_papermill_inline_js.blank?
       html << %{<script type="text/javascript">}
       html << %{jQuery(document).ready(function() {#{@content_for_papermill_inline_js}});}
