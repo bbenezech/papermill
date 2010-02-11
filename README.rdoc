@@ -62,6 +62,7 @@ Go have a look at config/initializers/papermill.rb
 
 === In your layout
 
+
 ==== Quick version
 
 Inside <head></head>
@@ -187,10 +188,10 @@ Example form:
   
 With Formtastic, pass 
   
-  :as => (:image_upload|:images_upload|:asset_upload|:assets_upload)
+  :as => (:image_upload | :images_upload | :asset_upload | :assets_upload)
 And add your options as you would with the normal helpers.
 
-With FormTagHelpers, use (image_upload_tag|images_upload_tag|asset_upload_tag|assets_upload_tag) @assetable, :key, options
+With FormTagHelpers, use (image_upload_tag | images_upload_tag | asset_upload_tag | assets_upload_tag) @assetable, :key, options
 
   image_upload_tag  @article, :cover_image, :targetted_size => "200x200"
 
