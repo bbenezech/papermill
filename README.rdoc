@@ -195,7 +195,7 @@ With FormTagHelpers, use (image_upload_tag | images_upload_tag | asset_upload_ta
 
   image_upload_tag  @article, :cover_image, :targetted_size => "200x200"
 
-For resources not linked to any assetable model, you can use upload_tags whithout any Assetable
+For resources not linked to any assetable model, you can use upload_tags without any Assetable
 
   image_upload_tag "#{current_organization.name}_logo", :targetted_size => "200x200"
 
@@ -206,12 +206,14 @@ For resources not linked to any assetable model, you can use upload_tags whithou
 
 === Thumbnails
 
+  
 ==== On-the-fly request time processing:
 
   PapermillAsset#url(papermill string (see 1.))  # path and url behave the same way
   PapermillAsset#url(papermill alias (see 2.))
 
 Pros: fast. Nothing done upon page rendering. If asset isn't found by Apache/NGinx, then request is passed to rails, which will create it, once.
+
 Cons: need to setup an alias in the options if you want to define use a hash instead of a papermill string (for custom watermark)
 
 ==== Render time processing:
@@ -221,6 +223,7 @@ Cons: need to setup an alias in the options if you want to define use a hash ins
   PapermillAsset#url!(papermill hash (see 3.))
   
 Pros: can use a hash directly in the url call.
+
 Cons: needs a thumbnail presence check at each render.
 
 ==== 1. Papermill String
@@ -245,8 +248,8 @@ Those are application-wide, set them in the options
 Consist of:
 
   :geometry => "ImageMagick-geometry-string"
-  :copyright => true|"copyright"    # If true, the asset copyright field will be used. Edit the asset.
-  :watermark => URI|true            # If true, will use options[:watemark]
+  :copyright => true | "copyright"    # If true, the asset copyright field will be used. Edit the asset.
+  :watermark => URI | true            # If true, will use options[:watemark]
   
 Examples:
 
