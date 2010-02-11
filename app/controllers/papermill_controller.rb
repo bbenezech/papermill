@@ -38,7 +38,7 @@ class PapermillController < ApplicationController
       @old_asset.destroy if @old_asset
       output = render_to_string(:partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_geometry => params[:targetted_geometry] })
       render :update do |page|
-        page << %{ jQuery('##{params[:Fileid]}').html('#{escape_javascript output}'); }
+        page << %{ jQuery('##{params[:Fileid]}').replaceWith('#{escape_javascript output}'); }
         page << %{ jQuery('#papermill_asset_#{@old_asset.id}').remove() } if @old_asset 
       end
     else
