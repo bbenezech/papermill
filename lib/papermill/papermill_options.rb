@@ -58,8 +58,8 @@ module Papermill
     :use_id_partition => true,
     :papermill_url_prefix => "/system/papermill",
     :papermill_path_prefix => ":rails_root/public/system/papermill",
-    :authorize_create => true, 
-    :authorize_update_and_destroy => true, 
-    :authorize_multiple_modification => true,
+    :authorize_create => "true", 
+    :authorize_update_and_destroy => "true", 
+    :authorize_multiple_modification => "true",
   }
 end
