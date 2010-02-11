@@ -111,7 +111,7 @@ module Papermill
       # To remove an option when overriding, set it to nil.
     
       :swfupload => { 
-      #  :flash_url => "'/papermill/swfupload.swf'",
+      #  :flash_url => "'/swfupload/swfupload.swf'",
       #  :button_image_url => "'/papermill/images/upload-blank.png'",
       #  :button_width     => 61,
       #  :button_height    => 22,
@@ -230,8 +230,7 @@ module Papermill
       # :authorize_update_and_destroy => "true",
       
       # For example, this is my own setup.
-      # You'll need a public ApplicationController#current_user, 
-      # adapt the authorization part (can_edit(Assetable)) to your own needs : 
+      # adapt the authorization part (can_edit(Assetable)) to your own authorization solution
       
       # :authorize_create => %{
       #   unless @assetable.nil? || current_user.can_edit?(@assetable)

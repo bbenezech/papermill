@@ -31,7 +31,7 @@ module Papermill
       :style => nil
     },
     :swfupload => { 
-      :flash_url => "'/papermill/swfupload.swf'",
+      :flash_url => "'/swfupload/swfupload.swf'",
       :button_image_url => "'/papermill/images/upload-blank.png'",
       :button_width     => 61,
       :button_height    => 22,
