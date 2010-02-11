@@ -36,14 +36,15 @@ class PapermillController < ApplicationController
     @asset = params[:asset_class].constantize.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["Filedata", "Filename"]).include?(k)})
     if @asset.save
       @old_asset.destroy if @old_asset
+      output = render_to_string(:partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_geometry => params[:targetted_geometry] })
       render :update do |page|
-        page.replace params[:Fileid], :partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_geometry => params[:targetted_geometry] }
-        page.remove "papermill_asset_#{@old_asset.id}" if @old_asset
+        page << %{ jQuery('##{params[:Fileid]}').html('#{escape_javascript output}'); }
+        page << %{ jQuery('#papermill_asset_#{@old_asset.id}').remove() } if @old_asset 
       end
     else
       page << %{ notify("#{@asset.name}", @asset.errors.full_messages.join('<br />'), "error"); }
-      page.remove params[:Fileid]
-      page.show "papermill_asset_#{@old_asset.id}" if @old_asset
+      page << %{ jQuery('##{params[:Fileid]}').remove() }
+      page << %{ jQuery('#papermill_asset_#{@old_asset.id}').show() } if @old_asset
     end
   end
   
