@@ -42,9 +42,11 @@ class PapermillController < ApplicationController
         page << %{ jQuery('#papermill_asset_#{@old_asset.id}').remove() } if @old_asset 
       end
     else
-      page << %{ notify("#{@asset.name}", @asset.errors.full_messages.join('<br />'), "error"); }
-      page << %{ jQuery('##{params[:Fileid]}').remove() }
-      page << %{ jQuery('#papermill_asset_#{@old_asset.id}').show() } if @old_asset
+      render :update do |page|
+        page << %{ notify('#{@asset.name}', '#{escape_javascript @asset.errors.full_messages.join("<br />")}', 'error'); }
+        page << %{ jQuery('##{params[:Fileid]}').remove(); }
+        page << %{ jQuery('#papermill_asset_#{@old_asset.id}').show(); } if @old_asset
+      end
     end
   end
   
@@ -60,9 +62,9 @@ class PapermillController < ApplicationController
     @asset.create_thumb_file(params[:target], params[:papermill_asset].merge({ :geometry => "#{params[:target]}#" })) if params[:target]
     render :update do |page|
       if @asset.update_attributes(params[:papermill_asset])
-        page << %{ notify("#{@asset.name}", "#{ escape_javascript t("papermill.updated", :resource => @asset.name)}", "notice"); close_popup(self);  }
+        page << %{ notify('#{@asset.name}', '#{ escape_javascript t("papermill.updated", :resource => @asset.name)}', 'notice'); close_popup(self);  }
       else
-        page << %{ jQuery("#error").html("#{ escape_javascript @asset.errors.full_messages.join('<br />') }"); jQuery("#error").show(); }
+        page << %{ jQuery('#error').html('#{ escape_javascript @asset.errors.full_messages.join("<br />") }'); jQuery('#error').show(); }
       end
     end
   end
