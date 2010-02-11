@@ -1,5 +1,5 @@
 class PapermillController < ApplicationController
-  
+  unloadable
   prepend_before_filter :load_asset,  :only => [ "show", "destroy", "update", "edit", "crop" ]
   prepend_before_filter :load_old_asset_and_assetable, :only => ["create"]
   prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
