@@ -29,91 +29,262 @@ Check your audience.
 
 === Server requirements:
 
-* Makes internal use of JQuery (but loaded in compatibility mode by default, compatible with Prototype/whatever... JRails not needed.)
-* Rails 2.3.4 min (rail's I18n, engine. older 2.3.x have issues with CRSF or try to check for CRSF stamp against AJAX request, useless with AJAX same origin policy, fixed with 2.3.4)
-* Paperclip 2.3 branch (installed by default as a gem dependency, will be loaded internally if needed => You can require your own version of Paperclip if you want to)
-* Front web server serving static assets if present, and forwarding demand to rails if not. (Usually a no-brainer on any classic installation. Works with Webrick)
- 
-== Features
+* Rails 2.3.4
+* Paperclip 2.3
+* Front web server serving static assets if present, and forwarding demand to rails if not. Any classic installation will do that by default.
+* NOT compatible with Heroku/S3
 
-=== Ajax uploading form helpers through SWFUpload => [image|asset](s)_upload
+== Installation
 
-See the demo to get an idea: 
+=== Once gem is installed
 
-* image_upload => one image, with thumbnail preview
-* images_upload => sortable image thumbnail gallery
-* asset_upload => one asset
-* assets_upload => sortable asset list
+Generate the migration
+  ./script/generate papermill_table PapermillMigration
 
-=== Asset edit form: 
+Edit it and migrate
+  rake db:migrate
 
-* double-click on any asset in any helper to access & edit his properties
+Copy static assets to your public directory
+  ./script/generate papermill_assets
+  
+Create the option file config/initializers/papermill.rb
+  ./script/generate papermill_initializer
+  
+Go have a look at config/initializers/papermill.rb
 
-=== Lazy created thumbnails
+=== In environment.rb
 
-* thumbnails are generated the first time they are asked-for, and only in the requested size. 
-* no need to register thumbnail size anywhere: my_asset.url("100x100>")
-* .. but you can use application-wide aliases, see below : 
+  ...
+  Rails::Initializer.run do |config|
+    ...
+    config.gem papermill
+  end
 
-=== Alias handling, declaration application-wide (in config/initializers/papermill.rb, do a ./script/generate papermill_initializer)
+=== In your layout
 
-* :big_alias => {:geometry => "1000x>"}
-* :other_alias => "100x>"
-* :third_alias => {:geometry => '100:122', :my_other_keys => 'blblabla'}  # if you have a customed Paperclip::Thumbnail processor, you can pass any values you need.
-* Use them when you need them : my_asset.url(:big_alias)
+==== Quick version
 
-=== Model declaration
+Inside <head></head>
+  <%= papermill_stylesheet_tag %>
+
+Before </body> (best practice for javascript loading)
+  <%= papermill_javascript_tag :with_jquery => "no_conflict" %>
+
+You don't need :with_jquery if load it by yourself. Pass "no_conflict" if you use the default Prototype library, or some other '$' library (mootools..)
+  
+==== In a real-world production application, you could use something like this, and adapt it to your own needs
+
+Inside <head></head>
+  <% unless @content_for_papermill_inline_js.blank? %>
+    <%= javascript_include_tag "/facebox/facebox.js", "/jgrowl/jquery.jgrowl_minimized.js", "/papermill/jquery.Jcrop.min.js", "/swfupload/swfupload.js", "/papermill/papermill.js", :cache => "papermill" %>
+    <script type="text/javascript">
+      jQuery(document).ready(function() {
+        <%= yield :content_for_papermill_inline_js %>
+      }
+    </script>
+  <% end %>
+
+Before </body>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script>
+  <% unless @content_for_papermill_inline_js.blank? %>
+    <%= stylesheet_link_tag("/facebox/facebox.css", "/jgrowl/jquery.jgrowl.css", "/Jcrop/jquery.Jcrop.css", "/papermill/papermill.css", :cache => "papermill") %>
+    <style type="text/css">
+      <%= yield :papermill_inline_css %>
+    </style>
+    <script type="text/javascript">
+      var SWFUPLOAD_PENDING = "Waiting...";
+      var SWFUPLOAD_LOADING = "Loading...";
+    </script>
+  <% end %>
+
+== Security
+
+=== URL-hacking
+
+Maybe you don't want users to use your application as a thumbnailing farm for their own uploaded images, or you have protected members areas and you don't want users to 'browse' others members file.
+
+* Brute solution: pass :use_url_key to true in the options (config/initializers/papermill.rb). A crypted hash unique to your application and to each asset and to the requested style will be added to the URL. No more happy-guessing of anything. Do that first before going live, or you'll have to migrate all assets...
+* pass :alias_only to true. This will disable the possibility to generate thumbnails with a papermill string in the url, but won't do anything for the member area thing. Plus you will have to use aliases only, form helpers included (pass :thumbnail => { :style => :some_alias })
+
+=== Restricted-area/back-office
+
+Go to the options and look for : 
+  :authorize_create => true, 
+  :authorize_update_and_destroy => true, 
+  :authorize_multiple_modification => true,
+
+You will find a quick & dirty solution to pass your authorizations rules in before_filters, before any asset gets hurt.
+
+== Usage
+
+Assetable is the class that has_many papermill_assets (i.e. the class with the papermill declaration)
+
+=== Assetable declaration
 
 You can have a generic association and as many declarative associations as you want in your model. Papermill will always use specific if found.
 
 article.rb
 
   class Article < ActiveRecord::Base
-    papermill :class_name => ColorAsset, other_options..
+    papermill :class_name => ColorAsset, other_options..              # generic, will use ColorAsset instead of PapermillAsset (ColorAsset must be an STIed PapermillAsset)
   end
 
 entry.rb
 
   class Entry < ActiveRecord::Base
-    papermill :mug_shot, other_options..
-    papermill :diaporama, :class_name => ColorAsset, other_options..
+    papermill :mug_shot, other_options..                              # specific association on :mug_shot
+    papermill :diaporama, :class_name => ColorAsset, other_options..  # specific association on :diaporama will use ColorAssets
   end
 
-color_asset.rb  # You should add columns to papermill_assets and use STI on PapermillAsset to extend defaults capabilities (or re-open PapermillAsset and monkey-patch it, or use a polymorphic association)
+color_asset.rb  # You can add columns to papermill_assets and use STI on PapermillAsset to extend defaults abilities (or re-open PapermillAsset/monkey-patch it/use a polymorphic association on PapermillAsset to extend it with behaviors..)
 
   class ColorAsset < PapermillAsset
     named_scope :red, :conditions => {:color => 'red'}
   end
 
 === Form helpers
-
-FormHelpers
-
-  form_for @article do 
-    f.image_upload  :cover_image, options_hash
-    f.images_upload :illustrations, options_hash
-    f.asset_upload  :pdf, options_hash
-    f.image_upload  :other_resources, options_hash
+  
+Example form:
+  
+  form_for @assetable do 
+    # I need a simple asset upload field :
+    f.asset_upload  :pdf_version
+    
+    # Now I need to be able to upload as many documents as I need, and sort them at will
+    # no document should be bigger than 1MB (respect the quoting!)
+    # and I don't want any dashboard mass_edit feature, just mass_delete (delete all)
+    f.assets_upload :documentation, :swfupload => { :file_size_limit => "'1 MB'" }, :dashboard => [:mass_delete]
+ 
+    # I need to display *one* cover *image*, format will be 200x200
+    # targetted_size will give the uploader hints when cropping the image after upload : desired display size and wanted aspect-ratio.
+    # Better than cropping automatically in the center if the character's head is in the upper-left corner..
+    # :thumbnail => { :width & :height } set the dimensions of the preview thumbnail
+    # And finally, I need a 200x200# crop for preview, not the default 200x200> that would be generated by default ("#{:width}x#{:heigth}>")
+    f.image_upload  :cover_image, :targetted_size => "200x200", :thumbnail => { :width => 200, :height => 200, :style => "200x200#" }
+    
+    # Now the image gallery, sortable.
+    # I use :gallery => { :lines & :columns } to give the number of lines/columns, 
+    # and some CSS will be generated to size the gallery perfectly, 
+    # according to the thumb size inside the gallery and their padding/margin/border sizes.
+    # the number of lines will increase if needed when uploading
+    f.images_upload :illustrations, { 
+      :thumbnail => {
+        :width => 100,
+        :height => 70
+      },
+      :gallery => {
+        :columns => 8,       # number of columns
+        :lines => 2,         # number of lines
+        :vpadding => 2,      # vertical padding around each thumb
+        :hpadding => 2,      # horizontal one
+        :vmargin => 3,       # vertical margin
+        :hmargin => 1,       # horizontal one 
+        :border_thickness => 2 # border size around each thumb
+      } 
+    }
   end
   
-Or with formtastic :
+With Formtastic, pass 
+  
+  :as => (:image_upload|:images_upload|:asset_upload|:assets_upload)
+And add your options as you would with the normal helpers.
 
-  semantic_form_for @article do |f|
-    f.input @article, :cover_image, options_hash, :as => :image_upload
-    f.input @article, :illustrations, options_hash, :as => :images_upload
-    f.input @article, :pdf, options_hash, :as => :asset_upload
-    f.input @article, :other_resources, options_hash, :as => :image_upload
-  end
+With FormTagHelpers, use (image_upload_tag|images_upload_tag|asset_upload_tag|assets_upload_tag) @assetable, :key, options
 
-FormTagHelpers
+  image_upload_tag  @article, :cover_image, :targetted_size => "200x200"
 
-  image_upload_tag  @article, :cover_image, options_hash
-  images_upload_tag @article, :illustrations, options_hash
-  asset_upload_tag  @article, :pdf, options_hash
-  image_upload_tag  @article, :other_resources, options_hash
+For resources not linked to any assetable model, you can use upload_tags whithout any Assetable
 
-For resources not linked to any assetable model :
-  image_upload_tag "#{current_organization.name}_logo", options_hash
+  image_upload_tag "#{current_organization.name}_logo", :targetted_size => "200x200"
+
+=== Asset editing 
+
+* double-click on any uploaded asset in any form-helper to access & edit his properties
+* then double-click image to crop it if it's an image. You'll then access a Jcrop window. Pass :targetted_size => "widthxheigth" to lock aspect-ratio and default the selection size to widthxheigth.
+
+=== Thumbnails
+
+==== On-the-fly request time processing:
+
+  PapermillAsset#url(papermill string (see 1.))  # path and url behave the same way
+  PapermillAsset#url(papermill alias (see 2.))
+
+Pros: fast. Nothing done upon page rendering. If asset isn't found by Apache/NGinx, then request is passed to rails, which will create it, once.
+Cons: need to setup an alias in the options if you want to define use a hash instead of a papermill string (for custom watermark)
+
+==== Render time processing:
+
+  PapermillAsset#url!(papermill string (see 1.))  # path! and url! behave the same way
+  PapermillAsset#url!(papermill alias (see 2.))
+  PapermillAsset#url!(papermill hash (see 3.))
+  
+Pros: can use a hash directly in the url call.
+Cons: needs a thumbnail presence check at each render.
+
+==== 1. Papermill String
+
+Consist of:
+
+* an ImageMagick geometry string (ex: "100x100>", "original", "100x#", etc.)
+* an optional watermark (-wm) flag  # will use option[:watemark] for URI
+* an optional copyright (©) flag    # will use copyright text after the "©" or options[:copyright]
+
+Examples:
+
+  image_tag @article.covers.first.url("100x100")
+  image_tag @article.covers.first.url("original©")
+  image_tag @article.covers.first.url("100x100#-wm©")
+  image_tag @article.covers.first.url("100x200#©papermill")
+
+==== 2. Papermill Alias
+
+Those are application-wide, set them in the options
+
+Consist of:
+
+  :geometry => "ImageMagick-geometry-string"
+  :copyright => true|"copyright"    # If true, the asset copyright field will be used. Edit the asset.
+  :watermark => URI|true            # If true, will use options[:watemark]
+  
+Examples:
+
+#config/initilializers/papermill.rb
+
+  # snip
+  :aliases => {
+    :thumb_copyrighted => {
+      :geometry => "100x100",
+      :copyright => "papermill",
+    },
+    :thumb_copyrighted_dynamically => {
+      :geometry => "100x100",
+      :copyright => true
+    },
+    :thumb_watermarked_with_rails => {
+      :width => "100",
+      :height => "100",
+      :watermark => "/images/rails.png"
+    }
+  }
+  
+Then in your views, simply do
+
+  image_tag @article.covers.first.url(:thumb_copyrighted)
+
+==== 3. Papermill Hash
+
+Same as aliases, but defined directly in #url!()
+Plus you can add a :name that will be used for style-name (defaults to a md5 of the hash)
+
+Example:
+
+  image_tag @article.covers.first.url(
+    :geometry => "100x100",
+    :watermark => "/images/rails.png",
+    :copyright => "papermill",
+    :name => "thumbnail_watermarked_and_copyrighted"
+  )
 
 === Resource access
 
@@ -148,41 +319,9 @@ Or for non-assetable resources :
   @asset.path("100x>")
   # etc.
 
-== Installation
-
-=== Once gem is installed :
-
-Generate the migration :
-  ./script/generate papermill_table PapermillMigration
-
-Edit its fields and migrate :
-  rake db:migrate
-
-Copy static assets to your public directory:
-  ./script/generate papermill_assets
-  
-Create the option file config/initializers/papermill.rb
-  ./script/generate papermill_initializer
-  
-Go have a look to config/initializers/papermill.rb, lots of info there.
-
-=== environment.rb:
-
-  ...
-  Rails::Initializer.run do |config|
-    ...
-    config.gem papermill
-  end
-
-=== In your layout:
-
-  <%= papermill_stylesheet_tag %>
-  <%= papermill_javascript_tag :with_jquery => "no_conflict" %>
-  # you don't need :with_jquery if you already had it loaded.
-
 === Translations:
 
-Papermill is fully I18n-able, except for javascript error messages. (coming)
+Papermill is fully I18n-able.
 Copy config/locales/papermill.yml to your root config/locale folder to modify any wording in a any locale.
   
 Copyright (c) 2009 Benoit Bénézech, released under the MIT license
