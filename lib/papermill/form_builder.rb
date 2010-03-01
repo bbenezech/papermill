@@ -41,8 +41,8 @@ module ActionView::Helpers::FormTagHelper
       key = options[:assetable].to_s
       options[:assetable] = nil
     end
-    
-    assetable = options[:assetable] || @template.instance_variable_get("@#{@object_name}")
+
+    assetable = @object || options[:assetable] || options[:object] || @template.instance_variable_get("@#{@object_name}")
     
     raise PapermillException.new("Your form instance object is not @#{@object_name}, and therefor cannot be found. \nPlease provide your object name in your form_for initialization. \nform_for :my_object_name, @my_object_name, :url => { :action => 'create'/'update'}") if @object_name && !assetable
     
