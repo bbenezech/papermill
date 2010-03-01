@@ -12,7 +12,7 @@ module Papermill
       {:copyright =>   {:type => "string"}},
       {:description => {:type => "text"  }}
     ],
-    :targetted_geometry => nil,
+    :targetted_size => nil,
     :gallery => { 
       :width => nil,
       :height => nil,

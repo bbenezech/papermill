@@ -36,7 +36,7 @@ class PapermillController < ApplicationController
     @asset = params[:asset_class].constantize.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["Filedata", "Filename"]).include?(k)})
     if @asset.save
       @old_asset.destroy if @old_asset
-      output = render_to_string(:partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_geometry => params[:targetted_geometry] })
+      output = render_to_string(:partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_size => params[:targetted_size] })
       render :update do |page|
         page << %{ jQuery('##{params[:Fileid]}').replaceWith('#{escape_javascript output}'); }
         page << %{ jQuery('#papermill_asset_#{@old_asset.id}').remove() } if @old_asset 

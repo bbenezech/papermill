@@ -23,7 +23,7 @@
 </style>
 
 <% 
-  unless (@size = params[:targetted_geometry]).blank?
+  unless (@size = params[:targetted_size]).blank?
     @target_w, @target_h = @size.split("x").map(&:to_i)
     @init_x = (@asset.width - @target_w.to_i) / 2
     @init_y = (@asset.height - @target_h.to_i) / 2
@@ -41,7 +41,7 @@
       <%= f.hidden_field :crop_x, :id => :crop_x %>
       <%= f.hidden_field :crop_y, :id => :crop_y %>
       <%= f.submit I18n.t('papermill.save'), :class => "submit" %>
-      <%= link_to_function I18n.t("papermill.back"), "popup('#{edit_papermill_path(@asset, :targetted_geometry => params[:targetted_geometry])}')" %>
+      <%= link_to_function I18n.t("papermill.back"), "popup('#{edit_papermill_path(@asset, :targetted_size => params[:targetted_size])}')" %>
     <% end -%>
   </form>
 </div>

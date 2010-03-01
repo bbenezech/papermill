@@ -42,7 +42,7 @@ module ActionView::Helpers::FormTagHelper
       options[:assetable] = nil
     end
 
-    assetable = @object || options[:assetable] || options[:object] || @template.instance_variable_get("@#{@object_name}")
+    assetable = @object || options[:object] || options[:assetable] || @template.instance_variable_get("@#{@object_name}")
     
     raise PapermillException.new("Your form instance object is not @#{@object_name}, and therefor cannot be found. \nPlease provide your object name in your form_for initialization. \nform_for :my_object_name, @my_object_name, :url => { :action => 'create'/'update'}") if @object_name && !assetable
     
@@ -68,7 +68,7 @@ module ActionView::Helpers::FormTagHelper
     html[:container] = @template.content_tag(:div, :id => dom_id, :class => "papermill-#{key.to_s} #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") do
       conditions = {:assetable_type => assetable_type, :assetable_id => assetable_id}
       conditions.merge!({:assetable_key => key.to_s}) if key
-      @template.render :partial => "papermill/asset", :collection => PapermillAsset.all(:conditions => conditions), :locals => { :thumbnail_style => computed_style, :targetted_geometry => options[:targetted_geometry] }
+      @template.render :partial => "papermill/asset", :collection => PapermillAsset.all(:conditions => conditions), :locals => { :thumbnail_style => computed_style, :targetted_size => options[:targetted_size] }
     end
     
     if options[:gallery]
@@ -94,7 +94,7 @@ module ActionView::Helpers::FormTagHelper
     create_url_options = { 
       :escape => false, :controller => "/papermill", :action => "create", 
       :asset_class => (options[:class_name] || PapermillAsset).to_s,
-      :gallery => !!options[:gallery], :thumbnail_style => computed_style, :targetted_geometry => options[:targetted_geometry]
+      :gallery => !!options[:gallery], :thumbnail_style => computed_style, :targetted_size => options[:targetted_size]
     }
     create_url_options.merge!({ :assetable_id => assetable_id, :assetable_type => assetable_type }) if assetable_id
     create_url_options.merge!({ :assetable_key => key }) if key

@@ -101,11 +101,11 @@ module Papermill
       #  :style => nil
       },
       
-      # If you plan to use the original images in one place in one specific size, you can pass targetted_geometry, 
+      # If you plan to use the original images in one place in one specific size, you can pass targetted_size, 
       # to incitate the user to crop the image himself (double-click on the image when editing) with the right parameters, 
       # instead of letting ImageMagick do his magick bluntly at render-time.
       
-      # :targetted_geometry => nil,
+      # :targetted_size => nil,
       
       # Options passed on to SWFUpload. 
       # To remove an option when overriding, set it to nil.
