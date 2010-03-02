@@ -1,27 +1,9 @@
 class PapermillController < ApplicationController
   unloadable
   prepend_before_filter :load_asset,  :only => [ "show", "destroy", "update", "edit", "crop" ]
-  prepend_before_filter :load_old_asset_and_assetable, :only => ["create"]
   prepend_before_filter :load_assets, :only => [ "sort", "mass_delete", "mass_edit", "mass_thumbnail_reset" ]
   skip_before_filter :verify_authenticity_token, :only => [:create] # not needed (Flash same origin policy)
-  
-  before_filter :authorize_create, :only => [:create]
-  before_filter :authorize_update_and_destroy, :only => [:update, :destroy]
-  before_filter :authorize_multiple_modification, :only => [:sort, :mass_delete, :mass_edit, :mass_thumbnail_reset]
-  
-  def authorize_create
-    eval(Papermill::options[:authorize_create])
-  end
-  
-  def authorize_update_and_destroy
-    eval(Papermill::options[:authorize_update_and_destroy])
-  end
-
-  def authorize_multiple_modification
-    eval(Papermill::options[:authorize_multiple_modification])
-  end
-  
-  
+    
   def show
     # first escaping is done by rails prior to route recognition, need to do a second one on MSWIN systems to get original one.
     params[:style] = CGI::unescape(params[:style]) if Papermill::MSWIN
@@ -35,17 +17,16 @@ class PapermillController < ApplicationController
   def create
     @asset = params[:asset_class].constantize.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["Filedata", "Filename"]).include?(k)})
     if @asset.save
-      @old_asset.destroy if @old_asset
-      output = render_to_string(:partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_size => params[:targetted_size] })
+      output = render_to_string(:partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_size => params[:targetted_size], :field_name => params[:field_name] })
       render :update do |page|
         page << %{ jQuery('##{params[:Fileid]}').replaceWith('#{escape_javascript output}'); }
-        page << %{ jQuery('#papermill_asset_#{@old_asset.id}').remove() } if @old_asset 
+        page << %{ jQuery('#papermill_asset_#{params[:old_asset_id]}').remove() } unless params[:old_asset_id].blank?
       end
     else
       render :update do |page|
         page << %{ notify('#{@asset.name}', '#{escape_javascript @asset.errors.full_messages.join("<br />")}', 'error'); }
         page << %{ jQuery('##{params[:Fileid]}').remove(); }
-        page << %{ jQuery('#papermill_asset_#{@old_asset.id}').show(); } if @old_asset
+        page << %{ jQuery('#papermill_asset_#{params[:old_asset_id]}').show(); } unless params[:old_asset_id].blank?
       end
     end
   end
@@ -106,13 +87,6 @@ class PapermillController < ApplicationController
   end
   
   private
-  
-  def load_old_asset_and_assetable
-    unless params[:gallery]
-      @old_asset = PapermillAsset.find(:first, :conditions => {:assetable_type => params[:assetable_type], :assetable_id => params[:assetable_id], :assetable_key => params[:assetable_key]})
-    end
-    @assetable = params[:assetable_type].constantize.find_by_id(params[:assetable_id])
-  end
   
   def load_asset
     @asset = PapermillAsset.find(params[:id] || (params[:id0] + params[:id1] + params[:id2]).to_i, :include => "assetable")

@@ -8,4 +8,5 @@
 	<%- else -%>
 	  <%= render :partial => "papermill/raw_asset", :object => asset %>
 	<%- end -%>
+  <%= hidden_field_tag field_name, asset.id.to_s, :id => nil %>
 </div>

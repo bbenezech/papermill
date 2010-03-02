@@ -1,8 +1,6 @@
 class PapermillAsset < ActiveRecord::Base
-  
   before_destroy :destroy_files
-  before_create :set_position
-  
+
   has_attached_file :file, 
     :processors => [:papermill_paperclip_processor],
     :url => "#{Papermill::options[:papermill_url_prefix]}/#{Papermill::compute_paperclip_path.gsub(':style', ':escape_style_in_url')}",
@@ -12,10 +10,13 @@ class PapermillAsset < ActiveRecord::Base
   
   validates_attachment_presence :file
   
-  belongs_to :assetable, :polymorphic => true, :touch => Papermill::options[:touch]
-  default_scope :order => 'position'
+  belongs_to :assetable, :polymorphic => true
   
-  named_scope :key, lambda { |assetable_key| { :conditions => ['assetable_key = ?', assetable_key.to_s] }}
+  named_scope :key, lambda { |assetable_key| { :conditions => { 'assetable_key' => (assetable_key.nil? ? nil : assetable_key.to_s) } } }
+  
+  def assetable_type=(sType)
+     super(sType.to_s.classify.constantize.base_class.to_s)
+  end
   
   Paperclip.interpolates :url_key do |attachment, style|
     attachment.instance.compute_url_key((style || "original").to_s)
@@ -163,10 +164,6 @@ class PapermillAsset < ActiveRecord::Base
     return if @real_file_name.blank?
     self.title = (basename = @real_file_name.gsub(/#{extension = File.extname(@real_file_name)}$/, ""))
     self.file.instance_write(:file_name, "#{basename.to_url}#{extension}")
-  end
-  
-  def set_position
-    self.position ||= PapermillAsset.maximum(:position, :conditions => { :assetable_type => assetable_type, :assetable_id => assetable_id, :assetable_key => assetable_key } ).to_i + 1
   end
   
   def destroy_files

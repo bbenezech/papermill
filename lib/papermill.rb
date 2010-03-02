@@ -1,4 +1,5 @@
 require "rbconfig"
+require "acts_as_list"
 begin
   require "mime/types"
   MIME_TYPE_LOADED = true

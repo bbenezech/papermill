@@ -2,6 +2,7 @@ module Papermill
   
   def self.included(base)
     base.extend(ClassMethods)
+    
   end
   
   def self.options
@@ -27,23 +28,16 @@ module Papermill
       local_options = args.first || {}
 
       (@papermill_associations ||= {}).merge!( assoc_name => Papermill::options.deep_merge(local_options) )
+      after_create :rebase_assets
+      has_many :assets, :as => "assetable", :dependent => :destroy, :order => "position", :class_name => "PapermillAsset"
       
       include Papermill::InstanceMethods
-      after_create :rebase_assets
-      has_many :papermill_assets, :as => "assetable", :dependent => :destroy
-
-      [assoc_name, Papermill::options[:base_association_name].to_sym].uniq.each do |assoc|
-        define_method assoc do |*options|
-          scope = PapermillAsset.scoped(:conditions => {:assetable_id => self.id, :assetable_type => self.class.base_class.name})
-          if assoc != Papermill::options[:base_association_name]
-            scope = scope.scoped(:conditions => { :assetable_key => assoc.to_s })
-          elsif options.first && !options.first.is_a?(Hash)
-            scope = scope.scoped(:conditions => { :assetable_key => options.shift.to_s.nie })
-          end
-          scope = scope.scoped(options.shift) if options.first
-          scope
-        end
-      end
+      define_method assoc_name do |*options|
+        scope = PapermillAsset.scoped(:conditions => {:assetable_id => self.id, :assetable_type => self.class.base_class.name})
+        scope = scope.scoped(:conditions => { :assetable_key => assoc.to_s })
+        scope = scope.scoped(options.shift) if options.first
+        scope
+      end unless assoc_name.to_s == Papermill::options[:base_association_name].to_s
       ActionController::Dispatcher.middleware.delete(FlashSessionCookieMiddleware) rescue true
       ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key]) rescue true
     end
@@ -59,6 +53,14 @@ module Papermill
     def timestamp
       @timestamp ||= "-#{(Time.now.to_f * 1000).to_i.to_s[4..-1]}"
     end
+    
+    def papermill_asset_ids=(ids)
+      @index = 0
+      # TODO ASSETABLE
+      PapermillAsset.update_all("position = (CASE id #{ids.map{|asset_id, index| " WHEN #{asset_id} THEN #{@index += 1} " } } END)", :id => ids) unless ids.empty?
+      self.asset_ids = ids
+    end
+
     
     private
     

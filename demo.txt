@@ -64,24 +64,24 @@ file "app/views/articles/show.html.erb", <<-END
   <% end %>
 </p>
 <br /><br />
-<b>@article.assets(:my_other_image).first :</b>
+<b>@article.assets.key(:my_other_image).first :</b>
 <p>
-  <% image = @article.assets(:my_other_image).first %>
+  <% image = @article.assets.key(:my_other_image).first %>
   <%= link_to(image_tag(image.url("100x100#")), image.url) if image %>
 </p>
 <br /><br />
-<b>@article.assets(:my_assets).each :</b>
+<b>@article.assets.key(:my_assets).each :</b>
 <p>
   <ul>
-    <% @article.assets(:my_assets).each do |asset| %>
+    <% @article.assets.key(:my_assets).each do |asset| %>
       <li><%= link_to asset.name, asset.url %></li>
     <% end %>
   </ul>
 </p>
 <br /><br />
-<b>@article.assets(:my_other_asset).first :</b>
+<b>@article.assets.key(:my_other_asset).first :</b>
 <p>
-  <% asset = @article.assets(:my_other_asset).first %>
+  <% asset = @article.assets.key(:my_other_asset).first %>
   <%= link_to(asset.name, asset.url) if asset %>
 </p>
 

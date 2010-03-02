@@ -57,10 +57,8 @@ class PapermillTest < Test::Unit::TestCase
   def initialize(*args)
     super
     @file = File.new(File.join(File.dirname(__FILE__), "fixtures", "5k.png"), 'rb')
-    
     @article = Article.find 1
     @decoy_article = Article.find 2
-    
     @asset1 = PapermillAsset.find 1
     @asset2 = PapermillAsset.find 2
     @asset3 = PapermillAsset.find 3
@@ -70,26 +68,11 @@ class PapermillTest < Test::Unit::TestCase
   
   def test_namedscopes_for_specific_associations
     assert_equal @article.my_assets.map(&:id), [3,4]
-    assert_equal @article.my_assets(:order => "position DESC").map(&:id), [4,3]
-    assert_equal @article.my_assets(:order => "position DESC", :limit => 1).map(&:id), [4]
-    
-    assert_equal @article.assets(:my_assets).map(&:id), [3,4]
-    assert_equal @article.assets(:my_assets, :order => "position DESC").map(&:id), [4,3]
-    assert_equal @article.assets(:my_assets, :order => "position DESC", :limit => 1).map(&:id), [4]
-    
-    assert_equal @article.papermill_assets.key(:my_assets).map(&:id), [3,4]
-    assert_equal @article.papermill_assets.key(:my_assets).all(:order => "position DESC").map(&:id), [4,3]
-    assert_equal @article.papermill_assets.key(:my_assets).all(:order => "position DESC", :limit => 1).map(&:id), [4]
+    assert_equal @article.assets.key(:my_assets).map(&:id), [3,4]
   end
   
   def test_namedscope_for_global_associations
     assert_equal @article.assets(:asset1).map(&:id), [2,1]
-    assert_equal @article.assets(:asset1, :order => "position DESC").map(&:id), [1,2]
-    assert_equal @article.assets(:asset1, :order => "position DESC", :limit => 1).map(&:id), [1]
-    
-    assert_equal @article.papermill_assets.key(:asset1).map(&:id), [2,1]
-    assert_equal @article.papermill_assets.key(:asset1).all(:order => "position DESC").map(&:id), [1,2]
-    assert_equal @article.papermill_assets.key(:asset1).all(:order => "position DESC", :limit => 1).map(&:id), [1]
   end
 
   def test_id_partition
@@ -132,21 +115,3 @@ class PapermillTest < Test::Unit::TestCase
     assert_equal PapermillAsset.compute_style("100x100"), false
   end
 end
-
-#  Filedata=(data)
-#  Filename=(name)
-#  create_thumb_file(style_name)
-#  basename
-#  extension
-#  url(style = nil)
-#  path(style = nil)
-#  self.papermill_options(assetable_class, assetable_key)
-#  papermill_options
-#  destroy_thumbnails
-#  self.destroy_orphans
-#  compute_url_key(style)
-#  has_valid_url_key?(key, style)
-#  root_directory
-#  set_file_name
-#  set_position
-#  destroy_files
