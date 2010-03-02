@@ -46,7 +46,7 @@ module ActionView::Helpers::FormTagHelper
     field_id = @object_name && "#{sanitized_object_name}#{(i = @options[:index]) ? "_#{i}" : ""}_#{sanitized_method}" || 
         "papermill_#{assetable_name}_#{assetable_id.to_i < 0 ? "stamp#{assetable_id}" : assetable_id}_#{sanitized_method}"
     options = PapermillAsset.papermill_options(assetable && assetable.class.name, method).deep_merge(options)
-    field_name = "#{assetable_name}[papermill_asset_ids][]"
+    field_name = "#{assetable_name}[papermill_asset_ids][#{method}][]"
     
     if ot = options[:thumbnail]
       w = ot[:width]  || ot[:height] && ot[:aspect_ratio] && (ot[:height] * ot[:aspect_ratio]).to_i || nil

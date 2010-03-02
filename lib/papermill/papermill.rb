@@ -54,10 +54,26 @@ module Papermill
       @timestamp ||= "-#{(Time.now.to_f * 1000).to_i.to_s[4..-1]}"
     end
     
-    def papermill_asset_ids=(ids)
-      @index = 0
-      # TODO ASSETABLE
-      PapermillAsset.update_all("position = (CASE id #{ids.map{|asset_id, index| " WHEN #{asset_id} THEN #{@index += 1} " } } END)", :id => ids) unless ids.empty?
+    def papermill_asset_ids=(params)
+      methods = []
+      ids = []
+      params.each {|method, ids_for_method| 
+        ids_for_method.size.times do 
+          methods << method 
+        end
+        ids += ids_for_method
+      }
+      
+      puts "IDS===#{ids.inspect}"
+      puts "METHODS === #{methods.inspect}"
+      
+      unless ids.empty?
+        @index = 0
+        @index2 = -1
+        PapermillAsset.update_all("position = (CASE id #{ids.map{|i| " WHEN #{i} THEN #{@index += 1} " } } END), \
+         assetable_key = (CASE id #{ids.map{|i| " WHEN #{i} THEN '#{methods[@index2 += 1]}' "}} END)", 
+         :id => ids.map(&:to_i)) 
+      end
       self.asset_ids = ids
     end
 
