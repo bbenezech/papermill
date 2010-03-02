@@ -80,9 +80,9 @@ module ActionView::Helpers::FormTagHelper
       html[:dashboard][:mass_thumbnail_reset] = %{<a onclick="Papermill.mass_thumbnail_reset('#{dom_id}', '#{@template.escape_javascript I18n.t("papermill.mass-thumbnail-reset-confirmation")}'); return false;" style="cursor:pointer">#{I18n.t("papermill.mass-thumbnail-reset")}</a>}
       html[:dashboard] = @template.content_tag(:ul, options[:dashboard].map{|action| @template.content_tag(:li, html[:dashboard][action], :class => action.to_s) }.join("\n"), :class => "dashboard")
     end
-    
+      
     if assetable && assetable.new_record? && !@timestamped
-      @timestamp_field = @template.hidden_field(assetable_type.underscore, :timestamp, :value => assetable.timestamp)
+      @timestamp_field = @template.hidden_field(@object_name && "#{@object_name}#{(i = @options[:index]) ? "[#{i}]" : ""}" || assetable_type.underscore, :timestamp, :value => assetable.timestamp)
       @timestamped = true
     end
     
