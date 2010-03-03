@@ -3,8 +3,8 @@ module Papermill
     :class_name => "PapermillAsset",
     :inline_css => true,
     :images_only => false,
-    :form_helper_elements => [:upload_button, :container, :dashboard],
-    :dashboard => [:mass_edit, :mass_delete],
+    :form_helper_elements => [:upload_button, :container, :mass_edit],
+    :mass_edit => true,
     :mass_editable_fields => ["title", "copyright", "description"],
     :editable_fields => [
       {:title =>       {:type => "string"}}, 

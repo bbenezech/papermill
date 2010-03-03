@@ -23,8 +23,6 @@
 
 .papermill .dashboard li a { display:inline; padding-left:20px }
 .papermill .dashboard li.mass_edit a { background:transparent url(/papermill/images/mass-edit.png) no-repeat top left; }
-.papermill .dashboard li.mass_delete a { background:transparent url(/papermill/images/mass-delete.png) no-repeat top left; }
-.papermill .dashboard li.mass_thumbnail_reset a { background:transparent url(/papermill/images/mass-thumbnail-reset.png) no-repeat top left; }
 
 .papermill-thumb-container { position:relative; border:5px solid #EEE; padding:4px; overflow:hidden; }	
 .papermill-thumb-container .asset { border:0px solid transparent; min-height:25px; min-width:25px; display:block; float:left; position:relative; }

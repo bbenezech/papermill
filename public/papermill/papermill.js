@@ -84,6 +84,12 @@ var Papermill = {
 	{
 		jQuery('#' + file.id + ' .status').html(SWFUPLOAD_LOADING);
 		this.addFileParam(file.id, "Fileid", file.id);
+		if(this.settings.file_queue_limit == 1) {
+			old_asset = jQuery("#" + this.settings.upload_id).children()[0];
+			if (old_asset && old_asset.id != file.id) {
+				this.addFileParam(file.id, "Oldfileid", old_asset.id);
+			}
+		}
 	},
 	upload_progress: function(file, bytes, total)
 	{
@@ -133,17 +139,6 @@ var Papermill = {
 		if(value != null) {
 			jQuery.ajax({async:true, data:jQuery(container).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/mass_edit?attribute=' + attribute_name + "&value=" + value})
 		}
-	},
-	mass_delete: function(papermill_id, wording) {
-		if(confirm(wording)){ 
-	    jQuery.ajax({async:true, data:jQuery('#' + papermill_id).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/mass_delete'})
-	  }
-	},
-	
-	mass_thumbnail_reset: function(papermill_id, wording) {
-		if(confirm(wording)){ 
-	    jQuery.ajax({async:true, data:jQuery('#' + papermill_id).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/mass_thumbnail_reset'})
-	  }
 	}
 }
 

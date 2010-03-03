@@ -34,14 +34,12 @@ module Papermill
     
       # Dashboard is only for galleries
       # You can remove/change order of HTML elements.
-      # See below for dashboard
       
-      # :form_helper_elements => [:upload_button, :container, :dashboard],
-    
-      # Dashboard elements
-      # You can remove/change order of HTML elements. You can add :mass_thumbnail_reset to add a link to reset all thumbnails, although you shouldn't need it.
+      # :form_helper_elements => [:upload_button, :container, :mass_edit],
       
-      # :dashboard => [:mass_edit, :mass_delete ],
+      # Batch edit a single field of all the assets in a form field
+      
+      # :mass_edit => true,
     
       # Attributes editable at once for all assets in a gallery
       

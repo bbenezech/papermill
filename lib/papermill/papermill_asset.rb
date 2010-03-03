@@ -142,7 +142,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def self.destroy_orphans
-    self.all(:conditions => ["id < 0 AND created_at < ?", DateTime.now.yesterday]).each &:destroy
+    self.all(:conditions => ["(assetable_id IS NULL OR assetable_id < 0) AND created_at < ?", 1.day.ago]).each &:destroy
   end
   
   def compute_url_key(style)

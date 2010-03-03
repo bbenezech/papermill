@@ -36,9 +36,9 @@ module ActionView::Helpers::FormTagHelper
   private
   
   def papermill_upload_tag(method, options)
-    assetable = options[:assetable] || options[:object] || @object || @template.instance_variable_get("@#{@object_name}")
-    assetable_id = assetable && (assetable.id || assetable.timestamp) || ""
-    assetable_type = assetable && assetable.class.base_class.name || ""
+    assetable = options[:object] || options[:assetable] || @object || @template.instance_variable_get("@#{@object_name}")
+    assetable_id = (assetable.id || assetable.timestamp) || ""
+    assetable_type = assetable.class.base_class.name || ""
     assetable_name = @object_name && "#{@object_name}#{(i = @options[:index]) ? "[#{i}]" : ""}" || assetable_type && assetable_type.underscore || ""
     
     sanitized_method = method.to_s.gsub(/[\?\/\-]$/, '')
@@ -58,29 +58,28 @@ module ActionView::Helpers::FormTagHelper
     set_papermill_inline_js(field_id, compute_papermill_create_url(assetable_id, assetable_type, method, computed_style, field_name, options), options)
 
     html = {}
-    html[:upload_button] = %{<div id="#{field_id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;"><span id="browse_for_#{field_id}" class="swf_button"></span></div>}
+    html[:upload_button] = %{\
+      <div id="#{field_id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;">
+        <span id="browse_for_#{field_id}" class="swf_button"></span>
+      </div>}
     html[:container] = @template.content_tag(:div, :id => field_id, :class => "papermill-#{method.to_s} #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") do
-      conditions = {:assetable_type => assetable_type, :assetable_id => assetable_id}
-      conditions.merge!({:assetable_key => method.to_s}) if method
-      @template.render :partial => "papermill/asset", :collection => PapermillAsset.all(:conditions => conditions), :locals => { :thumbnail_style => computed_style, :targetted_size => options[:targetted_size], :field_name => field_name }
+      @template.render(:partial => "papermill/asset", 
+        :collection => PapermillAsset.all(:conditions => { :assetable_type => assetable_type, :assetable_id => assetable_id, :assetable_key => method && method.to_s }), 
+        :locals => { :thumbnail_style => computed_style, :targetted_size => options[:targetted_size], :field_name => field_name })
     end
     
-    if options[:gallery]
-      html[:dashboard] = {}
-      html[:dashboard][:mass_edit] = %{<a onclick="Papermill.modify_all('#{field_id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a><select id="batch_#{field_id}">#{options[:mass_editable_fields].map do |field|
-                %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
-              end.join("\n")}</select>}
-      html[:dashboard][:mass_delete] = %{<a onclick="Papermill.mass_delete('#{field_id}', '#{@template.escape_javascript I18n.t("papermill.delete-all-confirmation")}'); return false;" style="cursor:pointer">#{I18n.t("papermill.delete-all")}</a>}
-      html[:dashboard][:mass_thumbnail_reset] = %{<a onclick="Papermill.mass_thumbnail_reset('#{field_id}', '#{@template.escape_javascript I18n.t("papermill.mass-thumbnail-reset-confirmation")}'); return false;" style="cursor:pointer">#{I18n.t("papermill.mass-thumbnail-reset")}</a>}
-      html[:dashboard] = @template.content_tag(:ul, options[:dashboard].map{|action| @template.content_tag(:li, html[:dashboard][action], :class => action.to_s) }.join("\n"), :class => "dashboard")
+    if options[:gallery] && options[:mass_edit]
+      html[:mass_edit] = %{
+        <a onclick="Papermill.modify_all('#{field_id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a>
+        <select id="batch_#{field_id}">#{options[:mass_editable_fields].map do |field|
+          %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
+        end.join("\n")}</select>}
     end
-      
-    if assetable && assetable.new_record? && !@timestamped
-      @timestamp_field = @template.hidden_field(assetable_name, :timestamp, :value => assetable.timestamp)
-      @timestamped = true
-    end
-    
-	  %{<div class="papermill">#{@timestamp_field.to_s + options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}</div>}
+
+	  %{<div class="papermill">
+	    #{(assetable.new_record? ? @template.hidden_field("#{assetable_name}[papermill_asset_ids]", :timestamp, :value => assetable_id, :id => nil) : "")}
+	    #{options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}
+	  </div>}
   end
   
   
@@ -89,33 +88,19 @@ module ActionView::Helpers::FormTagHelper
       :escape => false, :controller => "/papermill", :action => "create", 
       :asset_class => (options[:class_name] || PapermillAsset).to_s,
       :gallery => !!options[:gallery], :thumbnail_style => computed_style, :targetted_size => options[:targetted_size],
-      :field_name => field_name, :assetable_key => method
+      :field_name => field_name
     })
   end
   
   def set_papermill_inline_js(field_id, create_url, options)
     return unless options[:inline_css]
     @template.content_for :papermill_inline_js do
-      %{
-        jQuery("##{field_id}").sortable({
-          update:function(){
-            jQuery.ajax({
-              async: true, 
-              data: jQuery(this).sortable('serialize'), 
-              dataType: 'script', 
-              type: 'post', 
-              url: '#{@template.controller.send("sort_papermill_path")}'
-            })
-          }
-        })
-      } if options[:gallery]
+      %{ jQuery("##{field_id}").sortable() } if options[:gallery]
     end
     @template.content_for :papermill_inline_js do
       %{
         new SWFUpload({
-          post_params: {
-            "#{ ActionController::Base.session_options[:key] }": "#{ @template.cookies[ActionController::Base.session_options[:key]] }"
-          },
+          post_params: { "#{ ActionController::Base.session_options[:key] }": "#{ @template.cookies[ActionController::Base.session_options[:key]] }"  },
           upload_id: "#{ field_id }",
           upload_url: "#{ @template.escape_javascript create_url }",
           file_types: "#{ options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : '' }",

@@ -154,8 +154,8 @@ Example form:
     
     # Now I need to be able to upload as many documents as I need, and sort them at will
     # no document should be bigger than 1MB (respect the quoting!)
-    # and I don't want any dashboard mass_edit feature, just mass_delete (delete all)
-    f.assets_upload :documentation, :swfupload => { :file_size_limit => "'1 MB'" }, :dashboard => [:mass_delete]
+    # and I don't want the mass_edit feature
+    f.assets_upload :documentation, :swfupload => { :file_size_limit => "'1 MB'" }, :mass_edit => false
  
     # I need to display *one* cover *image*, format will be 200x200
     # targetted_size will give the uploader hints when cropping the image after upload : desired display size and wanted aspect-ratio.
