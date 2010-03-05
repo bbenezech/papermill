@@ -40,7 +40,7 @@ class Article < ActiveRecord::Base
   def self.table_name 
     :articles
   end
-  papermill 
+  papermill :asset1
   papermill :my_assets, :class_name => "MyAsset"
 end
 
@@ -68,11 +68,10 @@ class PapermillTest < Test::Unit::TestCase
   
   def test_namedscopes_for_specific_associations
     assert_equal @article.my_assets.map(&:id), [3,4]
-    assert_equal @article.assets.key(:my_assets).map(&:id), [3,4]
   end
   
   def test_namedscope_for_global_associations
-    assert_equal @article.assets(:asset1).map(&:id), [2,1]
+    assert_equal @article.asset1.map(&:id), [2,1]
   end
 
   def test_id_partition
