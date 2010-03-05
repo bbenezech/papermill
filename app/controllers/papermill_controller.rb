@@ -16,7 +16,7 @@ class PapermillController < ApplicationController
   def create
     @asset = params[:asset_class].constantize.new(params.reject{|k, v| !(PapermillAsset.columns.map(&:name)+["Filedata", "Filename"]).include?(k)})
     if @asset.save
-      output = render_to_string(:partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_size => params[:targetted_size], :field_name => params[:field_name] })
+      output = render_to_string(:partial => "papermill/asset", :object => @asset, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_size => params[:targetted_size], :field_name => params[:field_name], :field_id => params[:field_id] })
       render :update do |page|
         page << %{ jQuery('##{params[:Fileid]}').replaceWith('#{escape_javascript output}') }
         page << %{ jQuery('##{params[:Oldfileid]}').remove() } if params[:Oldfileid]
@@ -50,7 +50,7 @@ class PapermillController < ApplicationController
   end
     
   def mass_edit
-    @assets = (params[:papermill_asset] || []).map{ |id| PapermillAsset.find(id, :include => "assetable") }
+    @assets = (params[(params[:list_id] + "_papermill_asset").to_sym] || []).map{ |id| PapermillAsset.find(id, :include => "assetable") }
     @assets.each { |asset| asset.update_attribute(params[:attribute], params[:value]) }
     render :update do |page|
       page << %{ notify("", "#{ escape_javascript  t("papermill.updated", :resource => @assets.map(&:name).to_sentence)  }", "notice"); } unless @assets.blank? 
@@ -60,7 +60,6 @@ class PapermillController < ApplicationController
   private
   
   def load_asset
-    @asset = PapermillAsset.find(params[:id] || (params[:id0] + params[:id1] + params[:id2]).to_i, :include => "assetable")
-    @assetable = @asset.assetable
+    @asset = PapermillAsset.find(params[:id] || (params[:id0] + params[:id1] + params[:id2]).to_i)
   end
 end

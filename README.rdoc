@@ -108,15 +108,6 @@ Maybe you don't want users to use your application as a thumbnailing farm for th
 * Brute solution: pass :use_url_key to true in the options (config/initializers/papermill.rb). A crypted hash unique to your application and to each asset and to the requested style will be added to the URL. No more happy-guessing of anything. Do that first before going live, or you'll have to migrate all assets...
 * pass :alias_only to true. This will disable the possibility to generate thumbnails with a papermill string in the url, but won't do anything for the member area thing. Plus you will have to use aliases only, form helpers included (pass :thumbnail => { :style => :some_alias })
 
-=== Restricted-area/back-office
-
-Go to the options and look for : 
-  :authorize_create => true, 
-  :authorize_update_and_destroy => true, 
-  :authorize_multiple_modification => true,
-
-You will find a quick & dirty solution to pass your authorizations rules in before_filters, before any asset gets hurt.
-
 == Usage
 
 Assetable is the class that has_many papermill_assets (i.e. the class with the papermill declaration)
@@ -125,23 +116,11 @@ Assetable is the class that has_many papermill_assets (i.e. the class with the p
 
 You can have a generic association and as many declarative associations as you want in your model. Papermill will always use specific if found.
 
-article.rb
-
-  class Article < ActiveRecord::Base
-    papermill :class_name => ColorAsset, other_options..              # generic, will use ColorAsset instead of PapermillAsset (ColorAsset must be an STIed PapermillAsset)
-  end
-
-entry.rb
-
-  class Entry < ActiveRecord::Base
-    papermill :mug_shot, other_options..                              # specific association on :mug_shot
-    papermill :diaporama, :class_name => ColorAsset, other_options..  # specific association on :diaporama will use ColorAssets
-  end
-
-color_asset.rb  # You can add columns to papermill_assets and use STI on PapermillAsset to extend defaults abilities (or re-open PapermillAsset/monkey-patch it/use a polymorphic association on PapermillAsset to extend it with behaviors..)
-
-  class ColorAsset < PapermillAsset
-    named_scope :red, :conditions => {:color => 'red'}
+  class Article
+    papermill :images
+    papermill :pdf_version
+    papermill :cover_image
+    papermill :illustrations
   end
 
 === Form helpers
@@ -288,20 +267,15 @@ Example:
 
 === Resource access
 
-Papermill generates an #assets.key(:key) named_scope
-  @article.assets.key(:illustrations)
-  @article.assets.key(:illustrations).red.first
-  # etc.
+Papermill generates an #<association_key> association
 
-With declarative papermill associations, Papermill also generates an #<association_key>(*args) named_scope
-  @entry.mug_shot.first
-  @entry.diaporama
-  @entry.diaporama.red
+  @entry.mug_shots.first
+  @entry.diaporamas.each do |image| ..
   # etc.
   
 === Using PapermillAsset
 
-  @asset = @entry.mug_shot.first
+  @asset = @entry.mug_shots.first
   image_tag @asset.url              # original
   image_tag @asset.url("100x>")     # assuming asset is an image
   image_tag @asset.url(:big)        # assuming you have a :big alias

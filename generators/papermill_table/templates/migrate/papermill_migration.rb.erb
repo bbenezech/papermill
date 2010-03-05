@@ -3,23 +3,29 @@ class <%= migration_name %> < ActiveRecord::Migration
     create_table :papermill_assets do |t|
     
       # Paperclip fields (required)
-      t.string   :file_file_name
-      t.string   :file_content_type
-      t.integer  :file_file_size
+      t.string      :file_file_name
+      t.string      :file_content_type
+      t.integer     :file_file_size
       
       # Papermill fields (required)
-      t.integer  :position          # sets are ordered by position
+      t.integer     :position          # sets are ordered by position
       
-      t.belongs_to :assetable, :polymorphic => true
+      t.belongs_to  :assetable, :polymorphic => true
+      t.string      :assetable_key
+      t.string      :type              # PapermillAsset STI
+      t.string      :title             # filename not transformed, without file extension, for your own use
       
-      t.string   :assetable_key
-      t.string   :type              # STI
-      t.string   :title             # filename not transformed, without file extension, for your own use
+      # Papermill magical fields (You'll need to configure :mass_editable_fields/:editable_fields accordingly to be able to modify them with Papermill helpers)
       
-      # Example additionals fields (configure :mass_editable_fields/:editable_fields accordingly)
-      t.string   :alt
-      t.string   :copyright         # Content can be used to add copyright on thumbnails
-      t.text     :description
+      t.string      :copyright              # copyright content
+      t.string      :copyright_im_command   # copyright ImageMagick command
+      t.string      :watermark              # watermark URI
+      t.string      :watermark_im_command   # watermark ImageMagick content
+
+      # Example additionals fields (configure :mass_editable_fields/:editable_fields accordingly to be able to modify them with Papermill helpers)
+
+      t.string      :alt
+      t.text        :description
       t.timestamps
     end
     
@@ -27,9 +33,27 @@ class <%= migration_name %> < ActiveRecord::Migration
       t.index [:assetable_id, :assetable_type, :assetable_key, :position], { :name => "papermill_index" }
       t.index [:assetable_key, :position]  # for non assetable assets
     end
+    
+    # If you want to associate an asset to more than one assetable, use the (:through => true) option to use the join-table and get an assetable with smtg like
+    # has_many :assets, :through => :papermill_associations
+    
+    create_table :papermill_associations, :force => true do |t|
+      t.belongs_to  :assetable, :polymorphic => true
+      t.string      :assetable_key
+      t.integer     :position
+      t.belongs_to  :papermill_asset
+      t.timestamps
+    end
+    
+    change_table :papermill_associations do |t|
+      t.index [:assetable_id, :assetable_type, :assetable_key, :position], { :name => "papermill_index" }
+      t.index :papermill_asset_id
+    end
+    
   end
   
   def self.down
     drop_table :papermill_assets
+    drop_table :papermill_associations
   end
 end

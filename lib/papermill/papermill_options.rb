@@ -48,8 +48,7 @@ module Papermill
     :copyright_im_command => %{\\( -font Arial-Bold -pointsize 9 -fill '#FFFFFFE0' -border 3 -bordercolor '#50550080' -background '#00000000' label:' %s ' \\) -gravity South-West -geometry +0+0 -composite},
     :watermark => "/images/rails.png",
     :watermark_im_command => %{- | composite \\( %s -resize 100% \\) - -dissolve 20% -gravity center -geometry +0+0 },
-    :base_association_name => :assets,
-    :touch => false,
+    :through => false,
     :alias_only => false,
     :aliases => {},
     :use_url_key => false,
@@ -57,9 +56,6 @@ module Papermill
     :url_key_generator => Proc.new { |style, asset| Digest::SHA512.hexdigest("#{style}#{asset.id}#{Papermill::options[:url_key_salt]}")[0..10] },
     :use_id_partition => true,
     :papermill_url_prefix => "/system/papermill",
-    :papermill_path_prefix => ":rails_root/public/system/papermill",
-    :authorize_create => "true", 
-    :authorize_update_and_destroy => "true", 
-    :authorize_multiple_modification => "true",
+    :papermill_path_prefix => ":rails_root/public/system/papermill"
   }
 end

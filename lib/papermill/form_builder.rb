@@ -37,16 +37,17 @@ module ActionView::Helpers::FormTagHelper
   
   def papermill_upload_tag(method, options)
     assetable = options[:object] || options[:assetable] || @object || @template.instance_variable_get("@#{@object_name}")
-    assetable_id = (assetable.id || assetable.timestamp) || ""
-    assetable_type = assetable.class.base_class.name || ""
-    assetable_name = @object_name && "#{@object_name}#{(i = @options[:index]) ? "[#{i}]" : ""}" || assetable_type && assetable_type.underscore || ""
+    
+    raise PapermillException.new("Form object not found. Please provide it with :object => @assetable with the Papermill helper call") unless assetable
+    assetable_name = @object_name && "#{@object_name}#{(i = @options[:index]) ? "[#{i}]" : ""}"
     
     sanitized_method = method.to_s.gsub(/[\?\/\-]$/, '')
     sanitized_object_name = @object_name.to_s.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")
-    field_id = @object_name && "#{sanitized_object_name}#{(i = @options[:index]) ? "_#{i}" : ""}_#{sanitized_method}" || 
-        "papermill_#{assetable_name}_#{assetable_id.to_i < 0 ? "stamp#{assetable_id}" : assetable_id}_#{sanitized_method}"
-    options = PapermillAsset.papermill_options(assetable && assetable.class.name, method).deep_merge(options)
-    field_name = "#{assetable_name}[papermill_asset_ids][#{method}][]"
+    field_id = @object_name && "#{sanitized_object_name}#{(i = @options[:index]) ? "_#{i}" : ""}_#{sanitized_method}"
+    association_options = assetable.class.papermill_options[method.to_sym]
+    raise PapermillException.new("Papermill association #{method} not found for #{assetable.class.name}\nYou need to declare the association : \npapermill :#{method}\nIn #{assetable.class.name.underscore}.rb") unless association_options
+    options = association_options.deep_merge(options)
+    field_name = "#{assetable_name}[#{method}_ids][]"
     
     if ot = options[:thumbnail]
       w = ot[:width]  || ot[:height] && ot[:aspect_ratio] && (ot[:height] * ot[:aspect_ratio]).to_i || nil
@@ -55,40 +56,42 @@ module ActionView::Helpers::FormTagHelper
       set_papermill_inline_css(field_id, w, h, options)
     end
 
-    set_papermill_inline_js(field_id, compute_papermill_create_url(assetable_id, assetable_type, method, computed_style, field_name, options), options)
+    set_papermill_inline_js(field_id, compute_papermill_create_url(computed_style, field_name, field_id, options), options)
 
     html = {}
     html[:upload_button] = %{\
       <div id="#{field_id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;">
         <span id="browse_for_#{field_id}" class="swf_button"></span>
       </div>}
+      
     html[:container] = @template.content_tag(:div, :id => field_id, :class => "papermill-#{method.to_s} #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") do
       @template.render(:partial => "papermill/asset", 
-        :collection => PapermillAsset.all(:conditions => { :assetable_type => assetable_type, :assetable_id => assetable_id, :assetable_key => method && method.to_s }), 
-        :locals => { :thumbnail_style => computed_style, :targetted_size => options[:targetted_size], :field_name => field_name })
+        :collection => assetable.send(method),
+        :locals => { :thumbnail_style => computed_style, :targetted_size => options[:targetted_size], :field_name => field_name, :field_id => field_id })
     end
     
     if options[:gallery] && options[:mass_edit]
-      html[:mass_edit] = %{
+      html[:mass_edit] = %{\
         <a onclick="Papermill.modify_all('#{field_id}'); return false;" style="cursor:pointer">#{I18n.t("papermill.modify-all")}</a>
         <select id="batch_#{field_id}">#{options[:mass_editable_fields].map do |field|
           %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
         end.join("\n")}</select>}
     end
 
+    # hidden_field needed to empty a list of assets.
 	  %{<div class="papermill">
-	    #{(assetable.new_record? ? @template.hidden_field("#{assetable_name}[papermill_asset_ids]", :timestamp, :value => assetable_id, :id => nil) : "")}
+	    #{@template.hidden_field("#{assetable_name}[#{method}_ids]", "", :id => nil)}
 	    #{options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}
 	  </div>}
   end
   
   
-  def compute_papermill_create_url(assetable_id, assetable_type, method, computed_style, field_name, options)
+  def compute_papermill_create_url(computed_style, field_name, field_id, options)
      @template.url_for({ 
       :escape => false, :controller => "/papermill", :action => "create", 
       :asset_class => (options[:class_name] || PapermillAsset).to_s,
       :gallery => !!options[:gallery], :thumbnail_style => computed_style, :targetted_size => options[:targetted_size],
-      :field_name => field_name
+      :field_name => field_name, :field_id => field_id
     })
   end
   
@@ -100,7 +103,9 @@ module ActionView::Helpers::FormTagHelper
     @template.content_for :papermill_inline_js do
       %{
         new SWFUpload({
-          post_params: { "#{ ActionController::Base.session_options[:key] }": "#{ @template.cookies[ActionController::Base.session_options[:key]] }"  },
+          post_params: { 
+            "#{ ActionController::Base.session_options[:key] }": "#{ @template.cookies[ActionController::Base.session_options[:key]] }"
+          },
           upload_id: "#{ field_id }",
           upload_url: "#{ @template.escape_javascript create_url }",
           file_types: "#{ options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : '' }",

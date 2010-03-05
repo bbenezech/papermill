@@ -11,9 +11,8 @@ class PapermillAsset < ActiveRecord::Base
   validates_attachment_presence :file
   
   belongs_to :assetable, :polymorphic => true
-  
-  named_scope :key, lambda { |assetable_key| { :conditions => { 'assetable_key' => (assetable_key.nil? ? nil : assetable_key.to_s) } } }
-  
+  has_many :papermill_associations, :dependent => :destroy
+
   def assetable_type=(sType)
      super(sType.to_s.classify.constantize.base_class.to_s)
   end
@@ -106,7 +105,7 @@ class PapermillAsset < ActiveRecord::Base
   
   def self.papermill_options(assetable_class, assetable_key)
     if assetable_class
-      assoc = assetable_class.constantize.papermill_associations
+      assoc = assetable_class.constantize.papermill_options
       assoc[assetable_key.try(:to_sym)] || assoc[Papermill::options[:base_association_name]]
     else
       Papermill::options
@@ -142,7 +141,9 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def self.destroy_orphans
-    self.all(:conditions => ["(assetable_id IS NULL OR assetable_id < 0) AND created_at < ?", 1.day.ago]).each &:destroy
+    self.all(:include => "papermill_associations", :conditions => ["#{self.name == "PapermillAsset" ? "type IS NULL" : "type = #{self.name}"} AND assetable_id IS NULL AND created_at < ?", 1.day.ago]).each do |asset|
+      asset.destroy if asset.papermill_associations.empty?
+    end
   end
   
   def compute_url_key(style)

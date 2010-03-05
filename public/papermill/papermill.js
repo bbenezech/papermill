@@ -6,14 +6,15 @@ If you have your own popup solution, override popup and close_popup in your appl
 popup = function(url) {
 	jQuery.facebox(function() {
 	  jQuery.get(url, function(data) {
-	    jQuery.facebox(data)
+	    jQuery.facebox(data);
 	  })
 	})
 	return false;
-}
+};
+
 close_popup = function(source) {
 	jQuery(document).trigger('close.facebox');
-}
+};
 
 jQuery(document).ajaxError(function(){
 	switch (arguments[1].status) {
@@ -37,10 +38,11 @@ If you have your own notification solution, override notify
 */
 
 notify = function(title, message, type) {
-	if(type == "notice") { jQuery.jGrowl(message, { header: title, life: 4000, theme: type }) }
-	if(type == "warning") {	jQuery.jGrowl(message, { header: title, life: 15000, theme: type }) }
-	if(type == "error") {	jQuery.jGrowl(message, { header: title, sticky: true, theme: type }) }
-}
+	if(type == "notice") { jQuery.jGrowl(message, { header: title, life: 4000, theme: type }) };
+	if(type == "warning") {	jQuery.jGrowl(message, { header: title, life: 15000, theme: type }) };
+	if(type == "error") {	jQuery.jGrowl(message, { header: title, sticky: true, theme: type }) };
+};
+
 var Papermill = {
 	files_queued: 0,
 	file_dialog_complete: function(num_selected, num_queued)
@@ -62,7 +64,7 @@ var Papermill = {
 			} while (file != null);
 			this.sorted_queue = file_queue.sort(function(a,b){
 				if(b.name < a.name) { return (1) } else { return (-1) }
-			})
+			});
 			var self = this;
 			jQuery(this.sorted_queue).each( function(index, file) {
 				div = jQuery('<div></div>').attr({ 'id': file.id, 'class': 'swfupload asset' });
@@ -76,7 +78,7 @@ var Papermill = {
 					}
 				}
 				jQuery("#" + self.settings.upload_id).append(div);
-			})
+			});
 			this.startUpload(this.sorted_queue[this.index++].id);
 		}
 	},
@@ -113,7 +115,7 @@ var Papermill = {
 	{
 		Papermill.files_queued -= 1;
 		if(this.sorted_queue[this.index]) { 
-			this.startUpload(this.sorted_queue[this.index++].id)
+			this.startUpload(this.sorted_queue[this.index++].id);
 		}
 	},
 	file_queue_error: function(file, errorCode, message)  {
@@ -133,12 +135,12 @@ var Papermill = {
 	},
 	modify_all: function(papermill_id) {
 		container = jQuery("#" + papermill_id)[0];
-		attribute_name = jQuery("#batch_" + papermill_id)[0].value
+		attribute_name = jQuery("#batch_" + papermill_id)[0].value;
 		attribute_wording = jQuery("#batch_" + papermill_id + " option:selected").text();
-		value = prompt(attribute_wording + ":")
+		value = prompt(attribute_wording + ":");
 		if(value != null) {
-			jQuery.ajax({async:true, data:jQuery(container).sortable('serialize'), dataType:'script', type:'post', url:'/papermill/mass_edit?attribute=' + attribute_name + "&value=" + value})
+			jQuery.ajax({async:true, data:jQuery(container).sortable('serialize') + "&list_id=" + container.id, dataType:'script', type:'post', url:'/papermill/mass_edit?attribute=' + attribute_name + "&value=" + value});
 		}
 	}
-}
+};
 

@@ -1,4 +1,4 @@
-<%- dom_id = "papermill_asset_#{asset.id}" -%>
+<%- dom_id = "#{field_id}_papermill_asset_#{asset.id}" -%>
 <%- delete_link = %{<a onclick="$('##{dom_id}').remove(); return false;" href="#" class="delete"><img title="#{escape_javascript t("papermill.delete", :resource => asset.name)}" src="/papermill/images/delete.png" alt="delete"/></a>} %>
 
 <div id="<%= dom_id %>" class="asset" title="<%= t("papermill.#{(thumbnail_style) ? "thumbnail-" : ""}edit-title", :resource => asset.name) %>" onDblClick="popup(jQuery(this).attr('rel')); return false;" rel="<%= edit_papermill_url(asset, :targetted_size => targetted_size) %>">
