@@ -1,0 +1,12 @@
+<% params.delete(:action) %>
+<form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'<%= add_list_papermill_path(params) %>'}); close(); return false;" method="post">
+  <ul>
+    <% @assets.each do |asset| %>
+    <li>
+      <%= asset.name %>
+      <%= hidden_field_tag("ids[]", asset.id) %>
+    <% end -%>
+    </li>
+  </ul>
+  <%= submit_tag "Ajouter" %>
+</form>

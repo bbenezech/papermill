@@ -48,6 +48,20 @@ class PapermillController < ApplicationController
       end
     end
   end
+  
+  def add_list
+    @assets = PapermillAsset.find(params[:ids]).sort_by{|asset|params[:ids].index(asset.id.to_s)}
+    output = render_to_string(:partial => "papermill/asset", :collection => @assets, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_size => params[:targetted_size], :field_name => params[:field_name], :field_id => params[:field_id] })
+    render :update do |page|
+      page << %{ console.log(jQuery('##{params[:field_id]}'), '#{params[:field_id]}') }
+      page << %{ close_popup(); jQuery('##{params[:field_id]}').append('#{escape_javascript output}');  }
+    end
+  end
+  
+  def browser
+    @assets = PapermillAsset.all
+    render :action => "browser", :layout => false
+  end
     
   def mass_edit
     @assets = (params[(params[:list_id] + "_papermill_asset").to_sym] || []).map{ |id| PapermillAsset.find(id, :include => "assetable") }

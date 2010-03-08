@@ -56,7 +56,7 @@ module ActionView::Helpers::FormTagHelper
       set_papermill_inline_css(field_id, w, h, options)
     end
 
-    set_papermill_inline_js(field_id, compute_papermill_create_url(computed_style, field_name, field_id, options), options)
+    set_papermill_inline_js(field_id, compute_papermill_url(:create, computed_style, field_name, field_id, options), options)
 
     html = {}
     html[:upload_button] = %{\
@@ -66,11 +66,11 @@ module ActionView::Helpers::FormTagHelper
     
     # I don't use the full :through association that is not updated if assetable.new_record?.
     collection = association_options[:through] ? assetable.send("#{method}_associations").map(&:papermill_asset) : assetable.send(method)
-    
+    locals = { :thumbnail_style => computed_style, :targetted_size => options[:targetted_size], :field_name => field_name, :field_id => field_id }
     html[:container] = @template.content_tag(:div, :id => field_id, :class => "papermill-#{method.to_s} #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") do
       @template.render(:partial => "papermill/asset", 
         :collection => collection,
-        :locals => { :thumbnail_style => computed_style, :targetted_size => options[:targetted_size], :field_name => field_name, :field_id => field_id })
+        :locals => locals)
     end
     
     if options[:gallery] && options[:mass_edit]
@@ -79,6 +79,11 @@ module ActionView::Helpers::FormTagHelper
         <select id="batch_#{field_id}">#{options[:mass_editable_fields].map do |field|
           %{<option value="#{field.to_s}">#{I18n.t("papermill.#{field.to_s}", :default => field.to_s)}</option>}
         end.join("\n")}</select>}
+    end
+    
+    if options[:through]
+      browser_url = compute_papermill_url(:browser, computed_style, field_name, field_id, options)
+      html[:browser] = %{<a onclick="popup('#{@template.escape_javascript browser_url}'); return false;" style="cursor:pointer">Ajouter...</a>}
     end
 
     # hidden_field needed to empty a list of assets.
@@ -89,9 +94,9 @@ module ActionView::Helpers::FormTagHelper
   end
   
   
-  def compute_papermill_create_url(computed_style, field_name, field_id, options)
+  def compute_papermill_url(action, computed_style, field_name, field_id, options)
      @template.url_for({ 
-      :escape => false, :controller => "/papermill", :action => "create", 
+      :escape => false, :controller => "/papermill", :action => action, 
       :asset_class => (options[:class_name] || PapermillAsset).to_s,
       :gallery => !!options[:gallery], :thumbnail_style => computed_style, :targetted_size => options[:targetted_size],
       :field_name => field_name, :field_id => field_id
