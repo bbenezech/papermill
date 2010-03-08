@@ -21,6 +21,16 @@ module PapermillObjectExtensions
   end
 end
 
+module PapermillArrayExtensions
+  def map_with_index!
+    each_with_index do |e, idx| self[idx] = yield(e, idx); end
+  end
+
+  def map_with_index(&block)
+    dup.map_with_index!(&block)
+  end
+end
+
 module PapermillFormtasticExtensions
   def image_upload_input(method, options)
     self.label(method, options_for_label(options)) +

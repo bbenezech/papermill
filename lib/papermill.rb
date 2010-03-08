@@ -13,6 +13,7 @@ require 'papermill/flash_session_cookie_middleware.rb'
 
 Object.send :include, PapermillObjectExtensions
 Hash.send :include, PapermillHashExtensions
+Array.send :include, PapermillArrayExtensions
 String.send :include, StringToUrlNotFound unless String.instance_methods.include? "to_url"
 Formtastic::SemanticFormBuilder.send(:include, PapermillFormtasticExtensions) rescue NameError
 
