@@ -11,7 +11,7 @@ class PapermillAsset < ActiveRecord::Base
   validates_attachment_presence :file
   
   belongs_to :assetable, :polymorphic => true
-  has_many :papermill_associations, :dependent => :destroy
+  has_many :papermill_associations, :dependent => :delete_all
 
   def assetable_type=(sType)
      super(sType.to_s.classify.constantize.base_class.to_s)
@@ -141,9 +141,9 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def self.destroy_orphans
-    self.all(:include => "papermill_associations", :conditions => ["#{self.name == "PapermillAsset" ? "type IS NULL" : "type = #{self.name}"} AND assetable_id IS NULL AND created_at < ?", 1.day.ago]).each do |asset|
-      asset.destroy if asset.papermill_associations.empty?
-    end
+    self.name != self.base_class.name ? 
+    PapermillAsset.delete_all(["created_at < ? AND assetable_id IS NULL AND type = ?", 1.hour.ago, self.name]) :
+    PapermillAsset.delete_all(["created_at < ? AND assetable_id IS NULL AND type IS NULL", 1.hour.ago])
   end
   
   def compute_url_key(style)
@@ -155,7 +155,7 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   private
-    
+  
   def root_directory
     deepness_to_root = Papermill::options[:use_url_key] ? -3 : -2
     @root_directory ||= File.dirname(path).split('/')[0..deepness_to_root].join('/')

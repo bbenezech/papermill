@@ -63,10 +63,13 @@ module ActionView::Helpers::FormTagHelper
       <div id="#{field_id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;">
         <span id="browse_for_#{field_id}" class="swf_button"></span>
       </div>}
-      
+    
+    # I don't use the full :through association that is not updated if assetable.new_record?.
+    collection = association_options[:through] ? assetable.send("#{method}_associations").map(&:papermill_asset) : assetable.send(method)
+    
     html[:container] = @template.content_tag(:div, :id => field_id, :class => "papermill-#{method.to_s} #{(options[:thumbnail] ? "papermill-thumb-container" : "papermill-asset-container")} #{(options[:gallery] ? "papermill-multiple-items" : "papermill-unique-item")}") do
       @template.render(:partial => "papermill/asset", 
-        :collection => assetable.send(method),
+        :collection => collection,
         :locals => { :thumbnail_style => computed_style, :targetted_size => options[:targetted_size], :field_name => field_name, :field_id => field_id })
     end
     

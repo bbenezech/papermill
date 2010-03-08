@@ -17,6 +17,10 @@ module Papermill
       # Associated PapermillAsset subclass (must be an STI subclass of PapermillAsset)
       # :class_name => "PapermillAsset",
       
+      # You can use the included join table if you need your assets to be associated to more than one assetable
+      # :through => false,
+      
+      
       #@@@@@@@@@@@@@@@@@@@ form-helper parameters @@@@@@@@@@@@@@@@@@@@@@@
       
       # You can override all these parameters here, or in your papermill associations definition, or in form-helper calls.

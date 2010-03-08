@@ -1,6 +1,7 @@
 module Papermill
   BASE_OPTIONS = {
     :class_name => "PapermillAsset",
+    :through => false,
     :inline_css => true,
     :images_only => false,
     :form_helper_elements => [:upload_button, :container, :mass_edit],
@@ -48,7 +49,6 @@ module Papermill
     :copyright_im_command => %{\\( -font Arial-Bold -pointsize 9 -fill '#FFFFFFE0' -border 3 -bordercolor '#50550080' -background '#00000000' label:' %s ' \\) -gravity South-West -geometry +0+0 -composite},
     :watermark => "/images/rails.png",
     :watermark_im_command => %{- | composite \\( %s -resize 100% \\) - -dissolve 20% -gravity center -geometry +0+0 },
-    :through => false,
     :alias_only => false,
     :aliases => {},
     :use_url_key => false,

@@ -1,9 +1,7 @@
-# single asset
 # default papermill association with method_missing/define_method chain
 # extend watermark/copyright possibilities
 # refresh images when cropped
 # authorize images before edit/crop
 # documentation for papermill_associations
-# file search helper for papermill_associations, then test if multiple habtm is fully handled correctly with duplications
+# file search helper for papermill_associations
 # tests, loads of them
-# generate assets from files
