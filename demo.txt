@@ -10,8 +10,7 @@ file "app/models/article.rb", <<-END
   class Article < ActiveRecord::Base
     validates_presence_of :title
     papermill :image_gallery, :class_name => ImageAsset, :images_only => true, :thumbnail => {:width => 75, :height => 100}
-    # image_gallery association (set with define_method)
-    papermill :thumbnail => {:width => 100, :height => 75} # catch-all for non-specified associations, will create assets/asset methods. 
+    papermill :thumbnail, :class_name => ImageAsset, :images_only => true
     papermill :my_assets
     papermill :my_other_asset
   end
