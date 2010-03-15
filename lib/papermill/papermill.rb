@@ -1,51 +1,40 @@
 module Papermill
+  MSWIN = (Config::CONFIG['host_os'] =~ /mswin|mingw/)
   
   def self.included(base)
     base.extend(ClassMethods)
-    base.class_eval do
-      
-      def papermill(key, through = self.class.papermill_options[key.to_sym][:through])
-        through ? 
-        PapermillAsset.papermill_through(self.class.base_class.name, self.id, key.to_s) : 
-        PapermillAsset.papermill(self.class.base_class.name, self.id, key.to_s)
-      end
-      
-      def respond_to_with_papermill?(method, *args, &block)
-        respond_to_without_papermill?(method, *args, &block) || method.to_s =~ /^papermill_[^_]+_ids=$/
-      end
-      
-      def method_missing_with_papermill(method, *args, &block)
-        if method.to_s =~ /^papermill_[^_]+_ids=$/
-          self.class.papermill(method.to_s[10..-6])
-          self.send(method, *args, &block)
-        else
-          method_missing_without_papermill(method, *args, &block)
-        end
-      end
-    end
+    base.include(InstanceMethods)
     base.send :alias_method_chain, :method_missing, :papermill
     base.send :alias_method_chain, :respond_to?, :papermill
     ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key]) unless ActionController::Dispatcher.middleware.include?(FlashSessionCookieMiddleware)
   end
   
-  
-  def self.options
-    @options ||= BASE_OPTIONS.deep_merge(defined?(OPTIONS) ? OPTIONS : {})
-  end
-  
-  MSWIN = (Config::CONFIG['host_os'] =~ /mswin|mingw/)
-  
-  def self.compute_paperclip_path
-    path = []
-    path << (options[:use_id_partition] ? ":id_partition" : ":id")
-    path << (":url_key" if options[:use_url_key])
-    path << ":style"
-    path << ":basename.:extension"
-    path.compact.join("/")
+  module InstanceMethods
+    def papermill(key, through = (self.class.papermill_options && (self.class.papermill_options[key.to_sym] || self.class.papermill_options[:default]) || Papermill::options)[:through])
+      PapermillAsset.papermill(self.class.base_class.name, self.id, key.to_s, through)
+    end
+    
+    def respond_to_with_papermill?(method, *args, &block)
+      respond_to_without_papermill?(method, *args, &block) || method.to_s =~ /^papermill_[^_]+_ids=$/
+    end
+    
+    def method_missing_with_papermill(method, *args, &block)
+      if method.to_s =~ /^papermill_[^_]+_ids=$/
+        self.class.papermill(method.to_s[10..-6])
+        self.send(method, *args, &block)
+      else
+        method_missing_without_papermill(method, *args, &block)
+      end
+    end
   end
 
   module ClassMethods
     attr_reader :papermill_options
+    
+    def inherited(subclass)
+      subclass.instance_variable_set("@papermill_options", @papermill_options)
+      super
+    end
     
     def papermill(assoc_key, assoc_options = (@papermill_options && @papermill_options[:default] || {}))
       return if @papermill_options && (@papermill_options[assoc_key.to_sym] == assoc_options)
@@ -59,7 +48,7 @@ module Papermill
               assets = PapermillAsset.find(assets_ids)
               self.#{assoc_key} = assets_ids.map{|asset_id| assets.select{|asset|asset.id==asset_id}.first}
               PapermillAsset.update_all("position = CASE id " + assets_ids.map_with_index{|asset_id, index| " WHEN " + asset_id.to_s + " THEN " + (index+1).to_s }.join + " END",
-                 :id => assets_ids) unless assets_ids.empty?
+                  :id => assets_ids) unless assets_ids.empty?
             end
           end
         }
@@ -77,11 +66,19 @@ module Papermill
           end
         }
       end
-    end
-    
-    def inherited(subclass)
-      subclass.instance_variable_set("@papermill_options", @papermill_options)
-      super
+      
+      def options
+        @options ||= BASE_OPTIONS.deep_merge(defined?(OPTIONS) ? OPTIONS : {})
+      end
+      
+      def compute_paperclip_path
+        path = []
+        path << (options[:use_id_partition] ? ":id_partition" : ":id")
+        path << (":url_key" if options[:use_url_key])
+        path << ":style"
+        path << ":basename.:extension"
+        path.compact.join("/")
+      end
     end
   end
 end
