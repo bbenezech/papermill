@@ -12,6 +12,12 @@ class PapermillAsset < ActiveRecord::Base
   
   belongs_to :assetable, :polymorphic => true
   has_many :papermill_associations, :dependent => :delete_all
+  
+  named_scope :papermill, lambda { |assetable_type, assetable_id, assetable_key|
+    { :conditions => { :assetable_type => assetable_type, :assetable_id => assetable_id, :assetable_key => assetable_key.to_s }, :order => "papermill_assets.position" }
+  }
+  
+  #TODO SCOPE THROUGH
 
   def assetable_type=(sType)
      super(sType.to_s.classify.constantize.base_class.to_s)

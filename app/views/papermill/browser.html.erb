@@ -1,12 +1,21 @@
 <% params.delete(:action) %>
 <form onsubmit="jQuery.ajax({data:jQuery.param(jQuery(this).serializeArray()), dataType:'script', type:'post', url:'<%= add_list_papermill_path(params) %>'}); close(); return false;" method="post">
-  <ul>
-    <% @assets.each do |asset| %>
-    <li>
-      <%= asset.name %>
-      <%= hidden_field_tag("ids[]", asset.id) %>
+  <ul style="width:800px;display:block">
+    <% @selected_assets.each do |asset| %>
+      <li style="display:block; float:left">
+        <input type=checkbox id="papermill_asset_<%= asset.id %>" name="ids[]" value="<%= asset.id %>" checked='checked' />
+        <label for="papermill_asset_<%= asset.id %>"><%= image_tag asset.url("50x") %></label>
+      </li>
     <% end -%>
-    </li>
+    <hr style="clear:both;margin:10px;"></hr>
+    
+    <% @other_assets.each do |asset| %>
+      <li style="display:block; float:left">
+        <input type=checkbox id="papermill_asset_<%= asset.id %>" name="ids[]" value="<%= asset.id %>" />
+        <label for="papermill_asset_<%= asset.id %>"><%= image_tag asset.url("50x") %></label>
+      </li>
+    <% end -%>
   </ul>
-  <%= submit_tag "Ajouter" %>
+  <div style="clear:both;padding:10px;"></div>
+  <%= submit_tag "Valider" %>
 </form>

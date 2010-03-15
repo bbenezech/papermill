@@ -44,10 +44,13 @@ module ActionView::Helpers::FormTagHelper
     sanitized_method = method.to_s.gsub(/[\?\/\-]$/, '')
     sanitized_object_name = @object_name.to_s.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")
     field_id = @object_name && "#{sanitized_object_name}#{(i = @options[:index]) ? "_#{i}" : ""}_#{sanitized_method}"
+
+    assetable.class.papermill(method) unless assetable.respond_to?(method)
     association_options = assetable.class.papermill_options[method.to_sym]
-    raise PapermillException.new("Papermill association #{method} not found for #{assetable.class.name}\nYou need to declare the association : \npapermill :#{method}\nIn #{assetable.class.name.underscore}.rb") unless association_options
+
+    raise PapermillException.new("Papermill association #{method} failed to be generated dynamically for #{assetable.class.name}") unless association_options
     options = association_options.deep_merge(options)
-    field_name = "#{assetable_name}[#{method}_ids][]"
+    field_name = "#{assetable_name}[papermill_#{method}_ids][]"
     
     if ot = options[:thumbnail]
       w = ot[:width]  || ot[:height] && ot[:aspect_ratio] && (ot[:height] * ot[:aspect_ratio]).to_i || nil
@@ -83,12 +86,12 @@ module ActionView::Helpers::FormTagHelper
     
     if options[:through]
       browser_url = compute_papermill_url(:browser, computed_style, field_name, field_id, options)
-      html[:browser] = %{<a onclick="popup('#{@template.escape_javascript browser_url}'); return false;" style="cursor:pointer">Ajouter...</a>}
+      html[:browser] = %{<a onclick="popup('#{@template.escape_javascript(browser_url)}&list_id=#{field_id}&' + jQuery('##{field_id}').sortable('serialize')); return false;" style="cursor:pointer">Ajouter...</a>}
     end
 
-    # hidden_field needed to empty a list of assets.
+    # hidden_field needed to empty a list.
 	  %{<div class="papermill">
-	    #{@template.hidden_field("#{assetable_name}[#{method}_ids]", "", :id => nil)}
+	    #{@template.hidden_field("#{assetable_name}[papermill_#{method}_ids]", nil)}
 	    #{options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}
 	  </div>}
   end

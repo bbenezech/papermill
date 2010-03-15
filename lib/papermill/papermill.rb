@@ -2,8 +2,32 @@ module Papermill
   
   def self.included(base)
     base.extend(ClassMethods)
-    
+    base.class_eval do
+      
+      def papermill(key, through = self.class.papermill_options[key.to_sym][:through])
+        through ? 
+        PapermillAsset.papermill_through(self.class.base_class.name, self.id, key.to_s) : 
+        PapermillAsset.papermill(self.class.base_class.name, self.id, key.to_s)
+      end
+      
+      def respond_to_with_papermill?(method, *args, &block)
+        respond_to_without_papermill?(method, *args, &block) || method.to_s =~ /^papermill_[^_]+_ids=$/
+      end
+      
+      def method_missing_with_papermill(method, *args, &block)
+        if method.to_s =~ /^papermill_[^_]+_ids=$/
+          self.class.papermill(method.to_s[10..-6])
+          self.send(method, *args, &block)
+        else
+          method_missing_without_papermill(method, *args, &block)
+        end
+      end
+    end
+    base.send :alias_method_chain, :method_missing, :papermill
+    base.send :alias_method_chain, :respond_to?, :papermill
+    ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key]) unless ActionController::Dispatcher.middleware.include?(FlashSessionCookieMiddleware)
   end
+  
   
   def self.options
     @options ||= BASE_OPTIONS.deep_merge(defined?(OPTIONS) ? OPTIONS : {})
@@ -23,14 +47,27 @@ module Papermill
   module ClassMethods
     attr_reader :papermill_options
     
-    def papermill(*args)
-      (@papermill_options ||= {}).merge!( { (assoc_key = args.shift.to_sym) => Papermill::options.deep_merge(args.shift || {}) } )
-      
-      if papermill_options[assoc_key][:through]
+    def papermill(assoc_key, assoc_options = (@papermill_options && @papermill_options[:default] || {}))
+      return if @papermill_options && (@papermill_options[assoc_key.to_sym] == assoc_options)
+      (@papermill_options ||= {}).merge!( { assoc_key.to_sym => Papermill::options.deep_merge(assoc_options) } )
+      return if assoc_key.to_sym == :default
+      unless papermill_options[assoc_key.to_sym][:through]
+        self.class_eval %{ 
+          has_many :#{assoc_key}, :as => "assetable", :dependent => :delete_all, :order => :position, :class_name => "PapermillAsset", :conditions => {:assetable_key => assoc_key.to_s}, :before_add => Proc.new{|a, asset| asset.assetable_key = '#{assoc_key}'}
+          def papermill_#{assoc_key}_ids=(ids)
+            unless (assets_ids = ids.map(&:to_i).select{|i|i>0}) == self.#{assoc_key}.map(&:id)
+              assets = PapermillAsset.find(assets_ids)
+              self.#{assoc_key} = assets_ids.map{|asset_id| assets.select{|asset|asset.id==asset_id}.first}
+              PapermillAsset.update_all("position = CASE id " + assets_ids.map_with_index{|asset_id, index| " WHEN " + asset_id.to_s + " THEN " + (index+1).to_s }.join + " END",
+                 :id => assets_ids) unless assets_ids.empty?
+            end
+          end
+        }
+      else
         self.class_eval %{ 
           has_many(:#{assoc_key}_associations, :as => "assetable", :class_name => "PapermillAssociation", :include => :papermill_asset, :dependent => :delete_all, :order => :position, :conditions => {:assetable_key => '#{assoc_key}'}, :before_add => Proc.new{|a, assoc| assoc.assetable_key = '#{assoc_key}'})
           has_many(:#{assoc_key}, :through => :#{assoc_key}_associations, :source => :papermill_asset)
-          def #{assoc_key}_ids=(ids)
+          def papermill_#{assoc_key}_ids=(ids)
             unless (assets_ids = ids.map(&:to_i).select{|i|i>0}) == self.#{assoc_key}_associations.map(&:papermill_asset_id)
               self.#{assoc_key}_associations.delete_all
               self.#{assoc_key}_associations = assets_ids.map_with_index do |asset_id, index|
@@ -39,21 +76,7 @@ module Papermill
             end
           end
         }
-      else
-        self.class_eval %{ 
-          has_many :#{assoc_key}, :as => "assetable", :dependent => :delete_all, :order => :position, :class_name => "PapermillAsset", :conditions => {:assetable_key => assoc_key.to_s}, :before_add => Proc.new{|a, asset| asset.assetable_key = '#{assoc_key}'}
-          def #{assoc_key}_ids=(ids)
-            unless (assets_ids = ids.map(&:to_i).select{|i|i>0}) == self.#{assoc_key}.map(&:id)
-              self.#{assoc_key} = assets_ids.map{|asset_id| PapermillAsset.find(assets_ids).select{|asset|asset.id==asset_id}.first}
-              PapermillAsset.update_all("position = CASE id " + assets_ids.map_with_index{|asset_id, index| " WHEN " + asset_id.to_s + " THEN " + (index+1).to_s }.join + " END",
-                 :id => assets_ids) unless assets_ids.empty?
-            end
-          end
-        }
       end
-            
-      ActionController::Dispatcher.middleware.delete(FlashSessionCookieMiddleware) rescue true
-      ActionController::Dispatcher.middleware.insert_before(ActionController::Base.session_store, FlashSessionCookieMiddleware, ActionController::Base.session_options[:key]) rescue true
     end
     
     def inherited(subclass)
