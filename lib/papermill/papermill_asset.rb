@@ -15,11 +15,10 @@ class PapermillAsset < ActiveRecord::Base
   
   named_scope :papermill, lambda { |assetable_type, assetable_id, assetable_key, through|
     through ? 
-    { :joins => ["INNER JOIN papermill_associations ON papermill_assets.id = papermill_associations.papermill_asset_id \
-                  AND papermill_associations.assetable_type = ? \
-                  AND papermill_associations.assetable_id = ? \
-                  AND papermill_associations.assetable_key = ?", 
-                  assetable_type, assetable_id, assetable_key], 
+    { :joins => "INNER JOIN papermill_associations ON papermill_assets.id = papermill_associations.papermill_asset_id \
+                  AND papermill_associations.assetable_type = #{connection.quote assetable_type} \
+                  AND papermill_associations.assetable_id = #{assetable_id.to_i} \
+                  AND papermill_associations.assetable_key = #{connection.quote assetable_key}",
       :order => "papermill_associations.position" } : 
     { :conditions => { 
         :assetable_type => assetable_type, 
@@ -27,9 +26,6 @@ class PapermillAsset < ActiveRecord::Base
         :assetable_key => assetable_key.to_s }, 
       :order => "papermill_assets.position" }
   }
-  
-  named_scope :papermill_through, lambda { |assetable_type, assetable_id, assetable_key| { 
-  } }
 
   def assetable_type=(sType)
      super(sType.to_s.classify.constantize.base_class.to_s)
