@@ -17,14 +17,14 @@ module Papermill
   def self.included(base)
     base.extend(ClassMethods)
     base.class_eval do
-      def papermill(key, through = ((po = self.class.papermill_options) ? po[key.to_sym] || po[:default] : Papermill::options)[:through])
+      def papermill(key, through = ((po = self.class.papermill_options) && (po[key.to_sym] || po[:default]) || Papermill::options)[:through])
         PapermillAsset.papermill(self.class.base_class.name, self.id, key.to_s, through)
       end
-    
+      
       def respond_to_with_papermill?(method, *args, &block)
         respond_to_without_papermill?(method, *args, &block) || method.to_s =~ /^papermill_[^_]+_ids=$/
       end
-    
+      
       def method_missing_with_papermill(method, *args, &block)
         if method.to_s =~ /^papermill_[^_]+_ids=$/
           self.class.papermill(method.to_s[10..-6])

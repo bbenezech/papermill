@@ -2,7 +2,7 @@ class PapermillController < ApplicationController
   unloadable
   prepend_before_filter :load_asset,  :only => [ "show", "destroy", "update", "edit", "crop" ]
   skip_before_filter :verify_authenticity_token, :only => [:create] # not needed (Flash same origin policy)
-    
+  
   def show
     # first escaping is done by rails prior to route recognition, need to do a second one on MSWIN systems to get original one.
     params[:style] = CGI::unescape(params[:style]) if Papermill::MSWIN
@@ -50,16 +50,17 @@ class PapermillController < ApplicationController
   end
   
   def add_list
-    @assets = PapermillAsset.find(params[:ids]).sort_by{|asset|params[:ids].index(asset.id.to_s)}
-    output = render_to_string(:partial => "papermill/asset", :collection => @assets, :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_size => params[:targetted_size], :field_name => params[:field_name], :field_id => params[:field_id] })
+    @assets = PapermillAsset.find(params[:ids]).sort_by{|asset|params[:ids].index(asset.id.to_s)} unless params[:ids].blank?
+    output = render_to_string(:partial => "papermill/asset", :collection => (@assets || []), :locals => { :gallery => params[:gallery], :thumbnail_style => params[:thumbnail_style], :targetted_size => params[:targetted_size], :field_name => params[:field_name], :field_id => params[:field_id] })
     render :update do |page|
       page << %{ close_popup(); jQuery('##{params[:field_id]}').html('#{escape_javascript output}'); }
     end
   end
   
   def browser
-    @selected_assets = PapermillAsset.find(params[params[:field_id] + "_papermill_asset"]).sort_by{|asset|params[params[:field_id] + "_papermill_asset"].index(asset.id.to_s)}    
-    @other_assets = PapermillAsset.all - @selected_assets
+    ids_list = params[params[:field_id] + "_papermill_asset"]
+    @selected_assets = ids_list.blank? ? [] : params[:asset_class].constantize.find(ids_list).sort_by{|asset| ids_list.index(asset.id.to_s)}
+    @other_assets = params[:asset_class].constantize.all - @selected_assets
     render :action => "browser", :layout => false
   end
     

@@ -135,12 +135,14 @@ class PapermillAsset < ActiveRecord::Base
   end
   
   def create_thumb_file(style_name, style = nil)
+    return false unless self.image?
     destroy_thumbnails if style_name.to_s == "original"
     style = self.class.compute_style(style_name) unless style.is_a?(Hash)
     FileUtils.mkdir_p File.dirname(new_path = file.path(style_name))
     FileUtils.cp((tmp_path = Paperclip::PapermillPaperclipProcessor.make(file, style).path), new_path)
     FileUtils.chmod(0644, new_path) unless Papermill::MSWIN
     File.delete(tmp_path)
+    return true
   end
   
   def destroy_thumbnails
