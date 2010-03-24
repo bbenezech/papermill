@@ -3,6 +3,7 @@ require 'test/unit'
 require 'rubygems'
 gem 'rails'
 require 'active_record'
+require 'action_controller'
 require 'action_view'
 require 'active_support'
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/info.log")

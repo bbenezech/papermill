@@ -22,11 +22,11 @@ module Papermill
       end
       
       def respond_to_with_papermill?(method, *args, &block)
-        respond_to_without_papermill?(method, *args, &block) || method.to_s =~ /^papermill_[^_]+_ids=$/
+        respond_to_without_papermill?(method, *args, &block) || (method.to_s =~ /^papermill_.+_ids=$/) == 0
       end
       
       def method_missing_with_papermill(method, *args, &block)
-        if method.to_s =~ /^papermill_[^_]+_ids=$/
+        if method.to_s =~ /^papermill_.+_ids=$/
           self.class.papermill(method.to_s[10..-6])
           self.send(method, *args, &block)
         else
@@ -48,12 +48,13 @@ module Papermill
     end
     
     def papermill(assoc_key, assoc_options = (@papermill_options && @papermill_options[:default] || {}))
-      return if @papermill_options && (@papermill_options[assoc_key.to_sym] == assoc_options)
+      return if @papermill_options && @papermill_options[assoc_key.to_sym] # already defined
+      raise PapermillException.new("Can't use '#{assoc_key}' association : #{self.name} instances already responds to it !") if self.new.respond_to?(assoc_key)
       (@papermill_options ||= {}).merge!( { assoc_key.to_sym => Papermill::options.deep_merge(assoc_options) } )
       return if assoc_key.to_sym == :default
       unless papermill_options[assoc_key.to_sym][:through]
         self.class_eval %{ 
-          has_many :#{assoc_key}, :as => "assetable", :dependent => :delete_all, :order => :position, :class_name => "PapermillAsset", :conditions => {:assetable_key => assoc_key.to_s}, :before_add => Proc.new{|a, asset| asset.assetable_key = '#{assoc_key}'}
+          has_many :#{assoc_key}, :as => "assetable", :dependent => :delete_all, :order => :position, :class_name => "PapermillAsset", :conditions => {:assetable_key => '#{assoc_key}'}, :before_add => Proc.new{|a, asset| asset.assetable_key = '#{assoc_key}'}
           def papermill_#{assoc_key}_ids=(ids)
             unless (assets_ids = ids.map(&:to_i).select{|i|i>0}) == self.#{assoc_key}.map(&:id)
               assets = PapermillAsset.find(assets_ids)

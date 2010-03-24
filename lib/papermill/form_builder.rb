@@ -44,8 +44,7 @@ module ActionView::Helpers::FormTagHelper
     sanitized_method = method.to_s.gsub(/[\?\/\-]$/, '')
     sanitized_object_name = @object_name.to_s.gsub(/\]\[|[^-a-zA-Z0-9:.]/, "_").sub(/_$/, "")
     field_id = @object_name && "#{sanitized_object_name}#{(i = @options[:index]) ? "_#{i}" : ""}_#{sanitized_method}"
-
-    assetable.class.papermill(method) unless assetable.respond_to?(method)
+    assetable.class.papermill(method)
     association_options = assetable.class.papermill_options[method.to_sym]
 
     raise PapermillException.new("Papermill association #{method} failed to be generated dynamically for #{assetable.class.name}") unless association_options
@@ -54,7 +53,7 @@ module ActionView::Helpers::FormTagHelper
     
     if ot = options[:thumbnail]
       w = ot[:width]  || ot[:height] && ot[:aspect_ratio] && (ot[:height] * ot[:aspect_ratio]).to_i || nil
-      h = ot[:height] || ot[:width]  && ot[:aspect_ratio] && (ot[:width]  / ot[:aspect_ratio]).to_i || nil
+      h = ot[:height] || ot[:width]  && ot[:aspect_ratio] && (ot[:width] / ot[:aspect_ratio]).to_i || nil
       computed_style = ot[:style] || (w || h) && "#{w}x#{h}>" || "original"
       set_papermill_inline_css(field_id, w, h, options)
     end

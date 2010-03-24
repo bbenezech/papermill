@@ -117,10 +117,10 @@ class PapermillAsset < ActiveRecord::Base
     style.is_a?(Hash) ? (style[:name] || style.hash).to_s : (style || "original").to_s
   end
   
-  def self.papermill_options(assetable_class, assetable_key)
-    if assetable_class
-      assoc = assetable_class.constantize.papermill_options
-      assoc[assetable_key.try(:to_sym)] || assoc[Papermill::options[:base_association_name]]
+  def self.papermill_options(assetable_type, assetable_key)
+    if assetable_type
+      assoc = assetable_type.constantize.papermill_options
+      assoc[assetable_key.try(:to_sym)] || assoc[:default] || Papermill::options
     else
       Papermill::options
     end

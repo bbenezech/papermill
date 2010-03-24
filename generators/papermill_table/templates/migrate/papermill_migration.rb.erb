@@ -30,7 +30,7 @@ class <%= migration_name %> < ActiveRecord::Migration
     end
     
     change_table :papermill_assets do |t|
-      t.index [:assetable_id, :assetable_type, :assetable_key, :position], { :name => "papermill_index" }
+      t.index [:assetable_id, :assetable_type, :assetable_key, :position], { :name => "papermill_assets_index" }
       t.index [:assetable_key, :position]  # for non assetable assets
     end
     
@@ -46,7 +46,7 @@ class <%= migration_name %> < ActiveRecord::Migration
     end
     
     change_table :papermill_associations do |t|
-      t.index [:assetable_id, :assetable_type, :assetable_key, :position], { :name => "papermill_index" }
+      t.index [:assetable_id, :assetable_type, :assetable_key, :position], { :name => "papermill_associations_index" }
       t.index :papermill_asset_id
     end
     
