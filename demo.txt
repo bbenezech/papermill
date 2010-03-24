@@ -43,7 +43,7 @@ file "app/views/articles/_form.html.erb", <<-END
   <%= f.label :image_gallery %><br />
   <%= f.images_upload(:image_gallery) %><br /><br />
   <%= f.label :thumbnail %><br />
-  <%= f.image_upload(:my_other_image) %> <br /><br />
+  <%= f.image_upload(:thumbnail) %> <br /><br />
   <%= f.label :my_assets %><br />
   <%= f.assets_upload(:my_assets) %><br /><br />
   <%= f.label :my_other_asset %><br />
