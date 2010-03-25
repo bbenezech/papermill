@@ -54,7 +54,7 @@ module Papermill
       return if assoc_key.to_sym == :default
       unless papermill_options[assoc_key.to_sym][:through]
         self.class_eval %{ 
-          has_many :#{assoc_key}, :as => "assetable", :dependent => :delete_all, :order => :position, :class_name => "PapermillAsset", :conditions => {:assetable_key => '#{assoc_key}'}, :before_add => Proc.new{|a, asset| asset.assetable_key = '#{assoc_key}'}
+          has_many :#{assoc_key}, :as => "assetable", :dependent => :destroy, :order => :position, :class_name => "PapermillAsset", :conditions => {:assetable_key => '#{assoc_key}'}, :before_add => Proc.new{|a, asset| asset.assetable_key = '#{assoc_key}'}
           def papermill_#{assoc_key}_ids=(ids)
             unless (assets_ids = ids.map(&:to_i).select{|i|i>0}) == self.#{assoc_key}.map(&:id)
               assets = PapermillAsset.find(assets_ids)
