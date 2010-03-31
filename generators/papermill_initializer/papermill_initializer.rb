@@ -28,7 +28,11 @@ module Papermill
       # Helper can generates inline css styling that adapt to your gallery/images placeholder. You can use it to scaffold, then copy the lines you need in your application css and set it to false.
       
       # :inline_css => true,
-    
+      
+      # If you don't want generated CSS and JS to be captured and available through @papermill_inline_css/@papermill_inline_js, and instead directly outputed in the form, set it to false
+      
+      # :use_content_for => true,
+      
       # SwfUpload will only let the user upload images. 
       
       # :images_only => false,

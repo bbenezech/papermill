@@ -51,16 +51,18 @@ module ActionView::Helpers::FormTagHelper
     options = association_options.deep_merge(options)
     field_name = "#{assetable_name}[papermill_#{method}_ids][]"
     
+    html = {}
+    
     if ot = options[:thumbnail]
       w = ot[:width]  || ot[:height] && ot[:aspect_ratio] && (ot[:height] * ot[:aspect_ratio]).to_i || nil
       h = ot[:height] || ot[:width]  && ot[:aspect_ratio] && (ot[:width] / ot[:aspect_ratio]).to_i || nil
       computed_style = ot[:style] || (w || h) && "#{w}x#{h}>" || "original"
-      set_papermill_inline_css(field_id, w, h, options)
+      html[:css] = set_papermill_inline_css(field_id, w, h, options)
     end
 
-    set_papermill_inline_js(field_id, compute_papermill_url(:create, computed_style, field_name, field_id, options), options)
+    html[:js] = set_papermill_inline_js(field_id, compute_papermill_url(:create, computed_style, field_name, field_id, options), options)
 
-    html = {}
+    
     html[:upload_button] = %{\
       <div id="#{field_id}-button-wrapper" class="papermill-button-wrapper" style="height: #{options[:swfupload][:button_height]}px;">
         <span id="browse_for_#{field_id}" class="swf_button"></span>
@@ -91,7 +93,7 @@ module ActionView::Helpers::FormTagHelper
     # hidden_field needed to empty a list.
 	  %{<div class="papermill">
 	    #{@template.hidden_field("#{assetable_name}[papermill_#{method}_ids]", nil)}
-	    #{options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}
+	    #{html[:css] + html[:js] + options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}
 	  </div>}
   end
   
@@ -106,36 +108,44 @@ module ActionView::Helpers::FormTagHelper
   end
   
   def set_papermill_inline_js(field_id, create_url, options)
-    return unless options[:inline_css]
-    @template.content_for :papermill_inline_js do
-      %{ jQuery("##{field_id}").sortable() } if options[:gallery]
-    end
-    @template.content_for :papermill_inline_js do
-      %{
-        new SWFUpload({
-          post_params: { 
-            "#{ ActionController::Base.session_options[:key] }": "#{ @template.cookies[ActionController::Base.session_options[:key]] }"
-          },
-          upload_id: "#{ field_id }",
-          upload_url: "#{ @template.escape_javascript create_url }",
-          file_types: "#{ options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : '' }",
-          file_queue_limit: "#{ !options[:gallery] ? '1' : '0' }",
-          file_queued_handler: Papermill.file_queued,
-          file_dialog_complete_handler: Papermill.file_dialog_complete,
-          upload_start_handler: Papermill.upload_start,
-          upload_progress_handler: Papermill.upload_progress,
-          file_queue_error_handler: Papermill.file_queue_error,
-          upload_error_handler: Papermill.upload_error,
-          upload_success_handler: Papermill.upload_success,
-          upload_complete_handler: Papermill.upload_complete,
-          button_placeholder_id: "browse_for_#{field_id}",
-          #{ options[:swfupload].map { |key, value| "#{key}: #{value}" if value }.compact.join(",\n") }
+    outputed_js = (options[:gallery] ? %{ jQuery("##{field_id}").sortable() } : "") +
+    %{
+      new SWFUpload({
+        post_params: { 
+          "#{ ActionController::Base.session_options[:key] }": "#{ @template.cookies[ActionController::Base.session_options[:key]] }"
+        },
+        upload_id: "#{ field_id }",
+        upload_url: "#{ @template.escape_javascript create_url }",
+        file_types: "#{ options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : '' }",
+        file_queue_limit: "#{ !options[:gallery] ? '1' : '0' }",
+        file_queued_handler: Papermill.file_queued,
+        file_dialog_complete_handler: Papermill.file_dialog_complete,
+        upload_start_handler: Papermill.upload_start,
+        upload_progress_handler: Papermill.upload_progress,
+        file_queue_error_handler: Papermill.file_queue_error,
+        upload_error_handler: Papermill.upload_error,
+        upload_success_handler: Papermill.upload_success,
+        upload_complete_handler: Papermill.upload_complete,
+        button_placeholder_id: "browse_for_#{field_id}",
+        #{ options[:swfupload].map { |key, value| "#{key}: #{value}" if value }.compact.join(",\n") }
+      });
+    }
+    if options[:use_content_for]
+      @template.content_for :papermill_inline_js do
+        outputed_js
+      end
+      ""
+    else
+      %{<script type="text/javascript">
+        $(function() {
+          #{outputed_js}
         });
-      }
+      </script>}
     end
   end
   
   def set_papermill_inline_css(field_id, width, height, options)
+    return unless options[:inline_css]
     html = ["\n"]
     size = [width && "width:#{width}px", height && "height:#{height}px"].compact.join("; ")
     if og = options[:gallery]
@@ -148,8 +158,15 @@ module ActionView::Helpers::FormTagHelper
       html << %{##{field_id}, ##{field_id} .asset { #{size} }}
     end
     html << %{##{field_id} .name { width:#{width || "100"}px; }}
-    @template.content_for :papermill_inline_css do
-      html.join("\n")
+    if options[:use_content_for]
+      @template.content_for :papermill_inline_css do
+        html.join("\n")
+      end
+      ""
+    else
+      %{<style type="text/css">
+        #{html.join("\n")}
+      </style>}
     end
   end
 end

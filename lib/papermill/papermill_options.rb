@@ -3,6 +3,7 @@ module Papermill
     :class_name => "PapermillAsset",
     :through => false,
     :inline_css => true,
+    :use_content_for => true,
     :images_only => false,
     :form_helper_elements => [:upload_button, :container, :browser, :mass_edit],
     :mass_edit => true,
