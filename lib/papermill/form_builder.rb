@@ -93,7 +93,7 @@ module ActionView::Helpers::FormTagHelper
     # hidden_field needed to empty a list.
 	  %{<div class="papermill">
 	    #{@template.hidden_field("#{assetable_name}[papermill_#{method}_ids]", nil)}
-	    #{html[:css] + html[:js] + options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}
+	    #{html[:css].to_s + html[:js].to_s + options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}
 	  </div>}
   end
   
