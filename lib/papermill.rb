@@ -1,11 +1,5 @@
 require "rbconfig"
-require "acts_as_list"
-begin
-  require "mime/types"
-  MIME_TYPE_LOADED = true
-rescue
-  MIME_TYPE_LOADED = false
-end
+require "mime/types"
 
 I18n.load_path = [File.join(File.dirname(__FILE__), "../config/locales/papermill.yml")] + I18n.load_path
 require 'papermill/extensions'
