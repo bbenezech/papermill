@@ -60,7 +60,7 @@ module Paperclip
     end
     
     def transformation_command
-      "#{(crop_command ? super.sub(/ -crop \S+/, crop_command) : super)} #{copyright_command} #{watermark_command}".sub(%{-resize "0x" }, "")
+      " -limit memory 1 -limit map 1 #{(crop_command ? super.sub(/ -crop \S+/, crop_command) : super)} #{copyright_command} #{watermark_command}".sub(%{-resize "0x" }, "")
     end
     
     def copyright_command
