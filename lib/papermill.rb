@@ -1,6 +1,6 @@
 require "rbconfig"
 require "mime/types"
-
+require "paperclip"
 I18n.load_path = [File.join(File.dirname(__FILE__), "../config/locales/papermill.yml")] + I18n.load_path
 require 'papermill/extensions'
 require 'papermill/flash_session_cookie_middleware.rb'
@@ -15,7 +15,7 @@ require 'papermill/papermill_options.rb'
 begin
   require File.join(RAILS_ROOT, "config/initializers/papermill.rb") 
 rescue LoadError, MissingSourceFile
-end
+end·
 require 'papermill/papermill_paperclip_processor'
 require 'papermill/papermill'
 require 'papermill/papermill_association'
