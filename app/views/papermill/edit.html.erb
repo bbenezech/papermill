@@ -1,20 +1,11 @@
 <div id="papermill-box">
   <div id="left">
     <% if @asset.image? %>
-    
-    <%# image_tag(@asset.url("400x400>"), :onDblClick => %{$.facebox( $('<iframe src="#{crop_papermill_path(@asset, :target => "original", :targetted_size => params[:targetted_size])}" />')); return false;}, :title => I18n.t("papermill.crop", :resource => @asset.name)) %>
-    
-    
       <%= image_tag(@asset.url("400x400>"), :onDblClick => "popup('#{crop_papermill_path(@asset, :target => "original", :targetted_size => params[:targetted_size])}'); return false;", :title => I18n.t("papermill.crop", :resource => @asset.name)) %>
-      
-      
-      <%# link_to I18n.t("papermill.edit-with-pixlr", :resource => @asset.name), "http://www.pixlr.com/editor/?image=http://#{@test || request.env["HTTP_HOST"] + @asset.url}&target=http://#{receive_from_pixlr_papermill_path(@asset)}&method=POST", :target => "_blank" %>
       <div style="clear:both;"></div>
     <% else %>
       <%= link_to t("file_type", :type => @asset.content_type, :scope => 'papermill'), @asset.url, :popup => true %>
     <% end -%>
-    
-    
   </div>
   <div id="right">
     <div id="read-only">
