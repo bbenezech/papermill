@@ -9,12 +9,9 @@ module PapermillHelper
     
   def papermill_javascript_tag(options = {})
     html = []
-    html << %{<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>\
-      <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script>} if options[:with_jquery]
+    html << %{<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>\
+      <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js" type="text/javascript"></script>} if options[:with_jquery]
     html << %{<script type="text/javascript">}
-    ["SWFUPLOAD_PENDING", "SWFUPLOAD_LOADING"].each do |js_constant|
-      html << %{var #{escape_javascript js_constant} = "#{t("papermill.#{escape_javascript js_constant}")}";}
-    end
     html << %{jQuery.noConflict();} if options[:with_jquery].to_s == "no_conflict"
     html << %{</script>}
     html << javascript_include_tag("/facebox/facebox.js", "/jgrowl/jquery.jgrowl_minimized.js", "/Jcrop/jquery.Jcrop.min.js", "/swfupload/swfupload.js", "/papermill/papermill.js", :cache => "papermill")

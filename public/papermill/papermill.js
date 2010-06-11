@@ -69,7 +69,6 @@ var Papermill = {
 			jQuery(this.sorted_queue).each( function(index, file) {
 				div = jQuery('<div></div>').attr({ 'id': file.id, 'class': 'swfupload asset' });
 				div.append(jQuery('<span></span>').attr('class', 'name').html(file.name.substring(0, 10) + '...'));
-				div.append(jQuery('<span></span>').attr('class', 'status').html(SWFUPLOAD_PENDING));
 				div.append(jQuery('<span></span>').attr('class', 'progress').append('<span></span>'));
 				if(self.settings.file_queue_limit == 1) {
 					old_asset = jQuery("#" + self.settings.upload_id).children()[0];
@@ -84,7 +83,6 @@ var Papermill = {
 	},
 	upload_start: function(file)
 	{
-		jQuery('#' + file.id + ' .status').html(SWFUPLOAD_LOADING);
 		this.addFileParam(file.id, "Fileid", file.id);
 		if(this.settings.file_queue_limit == 1) {
 			old_asset = jQuery("#" + this.settings.upload_id).children()[0];
