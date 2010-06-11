@@ -2,7 +2,7 @@ en:
   papermill: 
     not-processed: "Error/resource not processed"
     updated: "'{{resource}}' updated"
-    not-found: "'#{{resource}}' not found"
+    not-found: "'{{resource}}' not found"
     edit-title: "Click to edit '{{resource}}'"
     crop: "Double-click to crop '{{resource}}'"
     edit-with-pixlr: "Edit '{{resource}}' online @ pixlr.com"
@@ -10,8 +10,6 @@ en:
     upload-button-wording: "Upload..."
     delete: "Remove {{resource}}"
     delete-confirmation: "Delete '{{resource}}'?"
-    SWFUPLOAD_PENDING: "Pending..."
-    SWFUPLOAD_LOADING: "Loading..."
     file_type: "{{type}} file"
     name: "Name"
     content_type: "Content-type"
@@ -35,7 +33,7 @@ en:
     mass-thumbnail-reset-confirmation: "Are you sure?"
 fr:
   papermill:
-    not-processed: "Erreur/resource non trouvée"
+    not-processed: "Erreur/ressource non trouvée"
     updated: "'{{resource}}' modifiés(s)"
     not-found: "'{{resource}}' non trouvé"
     edit-title: "Cliquer pour éditer '{{resource}}'"
@@ -45,8 +43,6 @@ fr:
     upload-button-wording: "Charger.."
     delete: "Supprimer {{resource}}"
     delete-confirmation: "Êtes-vous sûr de vouloir supprimer '{{resource}}' ?"
-    SWFUPLOAD_PENDING: "En attente..."
-    SWFUPLOAD_LOADING: "Chargement..."
     file_type: "Fichier {{type}}"
     name: "Nom"
     content_type: "Content-type"
