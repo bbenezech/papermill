@@ -1,6 +1,6 @@
 class PapermillAsset < ActiveRecord::Base
   before_destroy :destroy_files
-
+  
   has_attached_file :file, 
     :processors => [:papermill_paperclip_processor],
     :url => "#{Papermill::options[:papermill_url_prefix]}/#{Papermill::compute_paperclip_path.gsub(':style', ':escape_style_in_url')}",
@@ -51,7 +51,7 @@ class PapermillAsset < ActiveRecord::Base
   def Filedata=(data)
     if !Papermill::MSWIN && !(mime = `file --mime -br #{data.path}`).blank? && !mime.starts_with?("cannot open")
       data.content_type = mime.strip.split(";").first
-    elsif MIME_TYPE_LOADED && (mime = MIME::Types.type_for(data.original_filename))
+    elsif (mime = MIME::Types.type_for(data.original_filename))
       data.content_type = mime.first.simplified
     end
     self.file = data
