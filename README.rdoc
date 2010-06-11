@@ -29,8 +29,8 @@ Check your audience.
 
 === Server requirements:
 
-* Rails 2.3.4
-* Paperclip 2.3
+* Rails 2.3.[4~>8]
+* Paperclip 2.3.1.1 (loaded with gem dependency)
 * Front web server serving static assets if present, and forwarding demand to rails if not. Any classic installation will do that by default.
 * NOT compatible with Heroku/S3
 
@@ -86,17 +86,13 @@ Inside <head></head>
   <% end %>
 
 Before </body>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js" type="text/javascript"></script>
   <% unless @content_for_papermill_inline_js.blank? %>
     <%= stylesheet_link_tag("/facebox/facebox.css", "/jgrowl/jquery.jgrowl.css", "/Jcrop/jquery.Jcrop.css", "/papermill/papermill.css", :cache => "papermill") %>
     <style type="text/css">
       <%= yield :papermill_inline_css %>
     </style>
-    <script type="text/javascript">
-      var SWFUPLOAD_PENDING = "Waiting...";
-      var SWFUPLOAD_LOADING = "Loading...";
-    </script>
   <% end %>
 
 == Security
@@ -114,9 +110,15 @@ Assetable is the class that has_many papermill_assets (i.e. the class with the p
 
 === Assetable declaration
 
-You can have a generic association and as many declarative associations as you want in your model. Papermill will always use specific if found.
+You can have one :default association (his settings will be used for unfound associations) and as many other associations as you want in your model.
+You can define a papermill relationship dynamically: just do smtg like Assetable.papermill(:dynamic_key, {}) when you need to. Perfect for CMS where associations are created by users. Then you'll be able to use assetable.dynamic_key to retrieve the associated assets. If you don't send the {}, default options from default association will be used, which may or may not be what you want.
+
+Actually, the form helper leverages this when you use a :key that doesn't exist: it will create a new Papermill relationship whith :key as the name and options from the :default declaration if any found on the model.
+
+If you don't need dynamic keys, just declare your associations in the model, like this : 
 
   class Article
+    papermill :default
     papermill :images
     papermill :pdf_version
     papermill :cover_image
@@ -224,7 +226,7 @@ Consist of:
 
   :geometry => "ImageMagick-geometry-string"
   :copyright => true | "copyright"    # If true, the asset copyright field will be used. Edit the asset.
-  :watermark => URI | true            # If true, will use options[:watemark]
+  :watermark => true | URI            # If true, will use options[:watemark]
   
 Examples:
 
