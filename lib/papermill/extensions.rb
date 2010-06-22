@@ -1,5 +1,11 @@
 class PapermillException < Exception; end
 
+module HtmlSafeBackwardCompatibilityFix
+  def html_safe
+    self
+  end
+end
+
 module PapermillHashExtensions
   def deep_merge(hash)
     target = dup

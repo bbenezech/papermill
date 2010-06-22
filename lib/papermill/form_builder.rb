@@ -94,7 +94,7 @@ module ActionView::Helpers::FormTagHelper
 	  %{<div class="papermill">
 	    #{@template.hidden_field("#{assetable_name}[papermill_#{method}_ids]", nil)}
 	    #{html[:css].to_s + html[:js].to_s + options[:form_helper_elements].map{|element| html[element] || ""}.join("\n")}
-	  </div>}
+	  </div>}.html_safe
   end
   
   
@@ -137,7 +137,7 @@ module ActionView::Helpers::FormTagHelper
       ""
     else
       %{<script type="text/javascript">
-        $(function() {
+        jQuery(function() {
           #{outputed_js}
         });
       </script>}
