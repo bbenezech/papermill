@@ -116,7 +116,7 @@ module ActionView::Helpers::FormTagHelper
         },
         upload_id: "#{ field_id }",
         upload_url: "#{ @template.escape_javascript create_url }",
-        file_types: "#{ options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : '' }",
+        file_types: "#{ options[:swfupload].delete(:file_types) || (options[:images_only] ? '*.jpg;*.jpeg;*.png;*.gif' : '*.*') }",
         file_queue_limit: "#{ !options[:gallery] ? '1' : '0' }",
         file_queued_handler: Papermill.file_queued,
         file_dialog_complete_handler: Papermill.file_dialog_complete,

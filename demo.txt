@@ -9,18 +9,13 @@ rake "db:migrate"
 file "app/models/article.rb", <<-END
   class Article < ActiveRecord::Base
     validates_presence_of :title
-    papermill :image_gallery, :class_name => ImageAsset, :images_only => true, :thumbnail => {:width => 75, :height => 100}
-    papermill :thumbnail, :class_name => ImageAsset, :images_only => true
+    papermill :image_gallery, :thumbnail => {:width => 75, :height => 100}, :images_only => true # only images, custom preview thumbnail size
+    papermill :thumbnail, :swfupload => { :file_types => "*.jpg;*.jpeg" } # jpg only, cherry picking
     papermill :my_assets
     papermill :my_other_asset
   end
 END
 
-file "app/models/image_asset.rb", <<-END
-  class ImageAsset < PapermillAsset
-    validates_attachment_content_type :file, :content_type => ['image/jpeg', 'image/pjpeg', 'image/jpg', 'image/png', 'image/gif']
-  end
-END
 
 file "app/views/articles/edit.html.erb", <<-END
 <h1>Editing article</h1>
